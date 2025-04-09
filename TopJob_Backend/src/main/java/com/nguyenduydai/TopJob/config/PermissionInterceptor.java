@@ -2,6 +2,8 @@ package com.nguyenduydai.TopJob.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +22,8 @@ public class PermissionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
+    private final Logger log = LoggerFactory.getLogger(PermissionInterceptor.class);
+
     @Override
     @Transactional
     public boolean preHandle(
@@ -29,10 +33,10 @@ public class PermissionInterceptor implements HandlerInterceptor {
         String path = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String requestURI = request.getRequestURI();
         String httpMethod = request.getMethod();
-        System.out.println(">>> RUN preHandle");
-        System.out.println(">>> path=" + path);
-        System.out.println(">>> httpMethod=" + httpMethod);
-        System.out.println(">>> requestURI= " + requestURI);
+        log.error(">>> RUN preHandle");
+        log.debug(">>> path={}", path);
+        log.warn(">>> httpMethod={}", httpMethod);
+        log.info(">>> requestURI= {}", requestURI);
 
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
                 : "";

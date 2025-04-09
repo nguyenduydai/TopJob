@@ -1,29 +1,6 @@
 package com.nguyenduydai.TopJob.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
-import com.nguyenduydai.TopJob.domain.entity.Company;
-import com.nguyenduydai.TopJob.domain.entity.Job;
-import com.nguyenduydai.TopJob.domain.entity.Permission;
-import com.nguyenduydai.TopJob.domain.entity.Resume;
-import com.nguyenduydai.TopJob.domain.entity.User;
-import com.nguyenduydai.TopJob.domain.response.resume.ResCreateResumeDTO;
-import com.nguyenduydai.TopJob.domain.response.resume.ResFetchResumeDTO;
-import com.nguyenduydai.TopJob.domain.response.resume.ResUpdateResumeDTO;
-import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
-import com.nguyenduydai.TopJob.service.JobService;
-import com.nguyenduydai.TopJob.service.ResumeService;
-import com.nguyenduydai.TopJob.service.UserService;
-import com.nguyenduydai.TopJob.util.SecurityUtil;
-import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
-import com.nguyenduydai.TopJob.util.error.IdInvalidException;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -35,11 +12,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nguyenduydai.TopJob.domain.entity.Resume;
+import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
+import com.nguyenduydai.TopJob.domain.response.resume.ResCreateResumeDTO;
+import com.nguyenduydai.TopJob.domain.response.resume.ResFetchResumeDTO;
+import com.nguyenduydai.TopJob.domain.response.resume.ResUpdateResumeDTO;
+import com.nguyenduydai.TopJob.service.JobService;
+import com.nguyenduydai.TopJob.service.ResumeService;
+import com.nguyenduydai.TopJob.service.UserService;
+import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
+import com.nguyenduydai.TopJob.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 import com.turkraft.springfilter.builder.FilterBuilder;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")

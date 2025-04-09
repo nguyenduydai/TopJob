@@ -25,10 +25,11 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.turkraft.springfilter:jpa:3.1.7")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")

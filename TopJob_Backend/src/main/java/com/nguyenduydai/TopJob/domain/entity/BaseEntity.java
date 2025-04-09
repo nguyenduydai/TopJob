@@ -2,9 +2,8 @@ package com.nguyenduydai.TopJob.domain.entity;
 
 import java.time.Instant;
 
-import org.apache.catalina.security.SecurityUtil;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nguyenduydai.TopJob.util.SecurityUtil;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,17 +29,17 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void handleBeforeCreate() {
-        // this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
-        // ? SecurityUtil.getCurrentUserLogin().get()
-        // : "";
-        // this.createdAt = Instant.now();
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        this.createdAt = Instant.now();
     }
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        // this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
-        // ? SecurityUtil.getCurrentUserLogin().get()
-        // : "";
-        // this.updatedAt = Instant.now();
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        this.updatedAt = Instant.now();
     }
 }
