@@ -19,8 +19,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import vn.it.jobhunter.utils.SecurityUtil;
-import vn.it.jobhunter.utils.constant.LevelEnum;
 
 import java.time.Instant;
 import java.util.List;

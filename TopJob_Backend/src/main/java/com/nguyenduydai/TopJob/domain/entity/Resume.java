@@ -35,7 +35,7 @@ public class Resume extends BaseEntity {
     private String url;
 
     @Enumerated(EnumType.STRING)
-    private ResumeStateEnum state;
+    private ResumeStateEnum status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
