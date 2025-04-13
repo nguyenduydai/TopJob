@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -111,7 +111,12 @@ export const callDeleteUser = (id: string) => {
 export const callFetchUser = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
 }
-
+export const callUserById = (id: string) => {
+    return axios.get<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+}
+export const callChangePasswordUser = (password: IChangePassword) => {
+    return axios.put<IBackendRes<IString>>(`/api/v1/users/changepassword`, { ...password })
+}
 /**
  * 
 Module Job
@@ -135,7 +140,9 @@ export const callFetchJob = (query: string) => {
 export const callFetchJobById = (id: string) => {
     return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
 }
-
+export const callFetchJobAdmin = (query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobsadmin?${query}`);
+}
 /**
  * 
 Module Resume
@@ -249,3 +256,28 @@ export const callFetchSubscriberById = (id: string) => {
     return axios.get<IBackendRes<ISubscribers>>(`/api/v1/subscribers/${id}`);
 }
 
+/**
+ * 
+Module Blogs
+ */
+
+export const callCreateBlog =(title: string, likeCount: number, content: string, thumbnail: string)  => {
+    return axios.post<IBackendRes<IBlog>>('/api/v1/blogs',{ title, likeCount, content, thumbnail })
+}
+
+
+export const callUpdateBlog  = (id: string, title: string, likeCount: number, content: string, thumbnail: string)  => {
+    return axios.put<IBackendRes<IBlog>>(`/api/v1/blogs`, { id,title, likeCount, content, thumbnail })
+}
+
+export const callDeleteBlog  = (id: string) => {
+    return axios.delete<IBackendRes<IBlog>>(`/api/v1/blogs/${id}`);
+}
+
+export const callFetchAllBlog  = (query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IBlog>>>(`/api/v1/blogs?${query}`);
+}
+
+export const callFetchBlogById = (id: string) => {
+    return axios.get<IBackendRes<IBlog>>(`/api/v1/blogs/${id}`);
+}

@@ -52,6 +52,8 @@ export function DebounceSelect<
 
     return (
         <Select
+            value={value} // Ưu tiên value hiện tại, fallback về defaultValue
+        
             labelInValue
             filterOption={false}
             onSearch={debounceFetcher}

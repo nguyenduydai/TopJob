@@ -49,7 +49,7 @@ const ModalUser = (props: IProps) => {
     }, [dataInit]);
 
     const submitUser = async (valuesForm: any) => {
-        const { name, email, password, address, age, gender, role, company } = valuesForm;
+        const { name, email, password,  age, gender,address,education,experience,phone, role, company } = valuesForm;
         if (dataInit?.id) {
             //update
             const user = {
@@ -60,11 +60,17 @@ const ModalUser = (props: IProps) => {
                 age,
                 gender,
                 address,
-                role: { id: role.value, name: "" },
-                company: {
+                education,
+                experience,
+                phone,
+                role: role? { 
+                    id: role.value,
+                    name: role.label
+                }:undefined,
+                company: companies?{
                     id: company.value,
                     name: company.label
-                }
+                }:undefined
             }
 
             const res = await callUpdateUser(user);
@@ -87,11 +93,17 @@ const ModalUser = (props: IProps) => {
                 age,
                 gender,
                 address,
-                role: { id: role.value, name: "" },
-                company: {
+                education,
+                experience,
+                phone,
+                role: role? { 
+                    id: role.value,
+                    name: role.label
+                }:undefined,
+                company: companies?{
                     id: company.value,
                     name: company.label
-                }
+                }:undefined
             }
             const res = await callCreateUser(user);
             if (res.data) {
@@ -163,7 +175,15 @@ const ModalUser = (props: IProps) => {
                 preserve={false}
                 form={form}
                 onFinish={submitUser}
-                initialValues={dataInit?.id ? dataInit : {}}
+                //initialValues={dataInit?.id ? dataInit : {}}
+                initialValues={dataInit?.id ?
+                {
+                    ...dataInit,
+                    role: dataInit?.role?.id || undefined, // Chỉ lấy ID
+                    company: dataInit?.company?.id || undefined // Chỉ lấy ID
+                }
+                :
+                {}}
             >
                 <Row gutter={16}>
                     <Col lg={12} md={12} sm={24} xs={24}>
@@ -186,7 +206,7 @@ const ModalUser = (props: IProps) => {
                             placeholder="Nhập password"
                         />
                     </Col>
-                    <Col lg={6} md={6} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProFormText
                             label="Tên hiển thị"
                             name="name"
@@ -194,7 +214,17 @@ const ModalUser = (props: IProps) => {
                             placeholder="Nhập tên hiển thị"
                         />
                     </Col>
-                    <Col lg={6} md={6} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
+                        <ProFormText
+                            label="Số điện thoại"
+                            name="phone"
+                            rules={[
+                                { required: false, message: 'Vui lòng không bỏ trống' }
+                            ]}
+                            placeholder="Nhập số điện thoại"
+                        />
+                    </Col>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProFormDigit
                             label="Tuổi"
                             name="age"
@@ -202,7 +232,7 @@ const ModalUser = (props: IProps) => {
                             placeholder="Nhập nhập tuổi"
                         />
                     </Col>
-                    <Col lg={6} md={6} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProFormSelect
                             name="gender"
                             label="Giới Tính"
@@ -215,11 +245,33 @@ const ModalUser = (props: IProps) => {
                             rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
                         />
                     </Col>
-                    <Col lg={6} md={6} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
+                        <ProFormSelect
+                            name="education"
+                            label="Trình độ giáo dục"
+                            valueEnum={{
+                                HIGH_SCHOOL: "High School",      // Trung học phổ thông
+                                BACHELOR : "Bachelor's Degree",    // Cử nhân
+                                MASTER : "Master's Degree",        // Thạc sĩ
+                                OTHER:"OTHER"
+                            }}
+                            placeholder="Chọn trình độ giáo dục"
+                            rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
+                        />
+                    </Col>
+                    <Col lg={8} md={8} sm={24} xs={24}>
+                        <ProFormText
+                            label="Kinh nghiệm"
+                            name="experience"
+                            rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            placeholder="Nhập kinh nghiệm"
+                        />
+                    </Col>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProForm.Item
                             name="role"
                             label="Vai trò"
-                            rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
+                            //rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
 
                         >
                             <DebounceSelect
@@ -239,11 +291,11 @@ const ModalUser = (props: IProps) => {
                         </ProForm.Item>
 
                     </Col>
-                    <Col lg={12} md={12} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProForm.Item
                             name="company"
                             label="Thuộc Công Ty"
-                            rules={[{ required: true, message: 'Vui lòng chọn company!' }]}
+                            //rules={[{ required: true, message: 'Vui lòng chọn company!' }]}
                         >
                             <DebounceSelect
                                 allowClear
@@ -261,7 +313,7 @@ const ModalUser = (props: IProps) => {
                             />
                         </ProForm.Item>
                     </Col>
-                    <Col lg={12} md={12} sm={24} xs={24}>
+                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProFormText
                             label="Địa chỉ"
                             name="address"

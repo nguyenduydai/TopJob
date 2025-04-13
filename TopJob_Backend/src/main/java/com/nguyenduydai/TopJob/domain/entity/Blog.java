@@ -1,9 +1,11 @@
 package com.nguyenduydai.TopJob.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,11 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Blog extends BaseEntity {
-
+    @NotBlank(message = "name khong duoc de trong")
     private String title;
-    private String content;
     private int likeCount;
-
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String content;
+    private String thumbnail;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

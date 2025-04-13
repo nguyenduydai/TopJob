@@ -5,8 +5,15 @@ export const ALL_PERMISSIONS = {
         UPDATE: { method: "PUT", apiPath: '/api/v1/companies', module: "COMPANIES" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/companies/{id}', module: "COMPANIES" },
     },
+    BLOGS: {
+        GET_PAGINATE: { method: "GET", apiPath: '/api/v1/blogs', module: "BLOGS" },
+        CREATE: { method: "POST", apiPath: '/api/v1/blogs', module: "BLOGS" },
+        UPDATE: { method: "PUT", apiPath: '/api/v1/blogs', module: "BLOGS" },
+        DELETE: { method: "DELETE", apiPath: '/api/v1/blogs/{id}', module: "BLOGS" },
+    },
     JOBS: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/v1/jobs', module: "JOBS" },
+        GET_PAGINATE_ADMIN: { method: "GET", apiPath: '/api/v1/jobsadmin', module: "JOBS" },
         CREATE: { method: "POST", apiPath: '/api/v1/jobs', module: "JOBS" },
         UPDATE: { method: "PUT", apiPath: '/api/v1/jobs', module: "JOBS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/jobs/{id}', module: "JOBS" },
@@ -34,6 +41,7 @@ export const ALL_PERMISSIONS = {
         CREATE: { method: "POST", apiPath: '/api/v1/users', module: "USERS" },
         UPDATE: { method: "PUT", apiPath: '/api/v1/users', module: "USERS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/users/{id}', module: "USERS" },
+        GET_BYID: { method: "GET", apiPath: '/api/v1/users/{id}', module: "USERS" },
     },
 }
 
@@ -45,5 +53,6 @@ export const ALL_MODULES = {
     RESUMES: 'RESUMES',
     ROLES: 'ROLES',
     USERS: 'USERS',
-    SUBSCRIBERS: 'SUBSCRIBERS'
+    SUBSCRIBERS: 'SUBSCRIBERS',
+    BLOGS:'BLOGS'
 }

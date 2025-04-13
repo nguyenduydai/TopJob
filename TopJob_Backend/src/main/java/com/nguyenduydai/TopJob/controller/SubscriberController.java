@@ -44,7 +44,7 @@ public class SubscriberController {
             throw new IdInvalidException("Subscriber id = " + postSubscriber.getId() + "khong ton tai");
         }
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.subscriberService.handleUpdateSubscriber(postSubscriber));
+                .body(this.subscriberService.handleUpdateSubscriber(currSubscriber, postSubscriber));
     }
 
     @PostMapping("/subscribers/skills")

@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.User;
+import com.nguyenduydai.TopJob.domain.request.ReqChangePasswordDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResCreateUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUpdateUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUserDTO;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.UserService;
+import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
 
@@ -88,4 +91,22 @@ public class UserController {
         return ResponseEntity.ok(this.userService.fetchAllUser(spec, pageable));
     }
 
+    @PutMapping("/users/changepassword")
+    @ApiMessage("change Password a user")
+    public ResponseEntity<ResString> changePasswordUser(@RequestBody ReqChangePasswordDTO reqChangePasswordDTO)
+            throws IdInvalidException {
+        if (reqChangePasswordDTO.getOldPassword().equals(
+                reqChangePasswordDTO.getNewPassword()))
+            throw new IdInvalidException("Mật khẩu mới phải khác mật khẩu cũ");
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        boolean successChangePassword = this.userService.handleChangePasswordUser(email,
+                reqChangePasswordDTO.getOldPassword(),
+                reqChangePasswordDTO.getNewPassword());
+        if (!successChangePassword) {
+            throw new IdInvalidException("Sai mật khẩu cũ!");
+        }
+        ResString res = new ResString("change password success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 }

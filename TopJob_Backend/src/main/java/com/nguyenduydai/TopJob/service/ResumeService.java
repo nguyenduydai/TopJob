@@ -149,16 +149,14 @@ public class ResumeService {
         if (resume.getJob() != null) {
             jr.setId(resume.getJob().getId());
             jr.setName(resume.getJob().getName());
-            res.setJobResume(jr);
-
+            res.setJob(jr);
             res.setCompanyName(resume.getJob().getCompany().getName());
         }
         if (resume.getUser() != null) {
             ur.setId(resume.getUser().getId());
             ur.setName(resume.getUser().getName());
-            res.setUserResume(ur);
+            res.setUser(ur);
         }
-        res.setJobResume(jr);
         return res;
     }
 

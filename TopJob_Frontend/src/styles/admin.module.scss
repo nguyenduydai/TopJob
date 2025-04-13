@@ -9,3 +9,23 @@
         padding: 10px 0 20px 0;
     }
 }
+.layout-admin{
+    // .icon-robotadmin{
+    //     font-size: 20px;
+    // }
+    .hiden{
+        display: none;
+    }
+}
+.videoDashboard{
+    position:absolute;
+    //     top:0;
+    //     left: 0;
+    //z-index:-1;
+    width: 85.5%;
+    //object-fit:cover;
+    video{  
+        width: 100%;
+    }
+}
+.buttonDashboard{}

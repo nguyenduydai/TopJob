@@ -40,14 +40,13 @@ public class SubscriberService {
         return this.subscriberRepository.save(r);
     }
 
-    public Subscriber handleUpdateSubscriber(Subscriber subscriber) {
-        Subscriber s = fetchSubscriberById(subscriber.getId());
+    public Subscriber handleUpdateSubscriber(Subscriber subscriberInDb, Subscriber subscriber) {
         if (subscriber.getSkills() != null) {
             List<Long> idSkills = subscriber.getSkills().stream().map(x -> x.getId()).collect(Collectors.toList());
             List<Skill> listSkill = this.skillRepository.findByIdIn(idSkills);
-            s.setSkills(listSkill);
+            subscriberInDb.setSkills(listSkill);
         }
-        return this.subscriberRepository.save(s);
+        return this.subscriberRepository.save(subscriberInDb);
     }
 
     public void handleDeleteSubscriber(long id) {

@@ -25,8 +25,8 @@ public class ResFetchResumeDTO {
 
     private Instant updatedAt;
 
-    private JobResume jobResume;
-    private UserResume userResume;
+    private JobResume job;
+    private UserResume user;
     private String companyName;
 
     @Getter

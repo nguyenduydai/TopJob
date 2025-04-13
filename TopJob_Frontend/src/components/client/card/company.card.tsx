@@ -21,7 +21,7 @@ const CompanyCard = (props: IProps) => {
     const [pageSize, setPageSize] = useState(4);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
+    const [sortQuery, setSortQuery] = useState("sort=name,asc");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const CompanyCard = (props: IProps) => {
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
                                 <span className={styles["title"]}>Nhà Tuyển Dụng Hàng Đầu</span>
                                 {!showPagination &&
-                                    <Link to="company">Xem tất cả</Link>
+                                    <Link to="company"  className={styles["getAll"]}>Xem tất cả</Link>
                                 }
                             </div>
                         </Col>
@@ -119,6 +119,7 @@ const CompanyCard = (props: IProps) => {
                                 responsive
                                 onChange={(p: number, s: number) => handleOnchangePage({ current: p, pageSize: s })}
                             />
+                            <div style={{ marginBottom: 50 }}></div>
                         </Row>
                     </>}
                 </Spin>

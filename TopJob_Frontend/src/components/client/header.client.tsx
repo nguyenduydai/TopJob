@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { CodeOutlined, ContactsOutlined, FireOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, TwitterOutlined } from '@ant-design/icons';
+import { ContactsOutlined, FireOutlined, LogoutOutlined, MenuFoldOutlined,SmileOutlined,RedditOutlined,RobotOutlined,
+     ReadOutlined,HomeOutlined,FormOutlined,AuditOutlined,ClusterOutlined, KubernetesOutlined} from '@ant-design/icons';
 import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
 import { Menu, ConfigProvider } from 'antd';
 import styles from '@/styles/client.module.scss';
@@ -33,17 +34,27 @@ const Header = (props: any) => {
         {
             label: <Link to={'/'}>Trang Chủ</Link>,
             key: '/',
-            icon: <TwitterOutlined />,
+            icon: <HomeOutlined />,
         },
         {
             label: <Link to={'/job'}>Việc Làm IT</Link>,
             key: '/job',
-            icon: <CodeOutlined />,
+            icon:<FormOutlined />,
         },
         {
             label: <Link to={'/company'}>Top Công ty IT</Link>,
             key: '/company',
-            icon: <RiseOutlined />,
+            icon: <ClusterOutlined />,
+        },
+        {
+            label: <Link to={'/blog'}>Tin tức IT</Link>,
+            key: '/blog',
+            icon: <ReadOutlined />,
+        },
+        {
+            label: <Link to={'/recommend'}>Tìm việc làm phù hợp</Link>,
+            key: '/recommend',
+            icon: <AuditOutlined />,
         }
     ];
 
@@ -98,7 +109,7 @@ const Header = (props: any) => {
                     {!isMobile ?
                         <div style={{ display: "flex", gap: 30 }}>
                             <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/')} title='Hỏi Dân IT' />
+                                <KubernetesOutlined   onClick={() => navigate('/')} title='Duy Dai' /> <span className={styles['title']} onClick={() => navigate('/')} title='Duy Dai'>TOP JOB</span>
                             </div>
                             <div className={styles['top-menu']}>
                                 <ConfigProvider
@@ -125,7 +136,18 @@ const Header = (props: any) => {
                                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                             <Space style={{ cursor: "pointer" }}>
                                                 <span>Welcome {user?.name}</span>
-                                                <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
+                                                {/* <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar> */}
+                                               
+                                                <Avatar className={styles['avatar']}> 
+                                                    {user?.role?.id == "1" ? ( 
+                                                        <RobotOutlined />
+                                                        
+                                                    ) : user?.company?.id ? (
+                                                        <RedditOutlined />
+                                                    ) : (
+                                                        <SmileOutlined />
+                                                    )}
+                                                </Avatar>
                                             </Space>
                                         </Dropdown>
                                     }

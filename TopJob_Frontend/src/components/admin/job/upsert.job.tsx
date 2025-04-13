@@ -181,7 +181,6 @@ const ViewUpsertJob = (props: any) => {
     }
 
 
-
     return (
         <div className={styles["upsert-job-container"]}>
             <div className={styles["title"]}>

@@ -71,4 +71,10 @@ public class JobController {
         return ResponseEntity.ok(this.jobService.fetchAllJob(spec, pageable));
     }
 
+    @GetMapping("/jobsadmin")
+    @ApiMessage("fetch all Job")
+    public ResponseEntity<ResultPaginationDTO> getAllJobAdmin(@Filter Specification<Job> spec, Pageable pageable) {
+
+        return ResponseEntity.ok(this.jobService.fetchAllJobAdmin(spec, pageable));
+    }
 }

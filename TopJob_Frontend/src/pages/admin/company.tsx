@@ -6,9 +6,9 @@ import { ICompany } from "@/types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteCompany } from "@/config/api";
+import { callDeleteCompany, callFetchCompanyById } from "@/config/api";
 import queryString from 'query-string';
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
@@ -24,7 +24,28 @@ const CompanyPage = () => {
     const meta = useAppSelector(state => state.company.meta);
     const companies = useAppSelector(state => state.company.result);
     const dispatch = useAppDispatch();
-
+    const user = useAppSelector(state => state.account.user);
+    const [isAdminNotHr, setIsAdminNotHr] = useState<boolean>(true);
+    useEffect(() => {
+        fetchCompanyUser(user.company?.id );
+    }, [])
+    const fetchCompanyUser = async (id: string | undefined) => {
+        if(id){
+            setIsAdminNotHr(false)
+            const res = await callFetchCompanyById(id);
+            if (res && res.data) {
+                setDataInit(res.data);
+                setOpenModal(true);
+                
+            }else {
+                notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.message
+            });
+            }
+        }    
+    }
+    
     const handleDeleteCompany = async (id: string | undefined) => {
         if (id) {
             const res = await callDeleteCompany(id);
@@ -190,58 +211,73 @@ const CompanyPage = () => {
     }
 
     return (
-        <div>
-            <Access
-                permission={ALL_PERMISSIONS.COMPANIES.GET_PAGINATE}
-            >
-                <DataTable<ICompany>
-                    actionRef={tableRef}
-                    headerTitle="Danh sách Công Ty"
-                    rowKey="id"
-                    loading={isFetching}
-                    columns={columns}
-                    dataSource={companies}
-                    request={async (params, sort, filter): Promise<any> => {
-                        const query = buildQuery(params, sort, filter);
-                        dispatch(fetchCompany({ query }))
-                    }}
-                    scroll={{ x: true }}
-                    pagination={
-                        {
-                            current: meta.page,
-                            pageSize: meta.pageSize,
-                            showSizeChanger: true,
-                            total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+        <>
+            {isAdminNotHr === true ? 
+            <div>
+                <Access
+                    permission={ALL_PERMISSIONS.COMPANIES.GET_PAGINATE}
+                >
+                    <DataTable<ICompany>
+                        actionRef={tableRef}
+                        headerTitle="Danh sách Công Ty"
+                        rowKey="id"
+                        loading={isFetching}
+                        columns={columns}
+                        dataSource={companies}
+                        request={async (params, sort, filter): Promise<any> => {
+                            const query = buildQuery(params, sort, filter);
+                            dispatch(fetchCompany({ query }))
+                        }}
+                        scroll={{ x: true }}
+                        pagination={
+                            {
+                                current: meta.page,
+                                pageSize: meta.pageSize,
+                                showSizeChanger: true,
+                                total: meta.total,
+                                showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            }
                         }
-                    }
-                    rowSelection={false}
-                    toolBarRender={(_action, _rows): any => {
-                        return (
-                            <Access
-                                permission={ALL_PERMISSIONS.COMPANIES.CREATE}
-                                hideChildren
-                            >
-                                <Button
-                                    icon={<PlusOutlined />}
-                                    type="primary"
-                                    onClick={() => setOpenModal(true)}
+                        rowSelection={false}
+                        toolBarRender={(_action, _rows): any => {
+                            return (
+                                <Access
+                                    permission={ALL_PERMISSIONS.COMPANIES.CREATE}
+                                    hideChildren
                                 >
-                                    Thêm mới
-                                </Button>
-                            </Access>
-                        );
-                    }}
+                                    <Button
+                                        icon={<PlusOutlined />}
+                                        type="primary"
+                                        onClick={() => setOpenModal(true)}
+                                    >
+                                        Thêm mới
+                                    </Button>
+                                </Access>
+                            );
+                        }}
+                    />
+                </Access>
+                <ModalCompany
+                    openModal={openModal}
+                    setOpenModal={setOpenModal}
+                    reloadTable={reloadTable}
+                    dataInit={dataInit}
+                    setDataInit={setDataInit}
                 />
-            </Access>
+            </div >
+            : 
             <ModalCompany
-                openModal={openModal}
-                setOpenModal={setOpenModal}
-                reloadTable={reloadTable}
-                dataInit={dataInit}
-                setDataInit={setDataInit}
-            />
-        </div >
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            reloadTable={reloadTable}
+            dataInit={dataInit}
+            setDataInit={setDataInit}
+            /> 
+        } 
+        </>
+        
+
+        
     )
 }
 

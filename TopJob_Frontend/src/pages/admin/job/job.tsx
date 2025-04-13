@@ -4,24 +4,45 @@ import { IJob } from "@/types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteJob } from "@/config/api";
+import { callDeleteJob, callFetchJobAdmin } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
-import { fetchJob } from "@/redux/slice/jobSlide";
+//import { fetchJob } from "@/redux/slice/jobSlide";
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfIn } from "spring-filter-query-builder";
+import { Console } from "console";
 
 const JobPage = () => {
     const tableRef = useRef<ActionType>();
-
-    const isFetching = useAppSelector(state => state.job.isFetching);
     const meta = useAppSelector(state => state.job.meta);
-    const jobs = useAppSelector(state => state.job.result);
+    //const jobs = useAppSelector(state => state.job.result);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const [jobs,setJobs]=useState<IJob[] | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [query, setQuery] = useState('');
+    const user = useAppSelector(state => state.account.user);
+    const title=user.company?.name ? `Danh sách jobs thuộc công ty ${user.company?.name ??''}` :"Danh sách tất cả Jobs";
+    useEffect(() => {
+        fetchJob(query);
+    }, [])
+    
+    const fetchJob = async (query: string) => {
+            setIsLoading(true);
+            const res = await callFetchJobAdmin(query);
+            if (res && res.data) {
+                setJobs(res.data.result);
+            }else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: res.message
+                });
+            }
+            setIsLoading(false);
+    }
 
     const handleDeleteJob = async (id: string | undefined) => {
         if (id) {
@@ -230,18 +251,19 @@ const JobPage = () => {
     return (
         <div>
             <Access
-                permission={ALL_PERMISSIONS.JOBS.GET_PAGINATE}
+                permission={ALL_PERMISSIONS.JOBS.GET_PAGINATE_ADMIN}
             >
                 <DataTable<IJob>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Jobs"
+                    headerTitle={title}
                     rowKey="id"
-                    loading={isFetching}
+                    loading={isLoading}
                     columns={columns}
                     dataSource={jobs}
                     request={async (params, sort, filter): Promise<any> => {
-                        const query = buildQuery(params, sort, filter);
-                        dispatch(fetchJob({ query }))
+                        const queryy = buildQuery(params, sort, filter);
+                        setQuery(queryy);
+                        fetchJob(queryy)
                     }}
                     scroll={{ x: true }}
                     pagination={

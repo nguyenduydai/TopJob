@@ -30,6 +30,10 @@ interface IState {
                 module: string;
             }[]
         }
+        company:{
+            id?:string;
+            name?:string
+        }
     };
     activeMenu: string;
 }
@@ -48,6 +52,10 @@ const initialState: IState = {
             name: "",
             permissions: [],
         },
+        company:{
+            id: "",
+            name: "",
+        }
     },
 
     activeMenu: 'home'
@@ -70,7 +78,8 @@ export const accountSlide = createSlice({
             state.user.email = action.payload.email;
             state.user.name = action.payload.name;
             state.user.role = action?.payload?.role;
-
+            state.user.company=action?.payload?.company;
+            if (!action?.payload?.user?.company) state.user.company = {};
             if (!action?.payload?.user?.role) state.user.role = {};
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
         },
@@ -86,6 +95,10 @@ export const accountSlide = createSlice({
                     name: "",
                     permissions: [],
                 },
+                company:{
+                    id: "",
+                    name: "",
+                }
             }
         },
         setRefreshTokenAction: (state, action) => {
@@ -111,6 +124,8 @@ export const accountSlide = createSlice({
                 state.user.email = action.payload.user?.email;
                 state.user.name = action.payload.user?.name;
                 state.user.role = action?.payload?.user?.role;
+                state.user.company=action?.payload?.user?.company; 
+                if (!action?.payload?.user?.company) state.user.company = {};
                 if (!action?.payload?.user?.role) state.user.role = {};
                 state.user.role.permissions = action?.payload?.user?.role?.permissions ?? [];
             }
@@ -124,7 +139,6 @@ export const accountSlide = createSlice({
         })
 
     },
-
 });
 
 export const {

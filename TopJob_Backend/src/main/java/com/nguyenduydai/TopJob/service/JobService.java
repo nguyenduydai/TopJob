@@ -2,6 +2,8 @@ package com.nguyenduydai.TopJob.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,26 +11,43 @@ import org.springframework.stereotype.Service;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.Job;
+import com.nguyenduydai.TopJob.domain.entity.Resume;
 import com.nguyenduydai.TopJob.domain.entity.Skill;
+import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.response.job.ResCreateJobDTO;
 import com.nguyenduydai.TopJob.domain.response.job.ResUpdateJobDTO;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.repository.CompanyRepository;
 import com.nguyenduydai.TopJob.repository.JobRepository;
 import com.nguyenduydai.TopJob.repository.SkillRepository;
+import com.nguyenduydai.TopJob.util.SecurityUtil;
+import com.turkraft.springfilter.builder.FilterBuilder;
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
+
 import java.util.stream.Collectors;
 
 @Service
 public class JobService {
+    @Autowired
+    private FilterBuilder fb;
+    @Autowired
+    private FilterParser filterParser;
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
     private final CompanyRepository companyRepository;
+    private final UserService userService;
 
     public JobService(JobRepository jobRepository, SkillRepository skillRepository,
-            CompanyRepository companyRepository) {
+            CompanyRepository companyRepository, UserService userService) {
         this.skillRepository = skillRepository;
         this.jobRepository = jobRepository;
         this.companyRepository = companyRepository;
+        this.userService = userService;
     }
 
     public ResCreateJobDTO handleCreateJob(Job j) {
@@ -88,6 +107,32 @@ public class JobService {
 
     public ResultPaginationDTO fetchAllJob(Specification<Job> spec, Pageable pageable) {
         Page<Job> page = this.jobRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+        mt.setPage(page.getNumber() + 1);
+        mt.setPageSize(page.getSize());
+        mt.setPages(page.getTotalPages());
+        mt.setTotal(page.getTotalElements());
+        rs.setMeta(mt);
+        rs.setResult(page.getContent());
+        return rs;
+    }
+
+    public ResultPaginationDTO fetchAllJobAdmin(Specification<Job> spec, Pageable pageable) {
+        // query builder
+        Specification<Job> finalSpec = null;
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User currUser = this.userService.handleGetUserByUsername(email);
+        Company userCompany = currUser.getCompany();
+        if (userCompany == null) {
+            finalSpec = spec;
+        } else {
+            Specification<Job> jobInSpec = filterSpecificationConverter.convert(fb.field("company")
+                    .in(fb.input(userCompany.getId())).get());
+            finalSpec = jobInSpec.and(spec);
+        }
+        Page<Job> page = this.jobRepository.findAll(finalSpec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
         mt.setPage(page.getNumber() + 1);

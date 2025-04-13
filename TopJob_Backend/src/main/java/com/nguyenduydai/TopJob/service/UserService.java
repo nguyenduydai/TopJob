@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
@@ -23,11 +24,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final CompanyService companyService;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, CompanyService companyService, RoleService roleService) {
+    public UserService(UserRepository userRepository, CompanyService companyService, RoleService roleService,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.companyService = companyService;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User handleCreateUser(User user) {
@@ -45,9 +49,17 @@ public class UserService {
     public User handleUpdateUser(User user) {
         User u = this.fetchUserById(user.getId());
         if (u != null) {
+            u.setEmail(user.getEmail());
             u.setName(user.getName());
-            u.setAddress(user.getAddress());
             u.setAge(user.getAge());
+            u.setAddress(user.getAddress());
+            u.setGender(user.getGender());
+            u.setCreatedAt(user.getCreatedAt());
+            u.setUpdatedAt(user.getUpdatedAt());
+            u.setPassword(user.getPassword());
+            u.setExperience(user.getExperience());
+            u.setEducation(user.getEducation());
+            u.setPhone(user.getPhone());
             if (user.getCompany() != null) {
                 Optional<Company> c = this.companyService.findById(user.getCompany().getId());
                 u.setCompany(c.isPresent() ? c.get() : null);
@@ -126,12 +138,12 @@ public class UserService {
         if (user.getCompany() != null) {
             c.setId(user.getCompany().getId());
             c.setName(user.getCompany().getName());
-            res.setCompanyUser(c);
+            res.setCompany(c);
         }
         if (user.getRole() != null) {
             r.setId(user.getRole().getId());
             r.setName(user.getRole().getName());
-            res.setRoleUser(r);
+            res.setRole(r);
         }
         res.setId(user.getId());
         res.setEmail(user.getEmail());
@@ -140,7 +152,11 @@ public class UserService {
         res.setAddress(user.getAddress());
         res.setGender(user.getGender());
         res.setCreatedAt(user.getCreatedAt());
-        res.setUpdateAt(user.getUpdatedAt());
+        res.setUpdatedAt(user.getUpdatedAt());
+        res.setPassword(user.getPassword());
+        res.setExperience(user.getExperience());
+        res.setEducation(user.getEducation());
+        res.setPhone(user.getPhone());
         return res;
     }
 
@@ -174,4 +190,14 @@ public class UserService {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
 
+    public boolean handleChangePasswordUser(String email, String oldPassword, String newPassword) {
+        User user = this.handleGetUserByUsername(email);
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            String hash = passwordEncoder.encode(newPassword);
+            user.setPassword(hash);
+            user = this.userRepository.save(user);
+            return true;
+        } else
+            return false;
+    }
 }

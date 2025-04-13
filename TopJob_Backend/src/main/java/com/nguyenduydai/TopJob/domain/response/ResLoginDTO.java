@@ -1,6 +1,7 @@
 package com.nguyenduydai.TopJob.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.Role;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class ResLoginDTO {
         private String email;
         private String name;
         private Role role;
+        private Company company;
 
     }
 
@@ -45,5 +47,14 @@ public class ResLoginDTO {
         private String email;
         private String name;
     }
+
+    // @Getter
+    // @Setter
+    // @AllArgsConstructor
+    // @NoArgsConstructor
+    // public static class CompanyUser {
+    // private long id;
+    // private String name;
+    // }
 
 }

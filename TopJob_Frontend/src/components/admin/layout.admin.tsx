@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
     AppstoreOutlined,
-    ExceptionOutlined,
     ApiOutlined,
     UserOutlined,
-    BankOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    AliwangwangOutlined,
-    BugOutlined,
-    ScheduleOutlined,
+    AndroidOutlined,RedditOutlined,
+    FormOutlined,ClusterOutlined,IdcardOutlined,
+    DeploymentUnitOutlined,ReadOutlined,MonitorOutlined,RobotOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, Dropdown, Space, message, Avatar, Button } from 'antd';
+import { Layout, Menu, Dropdown, Space, message, Avatar, Button ,Spin} from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { callLogout } from 'config/api';
@@ -20,6 +18,7 @@ import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
+import styles from '../../styles/admin.module.scss'
 
 const { Content, Sider } = Layout;
 
@@ -32,10 +31,10 @@ const LayoutAdmin = () => {
 
     const permissions = useAppSelector(state => state.account.user.role.permissions);
     const [menuItems, setMenuItems] = useState<MenuProps['items']>([]);
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-
+    const isHr=useAppSelector(state => state.account.user.company?.id);
     useEffect(() => {
         const ACL_ENABLE = import.meta.env.VITE_ACL_ENABLE;
         if (permissions?.length || ACL_ENABLE === 'false') {
@@ -54,6 +53,10 @@ const LayoutAdmin = () => {
                 item.apiPath === ALL_PERMISSIONS.JOBS.GET_PAGINATE.apiPath
                 && item.method === ALL_PERMISSIONS.JOBS.GET_PAGINATE.method
             )
+            const viewBlog = permissions?.find(item =>
+                item.apiPath === ALL_PERMISSIONS.BLOGS.GET_PAGINATE.apiPath
+                && item.method === ALL_PERMISSIONS.BLOGS.GET_PAGINATE.method
+            )
 
             const viewResume = permissions?.find(item =>
                 item.apiPath === ALL_PERMISSIONS.RESUMES.GET_PAGINATE.apiPath
@@ -69,7 +72,7 @@ const LayoutAdmin = () => {
                 item.apiPath === ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE.apiPath
                 && item.method === ALL_PERMISSIONS.USERS.GET_PAGINATE.method
             )
-
+            const viewTalentCandidate= (isHr ===undefined)?false:true;
             const full = [
                 {
                     label: <Link to='/admin'>Dashboard</Link>,
@@ -79,24 +82,34 @@ const LayoutAdmin = () => {
                 ...(viewCompany || ACL_ENABLE === 'false' ? [{
                     label: <Link to='/admin/company'>Company</Link>,
                     key: '/admin/company',
-                    icon: <BankOutlined />,
+                    icon: <ClusterOutlined />,
                 }] : []),
 
+
+                ...(viewJob || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/job'>Job</Link>,
+                    key: '/admin/job',
+                    icon: <FormOutlined />
+                }] : []),
+                ...(viewBlog || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/blog'>Blog</Link>,
+                    key: '/admin/blog',
+                    icon: <ReadOutlined />
+                }] : []),
+                ...(viewRole || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/subscriber'>Subscriber</Link>,
+                    key: '/admin/subscriber',
+                    icon: <IdcardOutlined />
+                }] : []),
+                ...(viewResume || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/resume'>Resume</Link>,
+                    key: '/admin/resume',
+                    icon: <IdcardOutlined />
+                }] : []),
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
                     label: <Link to='/admin/user'>User</Link>,
                     key: '/admin/user',
                     icon: <UserOutlined />
-                }] : []),
-                ...(viewJob || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/job'>Job</Link>,
-                    key: '/admin/job',
-                    icon: <ScheduleOutlined />
-                }] : []),
-
-                ...(viewResume || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/resume'>Resume</Link>,
-                    key: '/admin/resume',
-                    icon: <AliwangwangOutlined />
                 }] : []),
                 ...(viewPermission || ACL_ENABLE === 'false' ? [{
                     label: <Link to='/admin/permission'>Permission</Link>,
@@ -106,10 +119,14 @@ const LayoutAdmin = () => {
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
                     label: <Link to='/admin/role'>Role</Link>,
                     key: '/admin/role',
-                    icon: <ExceptionOutlined />
+                    icon: <DeploymentUnitOutlined />
                 }] : []),
 
-
+                ...(viewTalentCandidate || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/talentcandidate'>Talent candidates</Link>,
+                    key: '/admin/talentcandidate',
+                    icon: <MonitorOutlined />
+                }] : []),
 
             ];
 
@@ -121,8 +138,10 @@ const LayoutAdmin = () => {
     }, [location])
 
     const handleLogout = async () => {
+        setIsLoading(true);
         const res = await callLogout();
         if (res && +res.statusCode === 200) {
+            setIsLoading(false);
             dispatch(setLogoutAction({}));
             message.success('Đăng xuất thành công');
             navigate('/')
@@ -158,16 +177,22 @@ const LayoutAdmin = () => {
         <>
             <Layout
                 style={{ minHeight: '100vh' }}
-                className="layout-admin"
+                className={`${styles["layout-admin"]}` }
             >
+                  
                 {!isMobile ?
                     <Sider
                         theme='light'
                         collapsible
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}>
-                        <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                            <BugOutlined />  ADMIN
+                        <div style={{ height: 32, margin: 16, textAlign: 'center', fontSize:18 }}>
+                        <AndroidOutlined/>
+                            {!collapsed && (
+                                user.role?.name === "SUPER_ADMIN" 
+                                ? <span>Quản trị viên</span> 
+                                : <span>Nhà tuyển dụng</span>
+                            )}
                         </div>
                         <Menu
                             selectedKeys={[activeMenu]}
@@ -202,14 +227,24 @@ const LayoutAdmin = () => {
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
                                     Welcome {user?.name}
-                                    <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
+                                    <Avatar className={styles['avatar']}> 
+                                                    {user?.role?.id == "1" ? ( 
+                                                        <RobotOutlined />
+                                                        
+                                                    ) :  (
+                                                        <RedditOutlined />
+                                                    ) }
+                                    </Avatar>
 
                                 </Space>
+                              
                             </Dropdown>
                         </div>
                     }
                     <Content style={{ padding: '15px' }}>
                         <Outlet />
+                        {/* <Spin spinning={isLoading} tip="Loading..."></Spin> */}
+
                     </Content>
                     {/* <Footer style={{ padding: 10, textAlign: 'center' }}>
                         React Typescript series Nest.JS &copy; Hỏi Dân IT - Made with <HeartTwoTone />

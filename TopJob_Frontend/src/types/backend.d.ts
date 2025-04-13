@@ -32,6 +32,10 @@ export interface IAccount {
                 module: string;
             }[]
         }
+        company:{
+            id: string;
+            name: string;
+        }
     }
 }
 
@@ -60,8 +64,13 @@ export interface ISkill {
     updatedAt?: string;
 }
 
-
-
+export interface IChangePassword {
+    oldPassword:string;
+    newPassword:string;
+}
+export interface IString {
+    infor:string;
+}
 export interface IUser {
     id?: string;
     name: string;
@@ -70,6 +79,9 @@ export interface IUser {
     age: number;
     gender: string;
     address: string;
+    education: string;
+    experience: string;
+    phone: string;
     role?: {
         id: string;
         name: string;
@@ -151,6 +163,21 @@ export interface IPermission {
     createdAt?: string;
     updatedAt?: string;
 
+}
+export interface IBlog {
+    id?: string;
+    title?: string;
+    likeCount?:int ;
+    content?: string;
+    thumbnail?: string;
+    createdBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    updated?: string;
+    user?: {
+        id: string;
+        name: string;
+    }
 }
 
 export interface IRole {

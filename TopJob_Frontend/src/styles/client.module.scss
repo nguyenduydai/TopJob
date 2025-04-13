@@ -1,11 +1,12 @@
 .container {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
+    padding-right: 0px; 
+    padding-left:px;
+    margin-right: auto;    
     margin-left: auto;
+    width: 100%;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) { 
     .container {
         width: 750px;
     }
@@ -16,7 +17,11 @@
         width: 970px;
     }
 }
-
+@media (min-width: 1805px) {
+    .container {
+        width: 1805px;
+    }
+}
 @media (min-width: 1260px) {
     .container {
         width: 1260px;
@@ -77,18 +82,29 @@
     width: 100%;
     height: 55px;
     background-color: #222831;
-
+    line-height: 52px;
     .brand {
+        position: absolute;
+        left: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
-
+        
         svg {
             cursor: pointer;
             color: #1677ff;
             font-size: 30px;
-            margin-top: 7px;
+            margin-top: 2px;
             animation: spin 20s linear infinite;
+        }
+        .title{
+            color: #1677ff;
+            margin-left: 5px;
+            margin-top: 2px;
+            font-size: 1000; 
+        }
+        &:hover{
+            cursor: pointer;
         }
     }
 
@@ -97,8 +113,10 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-
+        margin-top: 4px;
         .extra {
+            position: absolute;
+            right: 30px;
 
             a,
             span {
@@ -108,7 +126,15 @@
                 text-decoration: none;
 
                 &:hover {
-                    color: #fff;
+                    color: #ffffff;
+                }
+            }
+            .avatar{
+                padding: 8px;
+                border: #a7a7a7 solid 1px;
+                //background-color: #1677ff;
+                &:hover {
+                    color: #ffffff;
                 }
             }
         }
@@ -144,6 +170,8 @@
     }
 
     .job-content {
+        margin-left: 80px;
+        margin-right: 80px;
         .card-job-content {
             display: flex;
             width: 100%;
@@ -188,17 +216,37 @@
                 }
             }
         }
+        .getAll{
+            color:  #a7a7a7;
+            font-size: 16px;
+            &:hover{
+                color: #007BFF; 
+            }
+        }
     }
 }
 
 .company-section {
     .company-content {
         padding-top: 50px;
-
+        margin-left: 80px;
+        margin-right: 80px;
+        .title{
+            font-size: 22px;
+            font-weight: 600;
+            font-family: "Roboto", sans-serif;
+        }
         .card-customize {
-            height: 200px;
+            height: 180px;
             width: 200px;
             margin: 20px auto;
+        }
+        .getAll{
+            color:  #a7a7a7;
+            font-size: 16px;
+            &:hover{
+                color: #007BFF; 
+            }
         }
     }
 
@@ -206,7 +254,9 @@
 
 
 .home-section {
-
+    width: 100%;
+    margin-top: 0px;
+    
     .empty {
         display: flex;
         justify-content: center;
@@ -227,16 +277,144 @@
     }
 
     .title {
-        font-size: 27px;
+        font-size: 22px;
+        font-weight: 600;
         font-family: "Roboto", sans-serif;
-        color: #353535;
+        color: #a7a7a7 !important;
         line-height: 35px;
         margin-top: 20px;
         margin-bottom: 20px;
     }
+
+    video{
+        position:absolute;
+        top:0;
+        left: 0;
+        z-index:-1;
+        width: 100%;
+        height: 600px;
+        object-fit:cover;
+      }
+    .content-in-video{
+        z-index:2;
+        color: #a7a7a7;
+        .highlight {
+            margin-left: 1100px;
+            margin-top: 130px;
+            line-height: 50px;
+            color:#a7a7a7 ;
+            font-size: 2em; 
+            text-align: center;
+            animation: pulse 3s infinite; /* Thêm animation */
+
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: #ffffff; } /* Màu thay đổi trong quá trình tăng */
+            100% { transform: scale(1); color:#a7a7a7 ; } /* Trở về trạng thái ban đầu */
+        }
+
+        .slogan {   
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            animation: slogan 29s linear infinite;
+            margin-top: 20px;
+            
+           
+        }
+
+        .slogan-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: slogan-content 29s linear infinite;
+            font-size: 20px;
+            font-weight: 800;
+
+        }
+
+        @keyframes slogan {
+            0% { transform: translate(0); }
+            100% { transform: translate(-100%); }
+        }
+
+        @keyframes slogan-content {
+            0% { transform: translate(0); }
+            100% { transform: translate(-100%); }
+        }
+
+        .search-content{
+           
+            margin-top: 92px;
+            margin-left: 80px;
+            
+            width: 99%;
+            position: absolute;
+            h2{
+                color: #a7a7a7;
+                font-size: 22px;
+                font-weight: 600;
+                font-family: "Roboto", sans-serif;
+            }
+        }
+    }                                       
+    .content-notin-video{
+        background-color: #092038;
+        //width: 100%;
+        margin-top: 160px;
+        padding-bottom: 100px;
+        color: #a7a7a7 !important;
+    }
+        /* Nút cuộn trang */
+    .scroll-to-top {
+        position: fixed; 
+        bottom: 18px; 
+        right: 18px; 
+            width: 45px; 
+            height: 45px; 
+            background-color: #007BFF; 
+            color: white; 
+            border: none; 
+            border-radius: 50%;
+            cursor: pointer; 
+            font-size: 24px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+            transition: background-color 0.3s; 
+        }
+
+    .scroll-to-top:hover {
+            background-color: #0056b3; 
+    }
+    .chatbox {
+        position: fixed; 
+        bottom: 80px; 
+        right: 18px; 
+            width: 45px; 
+            height: 45px; 
+            background-color: #007BFF; 
+            color: white; 
+            border: none; 
+            border-radius: 50%;
+            cursor: pointer; 
+            font-size: 24px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+            transition: background-color 0.3s; 
+        }
+
+    .chatbox:hover {
+            background-color: #0056b3; /* Màu nền khi hover */
+    }
 }
 
-.detail-job-section {
+.detail-job-section {   
     .header {
         margin: 20px 0;
         color: #353535;
@@ -303,5 +481,18 @@
         justify-content: center;
         width: 100%;
         align-items: center;
+    }
+}
+.footer-section{
+    background-color: #1d1d1d;
+    color: #fff;
+    //margin-top: 200px;
+    .brand{
+        font-size:medium;
+        font-weight: 600;
+    }
+    a:hover {
+        color: #1890ff !important;
+        transition: 0.3s;
     }
 }

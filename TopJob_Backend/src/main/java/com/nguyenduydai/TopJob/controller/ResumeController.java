@@ -55,7 +55,7 @@ public class ResumeController {
     @ApiMessage("create a Resume")
     public ResponseEntity<ResCreateResumeDTO> createResume(@Valid @RequestBody Resume resume)
             throws IdInvalidException {
-        if (this.resumeService.checkResumeExistByUserAndJob(resume)) {
+        if (!this.resumeService.checkResumeExistByUserAndJob(resume)) {
             throw new IdInvalidException("user or Job not exists");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.resumeService.handleCreateResume(resume));
@@ -68,7 +68,7 @@ public class ResumeController {
         if (currResume == null)
             throw new IdInvalidException("Resume id = " + postResume.getId() + "khong ton tai");
         currResume.setStatus(postResume.getStatus());
-        return ResponseEntity.status(HttpStatus.OK).body(this.resumeService.handleUpdateResume(postResume));
+        return ResponseEntity.status(HttpStatus.OK).body(this.resumeService.handleUpdateResume(currResume));
     }
 
     @DeleteMapping("/resumes/{id}")

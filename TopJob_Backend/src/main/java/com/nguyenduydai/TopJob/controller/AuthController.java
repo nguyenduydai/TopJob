@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqLoginDTO;
 import com.nguyenduydai.TopJob.domain.response.ResLoginDTO;
@@ -60,8 +61,9 @@ public class AuthController {
         ResLoginDTO resLoginDTO = new ResLoginDTO();
         User currUser = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         if (currUser != null) {
+            Company company = currUser.getCompany();
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currUser.getId(),
-                    currUser.getEmail(), currUser.getName(), currUser.getRole());
+                    currUser.getEmail(), currUser.getName(), currUser.getRole(), company);
             resLoginDTO.setUser(userLogin);
         }
         String access_token = this.securityUtil.createAccessToken(authentication.getName(), resLoginDTO);
@@ -85,8 +87,9 @@ public class AuthController {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         ResLoginDTO.UserGetAccount userGetAccount = new ResLoginDTO.UserGetAccount();
         if (currUser != null) {
+            Company company = currUser.getCompany();
             userLogin = new ResLoginDTO.UserLogin(currUser.getId(),
-                    currUser.getEmail(), currUser.getName(), currUser.getRole());
+                    currUser.getEmail(), currUser.getName(), currUser.getRole(), company);
             userGetAccount.setUser(userLogin);
         }
         return ResponseEntity.ok().body(userGetAccount);
@@ -110,8 +113,9 @@ public class AuthController {
         }
         // create access token
         ResLoginDTO resLoginDTO = new ResLoginDTO();
+        Company company = currUser.getCompany();
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currUser.getId(),
-                currUser.getEmail(), currUser.getName(), currUser.getRole());
+                currUser.getEmail(), currUser.getName(), currUser.getRole(), company);
         resLoginDTO.setUser(userLogin);
         String access_token = this.securityUtil.createAccessToken(email, resLoginDTO);
         resLoginDTO.setAccessToken(access_token);

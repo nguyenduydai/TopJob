@@ -99,7 +99,7 @@ const JobCard = (props: IProps) => {
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
                                 <span className={styles["title"]}>Công Việc Mới Nhất</span>
                                 {!showPagination &&
-                                    <Link to="job">Xem tất cả</Link>
+                                    <Link to="job" className={styles["getAll"]}>Xem tất cả</Link>
                                 }
                             </div>
                         </Col>
@@ -149,6 +149,7 @@ const JobCard = (props: IProps) => {
                                 onChange={(p: number, s: number) => handleOnchangePage({ current: p, pageSize: s })}
                             />
                         </Row>
+                        <div style={{ marginBottom: 50 }}></div>
                     </>}
                 </Spin>
             </div>

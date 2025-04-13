@@ -30,6 +30,13 @@ import ClientJobDetailPage from './pages/job/detail';
 import ClientCompanyPage from './pages/company';
 import ClientCompanyDetailPage from './pages/company/detail';
 import JobTabs from './pages/admin/job/job.tabs';
+import ClientBlogPage from './pages/blog';
+import ClientRecommendPage from './pages/recommend';
+import BlogPage from './pages/admin/blog';
+import SubscriberPage from './pages/admin/subscriber';
+import TalentCandidatePage from './pages/admin/talentcandidate';
+import FooterComponent from 'components/client/footer.client';
+import ClientBlogDetailPage from './pages/blog/detail';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,7 +56,7 @@ const LayoutClient = () => {
       <div className={styles['content-app']}>
         <Outlet context={[searchTerm, setSearchTerm]} />
       </div>
-      <Footer />
+      <FooterComponent />
     </div>
   )
 }
@@ -78,7 +85,10 @@ export default function App() {
         { path: "job", element: <ClientJobPage /> },
         { path: "job/:id", element: <ClientJobDetailPage /> },
         { path: "company", element: <ClientCompanyPage /> },
-        { path: "company/:id", element: <ClientCompanyDetailPage /> }
+        { path: "company/:id", element: <ClientCompanyDetailPage /> },
+        { path: "blog", element: <ClientBlogPage /> },
+        { path: "blog/:id", element: <ClientBlogDetailPage /> },
+        { path: "recommend", element: <ClientRecommendPage /> }
       ],
     },
 
@@ -141,6 +151,27 @@ export default function App() {
           element:
             <ProtectedRoute>
               <RolePage />
+            </ProtectedRoute>
+        },
+        {
+          path: "blog",
+          element:
+            <ProtectedRoute>
+              <BlogPage />
+            </ProtectedRoute>
+        },
+        {
+          path: "subscriber",
+          element:
+            <ProtectedRoute>
+              <SubscriberPage />
+            </ProtectedRoute>
+        },
+        {
+          path: "talentcandidate",
+          element:
+            <ProtectedRoute>
+              <TalentCandidatePage />
             </ProtectedRoute>
         }
       ],

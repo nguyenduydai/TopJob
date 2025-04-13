@@ -20,7 +20,6 @@ import lombok.Setter;
 @Setter
 public class Subscriber extends BaseEntity {
 
-    @NotBlank(message = "name khong duoc de trong")
     private String name;
 
     @NotBlank(message = "name khong duoc de trong")
