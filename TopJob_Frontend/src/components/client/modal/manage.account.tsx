@@ -50,21 +50,45 @@ const UserResume = (props: any) => {
             }
         },
         {
-            title: 'Công Ty',
+            title: 'Công ty',
             dataIndex: "companyName",
 
         },
         {
-            title: 'Job title',
+            title: 'Tên công việc',
             dataIndex: ["job", "name"],
 
         },
         {
             title: 'Trạng thái',
             dataIndex: "status",
+            render(value, record, index) {
+                let displayValue;
+                switch (value) {
+                    case 'PENDING':
+                        displayValue = 'ĐANG CHỜ';
+                        break;
+                    case 'REVIEWING':
+                        displayValue = 'ĐANG XEM XÉT';
+                        break;
+                    case 'APPROVED':
+                        displayValue = 'ĐƯỢC CHẤP NHẬN';
+                        break;
+                    case 'REJECTED':
+                        displayValue = 'BỊ TỪ CHỐI';
+                        break;
+                    default:
+                        displayValue = value; 
+                }
+                return (
+                    <>
+                        {displayValue}
+                    </>
+                );
+            },
         },
         {
-            title: 'Ngày rải CV',
+            title: 'Ngày ứng tuyển',
             dataIndex: "createdAt",
             render(value, record, index) {
                 return (
@@ -73,7 +97,7 @@ const UserResume = (props: any) => {
             },
         },
         {
-            title: '',
+            title: 'CV',
             dataIndex: "",
             render(value, record, index) {
                 return (
@@ -88,7 +112,7 @@ const UserResume = (props: any) => {
 
     return (
         <div>
-            <h3>Nhật ký rải cv</h3>
+            <h3>Nhật ký ứng tuyển</h3>
             <br/>
             <Table<IResume>
                 columns={columns}
@@ -115,6 +139,7 @@ const UserUpdateInfo = ({ onCancel }: UserUpdateInfoProps) => {
     const [form] = Form.useForm();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [notReset,setNotReset]= useState<boolean>(false);
+    const [candidate,setCandidate]= useState<boolean>(true);
 useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
@@ -142,6 +167,7 @@ useEffect(() => {
             } : null
         });
         setIsLoading(false);
+        if(res.data?.role?.id=='1'||res.data?.role?.id=='2') setCandidate(false)
     };
         fetchData();
     }, [user.id,notReset]);
@@ -319,10 +345,10 @@ useEffect(() => {
                             name="education"
                             label="Trình độ giáo dục"
                             valueEnum={{
-                                HIGH_SCHOOL: "High School",      // Trung học phổ thông
-                                BACHELOR : "Bachelor's Degree",    // Cử nhân
-                                MASTER : "Master's Degree",        // Thạc sĩ
-                                OTHER:"OTHER"
+                                HIGH_SCHOOL: "Trung học phổ thông",      // Trung học phổ thông
+                                BACHELOR : "Cử nhân",    // Cử nhân
+                                MASTER : "Thạc sĩ",        // Thạc sĩ
+                                OTHER:"Khác"
                             }}
                             placeholder="Chọn trình độ giáo dục"
                             rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
@@ -350,46 +376,6 @@ useEffect(() => {
                         />
                     </Col>
                     <Col lg={8} md={8} sm={24} xs={24}>
-                        <ProForm.Item
-                            name="role"
-                            label="Vai trò"
-                        >
-                            <DebounceSelect
-                             disabled={true}
-                                allowClear
-                                showSearch
-                                //defaultValue={roles[0]}
-                                value={form.getFieldValue('role')} 
-                                placeholder="USER"
-                                fetchOptions={fetchRoleList}
-                                onChange={(newValue: any) => {
-                                    form.setFieldsValue({ role: newValue })
-                                }}
-                                style={{ width: '100%' }}
-                            />  
-                        </ProForm.Item>
-                    </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
-                        <ProForm.Item
-                            name="company"
-                            label="Thuộc Công Ty"
-                        >
-                            <DebounceSelect
-                                 disabled={true}
-                                allowClear
-                                showSearch
-                                //defaultValue={companies[0]}
-                                value={form.getFieldValue('company')} 
-                                placeholder="Không thuộc công ty nào"
-                                fetchOptions={fetchCompanyList}
-                                onChange={(newValue: any) => {
-                                     form.setFieldsValue({ company: newValue })
-                                }}
-                                style={{ width: '100%' }}
-                            />
-                        </ProForm.Item>
-                    </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
                         <ProFormText
                             label="Địa chỉ"
                             name="address"
@@ -397,6 +383,51 @@ useEffect(() => {
                             placeholder="Nhập địa chỉ"
                         />
                     </Col>
+                    {(!candidate) && (
+                        <>
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <ProForm.Item
+                                name="role"
+                                label="Vai trò"
+                            >
+                                <DebounceSelect
+                                disabled={true}
+                                    allowClear
+                                    showSearch
+                                    //defaultValue={roles[0]}
+                                    value={form.getFieldValue('role')} 
+                                    placeholder="USER"
+                                    fetchOptions={fetchRoleList}
+                                    onChange={(newValue: any) => {
+                                        form.setFieldsValue({ role: newValue })
+                                    }}
+                                    style={{ width: '100%' }}
+                                />  
+                            </ProForm.Item>
+                        </Col>
+                        <Col lg={8} md={8} sm={24} xs={24} >
+                            <ProForm.Item
+                                name="company"
+                                label="Thuộc Công Ty"
+                            >
+                                <DebounceSelect
+                                    disabled={true}
+                                    allowClear
+                                    showSearch
+                                    //defaultValue={companies[0]}
+                                    value={form.getFieldValue('company')} 
+                                    placeholder="Không thuộc công ty nào"
+                                    fetchOptions={fetchCompanyList}
+                                    onChange={(newValue: any) => {
+                                        form.setFieldsValue({ company: newValue })
+                                    }}
+                                    style={{ width: '100%' }}
+                                />
+                            </ProForm.Item>
+                        </Col>
+                        </>
+                    )}
+                  
                 </Row>
             </ProForm>
     </>
@@ -479,6 +510,7 @@ const JobByEmail = (props: any) => {
 
     useEffect(() => {
         const init = async () => {
+            if(user?.email)  form.setFieldValue("email",user.email);
             await fetchSkill();
             const res = await callGetSubscriberSkills();
             if (res && res.data) {
@@ -516,10 +548,10 @@ const JobByEmail = (props: any) => {
     const onFinish = async (values: any) => {
         const { skills,email } = values;
         const arr = skills?.map((item: any) => {
-            if (item?.id) return { id: item.id };
+
+            if (item?.value) return { id: item.value };
             return { id: item }
         });
-
         if (!subscriber?.id) {
             //create subscriber
             const data = {
@@ -564,13 +596,13 @@ const JobByEmail = (props: any) => {
 
     return (
         <>
-            <h3>Đăng ký skills để nhận jobs mới qua email hàng tuần</h3>
+            <h3>Đăng ký kỹ năng để nhận công việc mới qua email hàng tuần</h3>
             <br/>
             <Form
                 onFinish={onFinish}
                 form={form}
             >
-                <Row gutter={[20, 20]}>
+                <Row gutter={[20, 30]}>
                     <Col span={24}>
                         <ProFormText
                             label="Email nhận thông báo công việc mới"
@@ -579,8 +611,10 @@ const JobByEmail = (props: any) => {
                                 { required: true, message: 'Vui lòng không bỏ trống' },
                                 { type: 'email', message: 'Vui lòng nhập email hợp lệ' }
                             ]}
-                            placeholder="Nhập email"
+                            
+                            disabled
                         />
+                        <span style={{color:'#a7a7a7',marginLeft:80}}>Nếu muốn thay đổi email nhận thông báo hãy cập nhật email ở phần "Cập nhật thông tin"</span>
                     </Col>
                     <Col span={24}>
                         <Form.Item
@@ -616,7 +650,7 @@ const JobByEmail = (props: any) => {
 const ManageAccount = (props: IProps) => {
     const { open, onClose } = props;
     const [activeTab, setActiveTab] = useState('user-update-info'); // State quản lý tab hiện tại
-
+    const user = useAppSelector(state => state.account.user);
 
     const items: TabsProps['items'] = [
         {
@@ -641,7 +675,19 @@ const ManageAccount = (props: IProps) => {
             children:  <ChangePassword />,
         },
     ];
+    const itemsadmin: TabsProps['items'] = [
+        {
+            key: 'user-update-info',
+            label: `Cập nhật thông tin`,
+            children: <UserUpdateInfo  onCancel={() => setActiveTab('user-password')}  />,
+        },
 
+        {
+            key: 'user-password',
+            label: `Thay đổi mật khẩu`,
+            children:  <ChangePassword />,
+        },
+    ];
 
     return (
         <>
@@ -658,7 +704,8 @@ const ManageAccount = (props: IProps) => {
                 <div style={{ minHeight: 400 }}>
                     <Tabs
                         defaultActiveKey="user-update-info"
-                        items={items}
+                        //items={items}
+                        items={(user.role?.id=='1' || user.role?.id=='2') ? itemsadmin: items}
                         activeKey={activeTab} // Kiểm soát tab hiện tại
                         onChange={(key) => setActiveTab(key)} // Cập nhật khi chuyển tab thủ công
                     />

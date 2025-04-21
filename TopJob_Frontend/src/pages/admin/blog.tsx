@@ -59,18 +59,18 @@ const BlogPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Title',
+            title: 'Tiêu đề',
             dataIndex: 'title',
             sorter: true,
         },
         {
-            title: 'Like Count',
+            title: 'Lượt thích',
             dataIndex: 'likeCount',
             sorter: true,
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -82,7 +82,7 @@ const BlogPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày sửa',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -95,7 +95,7 @@ const BlogPage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (

@@ -1,5 +1,5 @@
 
-package com.nguyenduydai.TopJob.domain.response;
+package com.nguyenduydai.TopJob.domain.response.email;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,23 +11,13 @@ import lombok.Setter;
 @Setter
 public class ResEmailJob {
     private String name;
-    private double salary;
-    private CompanyEmail company;
+    private String salary;
+    private String company;
     private List<SkillEmail> skills;
 
     @Getter
     @Setter
     @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CompanyEmail {
-        private String name;
-
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class SkillEmail {
         private String name;
     }

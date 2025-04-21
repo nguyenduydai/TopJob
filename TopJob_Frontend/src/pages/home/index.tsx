@@ -6,6 +6,8 @@ import CompanyCard from '@/components/client/card/company.card';
 import videoHomepage from '../../assets/laiThuyen3.mp4'
 import { MessageOutlined } from '@ant-design/icons';
 import { message,notification } from 'antd';
+import BlogCard from '@/components/client/card/blog.card';
+
 const HomePage = () => {
     const scrollToTop = () => {
         window.scrollTo({
@@ -40,11 +42,15 @@ const HomePage = () => {
             </div>
 
             <div className={`${styles["content-notin-video"]} `}>
-                {/* <Divider /> */}
-                <CompanyCard />
-                <div style={{ margin: 50 }}></div>
+                <div style={{ marginTop:172 }}></div>
                 <Divider />
                 <JobCard /> 
+                <Divider />
+                <CompanyCard />
+                <Divider />
+                <Divider />
+                <BlogCard/>
+                
             </div>
             <button className={`${styles["chatbox"]} `}  onClick={() => handleChatBox()}><MessageOutlined /></button>
             <button className={`${styles["scroll-to-top"]} `}  onClick={() => scrollToTop()} >↑</button>

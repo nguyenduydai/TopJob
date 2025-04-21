@@ -29,6 +29,13 @@ public class CompanyService {
         return this.companyRepository.save(c);
     }
 
+    public Company handleCreateCompanyUserResgister(String name, String address) {
+        Company c = new Company();
+        c.setName(name);
+        c.setAddress(address);
+        return this.companyRepository.save(c);
+    }
+
     public Company handleUpdateCompany(Company company) {
         Company c = this.fetchCompanyById(company.getId());
         if (c != null) {
@@ -58,6 +65,13 @@ public class CompanyService {
         return null;
     }
 
+    public Company fetchCompanyByName(String name) {
+        Optional<Company> company = this.companyRepository.findByName(name);
+        if (company != null)
+            return company.get();
+        return null;
+    }
+
     public ResultPaginationDTO fetchAllCompany(Specification<Company> spec, Pageable pageable) {
         Page<Company> page = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -74,5 +88,9 @@ public class CompanyService {
 
     public Optional<Company> findById(long id) {
         return this.companyRepository.findById(id);
+    }
+
+    public boolean existsByName(String name) {
+        return this.companyRepository.existsByName(name);
     }
 }

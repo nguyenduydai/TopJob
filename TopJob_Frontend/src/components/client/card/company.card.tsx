@@ -21,7 +21,7 @@ const CompanyCard = (props: IProps) => {
     const [pageSize, setPageSize] = useState(4);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sortQuery, setSortQuery] = useState("sort=name,asc");
+    const [sortQuery, setSortQuery] = useState("sort=createdAt,asc");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -82,13 +82,14 @@ const CompanyCard = (props: IProps) => {
                             return (
                                 <Col span={24} md={6} key={item.id}>
                                     <Card
+                                        className={styles["card-job-card"]}
                                         onClick={() => handleViewDetailJob(item)}
                                         style={{ height: 350 }}
                                         hoverable
                                         cover={
                                             <div className={styles["card-customize"]} >
                                                 <img
-                                                    style={{ maxWidth: "200px" }}
+                                                    style={{ maxWidth: "200px" , borderRadius: 12}}
                                                     alt="example"
                                                     src={`${import.meta.env.VITE_BACKEND_URL}/storage/company/${item?.logo}`}
                                                 />

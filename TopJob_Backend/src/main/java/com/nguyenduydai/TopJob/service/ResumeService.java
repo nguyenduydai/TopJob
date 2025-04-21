@@ -19,11 +19,15 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.Job;
 import com.nguyenduydai.TopJob.domain.entity.Resume;
+import com.nguyenduydai.TopJob.domain.entity.Skill;
+import com.nguyenduydai.TopJob.domain.entity.Subscriber;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.response.resume.ResCreateResumeDTO;
 import com.nguyenduydai.TopJob.domain.response.resume.ResFetchResumeDTO;
 import com.nguyenduydai.TopJob.domain.response.resume.ResUpdateResumeDTO;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
+import com.nguyenduydai.TopJob.domain.response.email.ResEmailJob;
+import com.nguyenduydai.TopJob.domain.response.email.ResEmailResume;
 import com.nguyenduydai.TopJob.repository.ResumeRepository;
 import com.nguyenduydai.TopJob.util.SecurityUtil;
 
@@ -39,11 +43,14 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserService userService;
     private final JobService jobService;
+    private final EmailService emailService;
 
-    public ResumeService(ResumeRepository resumeRepository, UserService userService, JobService jobService) {
+    public ResumeService(ResumeRepository resumeRepository, UserService userService, JobService jobService,
+            EmailService emailService) {
         this.resumeRepository = resumeRepository;
         this.jobService = jobService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     public ResCreateResumeDTO handleCreateResume(Resume r) {
@@ -160,7 +167,7 @@ public class ResumeService {
         return res;
     }
 
-    public boolean checkResumeExistByUserAndJob(Resume resume) {
+    public boolean checkHaveUserAndJob(Resume resume) {
         if (resume.getUser() == null)
             return false;
         if (resume.getJob() == null)
@@ -171,4 +178,39 @@ public class ResumeService {
         return true;
     }
 
+    public boolean checkResumeExist(Resume resume) {
+        if (this.resumeRepository.existsByUserIdAndJobId(resume.getUser().getId(), resume.getJob().getId()))
+            return true;
+        else
+            return false;
+    }
+
+    public void sendEmailStatusResume(long id) {
+        String emailHr = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        Resume resume = this.fetchResumeById(id);
+        String emailUser = resume.getEmail();
+        ResEmailResume res = new ResEmailResume();
+        User user = this.userService.handleGetUserByUsername(emailUser);
+        res.setNameUser(user.getName());
+        res.setJobName(resume.getJob().getName());
+        res.setCompanyName(resume.getJob().getCompany().getName());
+        res.setEmailHr(emailHr);
+        String status = resume.getStatus().toString();
+        if (status.equals("PENDING"))
+            res.setMessage(
+                    "Hiện tại, đơn của bạn đang trong quá trình chờ đợi, xem xét và chúng tôi sẽ thông báo cho bạn kết quả sớm nhất có thể.");
+        if (status.equals("REVIEWING"))
+            res.setMessage(
+                    "Đội ngũ tuyển dụng của chúng tôi đang đánh giá kỹ lưỡng và sẽ liên hệ với bạn trong thời gian sớm nhất.");
+        if (status.equals("APPROVED"))
+            res.setMessage(
+                    "Chúng tôi rất vui mừng thông báo rằng đơn ứng tuyển của bạn đã được chấp nhận! Chúng tôi sẽ liên hệ với bạn để sắp xếp lịch phỏng vấn trong thời gian tới.");
+        if (status.equals("REJECTED"))
+            res.setMessage(
+                    ". Sau khi xem xét kỹ lưỡng, chúng tôi rất tiếc phải thông báo rằng bạn không được chọn cho vị trí này.");
+        this.emailService.sendEmailResumeFromTemplateSync(emailUser,
+                "Thông báo về trạng thái đơn ứng tuyển", "resume", res);
+    }
 }

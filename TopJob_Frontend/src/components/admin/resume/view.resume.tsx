@@ -1,4 +1,4 @@
-import { callUpdateResumeStatus } from "@/config/api";
+import { callsendEmailJob, callsendEmailResume, callUpdateResumeStatus } from "@/config/api";
 import { IResume } from "@/types/backend";
 import { Badge, Button, Descriptions, Drawer, Form, Select, message, notification } from "antd";
 import dayjs from 'dayjs';
@@ -16,14 +16,14 @@ const ViewDetailResume = (props: IProps) => {
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const { onClose, open, dataInit, setDataInit, reloadTable } = props;
     const [form] = Form.useForm();
-
+    const [email, setEmail] = useState("");
     const handleChangeStatus = async () => {
         setIsSubmit(true);
 
         const status = form.getFieldValue('status');
         const res = await callUpdateResumeStatus(dataInit?.id, status)
         if (res.data) {
-            message.success("Update Resume status thành công!");
+            message.success("Cập nhật trạng thái đơn thành công!");
             setDataInit(null);
             onClose(false);
             reloadTable();
@@ -36,10 +36,23 @@ const ViewDetailResume = (props: IProps) => {
 
         setIsSubmit(false);
     }
+    const handleSendEmail = async () => {
+        handleChangeStatus();
+        const res = await callsendEmailResume(dataInit.id);
+        console.log(dataInit.id);
+        if (+res.statusCode===200) {
+            message.success("Gửi email thông báo thành công!");
+        } else {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.message
+            });
+        }
+    }
 
     useEffect(() => {
         if (dataInit) {
-            form.setFieldValue("status", dataInit.status)
+            form.setFieldValue("status", dataInit.status);
         }
         return () => form.resetFields();
     }, [dataInit])
@@ -57,7 +70,7 @@ const ViewDetailResume = (props: IProps) => {
                 extra={
 
                     <Button loading={isSubmit} type="primary" onClick={handleChangeStatus}>
-                        Change Status
+                        Thay đổi trạng thái
                     </Button>
 
                 }
@@ -76,10 +89,10 @@ const ViewDetailResume = (props: IProps) => {
                                     style={{ width: "100%" }}
                                     defaultValue={dataInit?.status}
                                 >
-                                    <Option value="PENDING">PENDING</Option>
-                                    <Option value="REVIEWING">REVIEWING</Option>
-                                    <Option value="APPROVED">APPROVED</Option>
-                                    <Option value="REJECTED">REJECTED</Option>
+                                    <Option value="PENDING">ĐANG CHỜ</Option>
+                                    <Option value="REVIEWING">ĐANG XEM XÉT</Option>
+                                    <Option value="APPROVED">ĐÃ PHÊ DUYỆT</Option>
+                                    <Option value="REJECTED">ĐÃ TỪ CHỐI</Option>
                                 </Select>
                             </Form.Item>
                         </Form>
@@ -94,8 +107,17 @@ const ViewDetailResume = (props: IProps) => {
                     </Descriptions.Item>
                     <Descriptions.Item label="Ngày tạo">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
                     <Descriptions.Item label="Ngày sửa">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-
+                    <Descriptions.Item label="Xem chi tiết CV" span={2} style={{textAlign:'center'}}>
+                        <a
+                            href={`${import.meta.env.VITE_BACKEND_URL}/storage/resume/${dataInit?.url}`}
+                            target="_blank"
+                        >Chi tiết</a>
+                    </Descriptions.Item>
+                   
                 </Descriptions>
+                <Button  type="primary" onClick={handleSendEmail} style={{marginLeft:100}}>
+                        Gửi email thông báo trạng thái đơn ứng tuyển cho ứng viên
+                </Button>
             </Drawer>
         </>
     )

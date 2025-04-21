@@ -3,22 +3,32 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { callRegister } from 'config/api';
 import styles from 'styles/auth.module.scss';
-import { IUser } from '@/types/backend';
+import { IUser, IUserRegister } from '@/types/backend';
 const { Option } = Select;
+import auser from '../../assets/auser.jpg';
 
 
 const RegisterPage = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
 
-    const onFinish = async (values: IUser) => {
-        const { name, email, password, age, gender, address } = values;
+    const onFinish = async (values: IUserRegister) => {
+        const {name, email, password, age, address } = values;
+        let companyName=null;
+        let companyAddress='';
+        let phone='';
+        let roleId=+3;
+        let gender=null;
         setIsSubmit(true);
-        const res = await callRegister(name, email, password as string, +age, gender, address);
+        // const res = await callRegister(name, phone,email, password,companyName, companyAddress,roleId,age,gender,address );
+        // const { name, email, password, age, gender, address } = values;
+        
+        setIsSubmit(true);
+        const res = await callRegister(name,phone, email, password,companyName, companyAddress,roleId, +age, gender, address);
         setIsSubmit(false);
         if (res?.data?.id) {
             message.success('Đăng ký tài khoản thành công!');
-            navigate('/login')
+            navigate('/login?user=candidate')
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
@@ -28,19 +38,29 @@ const RegisterPage = () => {
             })
         }
     };
-
+        
 
     return (
         <div className={styles["register-page"]} >
 
-            <main className={styles.main} >
+            <main className={styles.main} style={{backgroundColor:'#fcf4e6'}}>
                 <div className={styles.container} >
+                        <div  className={` ${styles["user-left"]}`}>
+                            <h3>Tìm việc làm nhanh 24h, việc làm mới nhất trên toàn quốc</h3>
+                            <h5>Tiếp cận 99,999+ tin tuyển dụng từ hàng nghìn doanh nghiệp uy tín tại Việt Nam</h5>
+                            <img
+                                width={600}
+                                alt="example"
+                                src={auser}
+                            />
+                        </div>
                     <section className={styles.wrapper} >
+
                         <div className={styles.heading} >
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}> Đăng Ký Tài Khoản </h2>
+                            <h2 className={`${styles.text} ${styles["text-large"]}`} > Đăng Ký Tài Khoản Ứng Viên</h2>
                             < Divider />
                         </div>
-                        < Form<IUser>
+                        < Form<IUserRegister>
                             name="basic"
                             // style={{ maxWidth: 600, margin: '0 auto' }}
                             onFinish={onFinish}
@@ -52,7 +72,7 @@ const RegisterPage = () => {
                                 name="name"
                                 rules={[{ required: true, message: 'Họ tên không được để trống!' }]}
                             >
-                                <Input />
+                                <Input  placeholder='Nhập họ tên ...'/>
                             </Form.Item>
 
 
@@ -63,7 +83,7 @@ const RegisterPage = () => {
                                 name="email"
                                 rules={[{ required: true, message: 'Email không được để trống!' }]}
                             >
-                                <Input type='email' />
+                                <Input type='email'  placeholder='Nhập email ...' />
                             </Form.Item>
 
                             <Form.Item
@@ -72,33 +92,14 @@ const RegisterPage = () => {
                                 name="password"
                                 rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
                             >
-                                <Input.Password />
+                                <Input.Password  placeholder='Nhập mật khẩu ...' />
                             </Form.Item>
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
                                 label="Tuổi"
                                 name="age"
-                                rules={[{ required: true, message: 'Tuổi không được để trống!' }]}
                             >
-                                <Input type='number' />
-                            </Form.Item>
-
-
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                name="gender"
-                                label="Giới tính"
-                                rules={[{ required: true, message: 'Giới tính không được để trống!' }]}
-                            >
-                                <Select
-                                    // placeholder="Select a option and change input text above"
-                                    // onChange={onGenderChange}
-                                    allowClear
-                                >
-                                    <Option value="MALE">Nam</Option>
-                                    <Option value="FEMALE">Nữ</Option>
-                                    <Option value="OTHER">Khác</Option>
-                                </Select>
+                                <Input type='number' placeholder='Nhập tuổi ...' />
                             </Form.Item>
 
 
@@ -106,9 +107,9 @@ const RegisterPage = () => {
                                 labelCol={{ span: 24 }} //whole column
                                 label="Địa chỉ"
                                 name="address"
-                                rules={[{ required: true, message: 'Địa chỉ không được để trống!' }]}
+
                             >
-                                <Input />
+                                <Input  placeholder='Nhập địa chỉ ...'/>
                             </Form.Item>
 
                             < Form.Item
@@ -118,10 +119,10 @@ const RegisterPage = () => {
                                     Đăng ký
                                 </Button>
                             </Form.Item>
-                            <Divider> Or </Divider>
+                            <Divider> Nếu như </Divider>
                             <p className="text text-normal" > Đã có tài khoản ?
                                 <span>
-                                    <Link to='/login' > Đăng Nhập </Link>
+                                    <Link to='/login?user=candidate' > Đăng Nhập </Link>
                                 </span>
                             </p>
                         </Form>

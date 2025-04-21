@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>JobHunter</title>
+    <title>TopJob</title>
     <meta charset="UTF-8">
 </head>
 
@@ -14,47 +14,50 @@
             <td align="center">
                 <table style="background-color: white; border-radius: 5px; padding: 20px;">
                     <tr>
-                        <td>
-                            <div style="text-align: left; font-size: 20px;">TOP JOB</div>
-                        </td>
-                        <td>
-                            <div style="text-align: right; font-size: 20px;">Ít nhưng mà chất</div>
+                        <td colspan="2">
+                            <div style="text-align: left; font-size: 20px; font-weight: 800;color: blue;">TOP JOB</div>
+                            <div style="text-align: left; font-size: 20px;">Thông báo công việc mới theo kỹ năng bạn đã đăng ký </div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin: 15px 0; border-top: 1px solid rgba(5, 5, 5, 0.06);"></td>
+                        <td colspan="2" style="margin: 15px 0; border-top: 2px solid rgba(5, 5, 5, 0.06);"></td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <div style="text-align: left;">
-                                <div style="font-size: 16px;">Hi <span th:text="${name}"></span></div>
-                                <div style="font-size: 16px;">One of these jobs may be your next one. Find out today!
-                                </div>
+                                <div style="font-size: 16px;">Xin chào <span th:text="${name}"></span></div>
+                                <div style="font-size: 16px;">Một trong những công việc này có thể là công việc tiếp theo của bạn. Hãy tìm hiểu ngay hôm nay!</div>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin: 15px 0; border-top: 1px dashed rgba(5, 5, 5, 0.06);"></td>
+                        <td colspan="2" style="margin: 15px 0; border-top: 2px dashed rgba(5, 5, 5, 0.06);"></td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <table>
                                 <tr th:each="job : ${jobs}">
                                     <td>
-                                        <div style="font-size: 16px;">
+                                        <div style="font-size: 16px;font-weight: 500;">
                                             <a href="" target="_blank"
                                                 style="text-decoration: none;" th:text="${job.name}"></a>
                                         </div>
-                                        <div style="font-size: 14px;" th:text="${job.company.name}"></div>
+                                        <div style="font-size: 14px;" th:text="${job.company}"></div>
                                         <div style="font-size: 14px;">
-                                            <span
-                                                th:text="${#number.formatDecimal(job.salary,0,'COMMA',0,'POINT')}">
-                                            </span>đ
+                                            <span th:text="${job.salary}"> vnđ</span>
                                         </div>
+                                        <!-- <div style="font-size: 14px;">
+                                            <span th:if="${job.salary != null}" 
+                                                th:text="${#number.formatDecimal(job.salary, 0, 'COMMA', 0, 'POINT')}">
+                                            </span>
+                                            <span th:if="${job.salary == null}">
+                                                Salary not available
+                                            </span>
+                                        </div> -->
                                         <div style="margin-top: 5px;">
                                             <span
                                                 style="font-size: 14px; background: #e8e8e8; padding: 3px; margin-right: 5px;  border-radius: 3px;"
-                                                th:each="skill : ${job.skills}" th:text="{skill.name}">
+                                                th:each="skill : ${job.skills}" th:text="${skill.name}">
                                             </span>
                                         </div>
                                         <div style="margin: 15px 0; border-top: 1px dashed rgba(5, 5, 5, 0.06);"></div>
@@ -66,7 +69,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <div style="padding-top: 20px; text-align: left; font-size: 16px;">Cheers,</div>
+                            <div style="padding-top: 20px; text-align: left; font-size: 16px;">Kính gửi,</div>
                             <div style="text-align: left; font-size: 16px;"><span th:text="${name}"></span></div>
                         </td>
                     </tr>

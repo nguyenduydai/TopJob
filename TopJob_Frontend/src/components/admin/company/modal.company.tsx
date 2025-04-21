@@ -171,7 +171,7 @@ const ModalCompany = (props: IProps) => {
             {openModal &&
                 <>
                     <ModalForm
-                        title={<>{dataInit?.id ? "Cập nhật Company" : "Tạo mới Company"}</>}
+                        title={<>{dataInit?.id ? "Cập nhật công ty" : "Tạo mới công ty"}</>}
                         open={openModal}
                         modalProps={{
                             onCancel: () => { handleReset() },

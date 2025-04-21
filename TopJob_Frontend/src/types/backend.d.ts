@@ -98,6 +98,7 @@ export interface IUser {
     updatedAt?: string;
 }
 
+
 export interface IJob {
     id?: string;
     name: string;
@@ -129,12 +130,12 @@ export interface IResume {
     userId: string;
     url: string;
     status: string;
-    companyId: string | {
+    company: string | {
         id: string;
         name: string;
         logo: string;
     };
-    jobId: string | {
+    job: string | {
         id: string;
         name: string;
     };
@@ -204,4 +205,16 @@ export interface ISubscribers {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+}
+export interface IUserRegister {
+    name: string;
+    email: string;
+    password?: string;
+    age: number;
+    gender: string;
+    address: string;
+    companyName: string;
+    companyAddress: string;
+    phone: string;
+    roleId:int
 }

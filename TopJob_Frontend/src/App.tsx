@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+
 import NotFound from 'components/share/not.found';
 import Loading from 'components/share/loading';
 import LoginPage from 'pages/auth/login';
@@ -37,6 +38,7 @@ import SubscriberPage from './pages/admin/subscriber';
 import TalentCandidatePage from './pages/admin/talentcandidate';
 import FooterComponent from 'components/client/footer.client';
 import ClientBlogDetailPage from './pages/blog/detail';
+import RegisterHrPage from './pages/auth/register.hr';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -186,6 +188,10 @@ export default function App() {
     {
       path: "/register",
       element: <RegisterPage />,
+    },
+    {
+      path: "/registerhr",
+      element: <RegisterHrPage />,
     },
   ]);
 

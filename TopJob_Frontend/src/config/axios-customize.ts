@@ -4,6 +4,10 @@ import axiosClient from "axios";
 import { store } from "@/redux/store";
 import { setRefreshTokenAction } from "@/redux/slice/accountSlide";
 import { notification } from "antd";
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { isMobile } from 'react-device-detect';
+import type { MenuProps } from 'antd';
+import { setLogoutAction } from '@/redux/slice/accountSlide';
 interface AccessTokenResponse {
     access_token: string;
 }
@@ -27,6 +31,11 @@ const handleRefreshToken = async (): Promise<string | null> => {
         else return null;
     });
 };
+const handleLogout = async () => {
+    // const dispatch = useAppDispatch();
+    // dispatch(setLogoutAction({}));
+    localStorage.removeItem('access_token');
+}
 
 instance.interceptors.request.use(function (config) {
     if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
@@ -46,17 +55,26 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(
     (res) => res.data,
     async (error) => {
+        // khi accesstoken hết hạn
         if (error.config && error.response
-            && +error.response.status === 401
+            && (+error.response.status === 401 ||+error.response.status === 400)
             && error.config.url !== '/api/v1/auth/login'
             && !error.config.headers[NO_RETRY_HEADER]
         ) {
-            const access_token = await handleRefreshToken();
+            if (typeof window !== "undefined" && window?.localStorage) {
+                localStorage.removeItem('access_token');
+            }
+            const new_access_token = await handleRefreshToken();
             error.config.headers[NO_RETRY_HEADER] = 'true'
-            if (access_token) {
-                error.config.headers['Authorization'] = `Bearer ${access_token}`;
-                localStorage.setItem('access_token', access_token)
+            if (new_access_token) {
+                error.config.headers['Authorization'] = `Bearer ${new_access_token}`;
+                localStorage.setItem('access_token', new_access_token)
                 return instance.request(error.config);
+            }else {
+                // Nếu refresh thất bại, đăng xuất
+                console.log("chạy vào đây");
+                handleLogout();
+                return Promise.reject(error);
             }
         }
 
@@ -69,6 +87,7 @@ instance.interceptors.response.use(
             const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
             //dispatch redux action
             store.dispatch(setRefreshTokenAction({ status: true, message }));
+            //handleLogout();
         }
 
         if (+error.response.status === 403) {

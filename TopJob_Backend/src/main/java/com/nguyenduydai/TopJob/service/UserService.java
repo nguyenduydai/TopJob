@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.Role;
 import com.nguyenduydai.TopJob.domain.entity.User;
+import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUserDTO;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResCreateUserDTO;
@@ -43,6 +44,32 @@ public class UserService {
             Role r = this.roleService.fetchRoleById(user.getRole().getId());
             user.setRole(r != null ? r : null);
         }
+        return this.userRepository.save(user);
+    }
+
+    public User handleCreateRegisterUser(ReqRegisterUserDTO postuser) {
+        User user = new User();
+        user.setEmail(postuser.getEmail());
+        user.setName(postuser.getName());
+        user.setAge(postuser.getAge());
+        user.setAddress(postuser.getAddress());
+        user.setGender(postuser.getGender());
+        user.setPassword(postuser.getPassword());
+        user.setPhone(postuser.getPhone());
+        if (postuser.getCompanyName() != null) {
+            if (this.companyService.existsByName(postuser.getCompanyName())) {
+                Company c = this.companyService.fetchCompanyByName(postuser.getCompanyName());
+                user.setCompany(c);
+            } else {
+                Company c = this.companyService.handleCreateCompanyUserResgister(postuser.getCompanyName(),
+                        postuser.getAddress());
+                user.setCompany(c);
+            }
+        } else {
+            user.setCompany(null);
+        }
+        Role r = this.roleService.fetchRoleById(postuser.getRoleId());
+        user.setRole(r != null ? r : null);
         return this.userRepository.save(user);
     }
 

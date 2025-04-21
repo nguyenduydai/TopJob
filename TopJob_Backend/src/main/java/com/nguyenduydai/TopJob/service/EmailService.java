@@ -47,4 +47,12 @@ public class EmailService {
         String content = this.templateEngine.process(templateName, context);
         this.sendEmailSync(to, subject, content, false, true);
     }
+
+    @Async
+    public void sendEmailResumeFromTemplateSync(String to, String subject, String templateName, Object value) {
+        Context context = new Context();
+        context.setVariable("resume", value);
+        String content = this.templateEngine.process(templateName, context);
+        this.sendEmailSync(to, subject, content, false, true);
+    }
 }

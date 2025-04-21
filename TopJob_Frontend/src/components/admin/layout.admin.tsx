@@ -7,7 +7,9 @@ import {
     MenuUnfoldOutlined,
     AndroidOutlined,RedditOutlined,
     FormOutlined,ClusterOutlined,IdcardOutlined,
-    DeploymentUnitOutlined,ReadOutlined,MonitorOutlined,RobotOutlined
+    DeploymentUnitOutlined,ReadOutlined,MonitorOutlined,RobotOutlined,
+    LogoutOutlined,
+    ContactsOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button ,Spin} from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -19,7 +21,7 @@ import type { MenuProps } from 'antd';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
 import styles from '../../styles/admin.module.scss'
-
+import ManageAccount from '../client/modal/manage.account'
 const { Content, Sider } = Layout;
 
 const LayoutAdmin = () => {
@@ -28,6 +30,7 @@ const LayoutAdmin = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [activeMenu, setActiveMenu] = useState('');
     const user = useAppSelector(state => state.account.user);
+    const [openMangeAccount, setOpenManageAccount] = useState<boolean>(false);
 
     const permissions = useAppSelector(state => state.account.user.role.permissions);
     const [menuItems, setMenuItems] = useState<MenuProps['items']>([]);
@@ -75,55 +78,55 @@ const LayoutAdmin = () => {
             const viewTalentCandidate= (isHr ===undefined)?false:true;
             const full = [
                 {
-                    label: <Link to='/admin'>Dashboard</Link>,
+                    label: <Link to='/admin'>Trang chủ</Link>,
                     key: '/admin',
                     icon: <AppstoreOutlined />
                 },
                 ...(viewCompany || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/company'>Company</Link>,
+                    label: <Link to='/admin/company'>Công ty</Link>,
                     key: '/admin/company',
                     icon: <ClusterOutlined />,
                 }] : []),
 
 
                 ...(viewJob || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/job'>Job</Link>,
+                    label: <Link to='/admin/job'>Công việc</Link>,
                     key: '/admin/job',
                     icon: <FormOutlined />
                 }] : []),
                 ...(viewBlog || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/blog'>Blog</Link>,
+                    label: <Link to='/admin/blog'>Tin tức</Link>,
                     key: '/admin/blog',
                     icon: <ReadOutlined />
                 }] : []),
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/subscriber'>Subscriber</Link>,
+                    label: <Link to='/admin/subscriber'>Người đăng ký</Link>,
                     key: '/admin/subscriber',
                     icon: <IdcardOutlined />
                 }] : []),
                 ...(viewResume || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/resume'>Resume</Link>,
+                    label: <Link to='/admin/resume'>Đơn ứng tuyển</Link>,
                     key: '/admin/resume',
                     icon: <IdcardOutlined />
                 }] : []),
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/user'>User</Link>,
+                    label: <Link to='/admin/user'>Người dùng</Link>,
                     key: '/admin/user',
                     icon: <UserOutlined />
                 }] : []),
                 ...(viewPermission || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/permission'>Permission</Link>,
+                    label: <Link to='/admin/permission'>Quyền hạn</Link>,
                     key: '/admin/permission',
                     icon: <ApiOutlined />
                 }] : []),
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/role'>Role</Link>,
+                    label: <Link to='/admin/role'>Vai trò</Link>,
                     key: '/admin/role',
                     icon: <DeploymentUnitOutlined />
                 }] : []),
 
                 ...(viewTalentCandidate || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/talentcandidate'>Talent candidates</Link>,
+                    label: <Link to='/admin/talentcandidate'>Tìm kiếm ứng viên</Link>,
                     key: '/admin/talentcandidate',
                     icon: <MonitorOutlined />
                 }] : []),
@@ -138,15 +141,20 @@ const LayoutAdmin = () => {
     }, [location])
 
     const handleLogout = async () => {
+        console.log('chay vao day');
         setIsLoading(true);
         const res = await callLogout();
         if (res && +res.statusCode === 200) {
             setIsLoading(false);
             dispatch(setLogoutAction({}));
-            message.success('Đăng xuất thành công');
-            navigate('/')
+            message.success(`Đăng xuất thành công `);
+            (isHr ===undefined) ? navigate('/login') : navigate('/login?user=hr');
+            console.log('chay vao vong if');
+
         }
     }
+ 
+
 
     // if (isMobile) {
     //     items.push({
@@ -161,17 +169,27 @@ const LayoutAdmin = () => {
 
     const itemsDropdown = [
         {
-            label: <Link to={'/'}>Trang chủ</Link>,
-            key: 'home',
+            label: <label
+            style={{ cursor: 'pointer' }}
+            onClick={() => setOpenManageAccount(true)}
+            >Quản lý tài khoản</label>,
+            key: 'manage-account',
+            icon: <ContactsOutlined />
         },
+        // {
+        //     label: <Link to={'/'}>Trang chủ</Link>,
+        //     key: 'home',
+        // },
         {
             label: <label
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleLogout()}
             >Đăng xuất</label>,
             key: 'logout',
+            icon: <LogoutOutlined />
         },
     ];
+   
 
     return (
         <>
@@ -182,6 +200,8 @@ const LayoutAdmin = () => {
                   
                 {!isMobile ?
                     <Sider
+                        // style={{width:500}}
+                        className={`${styles["menu"]}`}
                         theme='light'
                         collapsible
                         collapsed={collapsed}
@@ -195,6 +215,7 @@ const LayoutAdmin = () => {
                             )}
                         </div>
                         <Menu
+
                             selectedKeys={[activeMenu]}
                             mode="inline"
                             items={menuItems}
@@ -226,7 +247,7 @@ const LayoutAdmin = () => {
 
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
-                                    Welcome {user?.name}
+                                    Chào mừng bạn  {user?.name}
                                     <Avatar className={styles['avatar']}> 
                                                     {user?.role?.id == "1" ? ( 
                                                         <RobotOutlined />
@@ -251,7 +272,10 @@ const LayoutAdmin = () => {
                     </Footer> */}
                 </Layout>
             </Layout>
-
+            <ManageAccount
+                open={openMangeAccount}
+                onClose={setOpenManageAccount}
+            />
         </>
     );
 };

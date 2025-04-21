@@ -16,7 +16,7 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 .register-page {
     color: $color-black;
     background: $color-light;
-
+    text-align: center;
 
     // Components
     .container {
@@ -28,6 +28,34 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
         // width: 100%;
         padding: 0 2rem;
         margin: 0 auto;
+        .login-left{
+            display: flex;
+           
+            h3{
+                margin-top: 20px;
+            }
+            .user{
+                padding:0 35px 35px 35px ;
+                background-color:  #beebf6;
+                border-radius: 10px;
+                &:hover{
+                    background-color: #052a3a;
+                    color:#ffff;
+                    cursor: pointer;
+                }
+            }
+            .hr{
+                padding:0 35px 35px 35px ;
+                background-color: #fcf4e6;
+                border-radius: 10px;
+                &:hover{
+                    background-color: #052a3a;
+                    color:#ffff;
+                    cursor: pointer;
+                }
+            }
+
+        }
     }
 
 
@@ -62,11 +90,28 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
     // Main
     .main {
+        //background-color:#fcf4e6;
+        .user-left{
+            img{
+                border-radius: 10px;
+                box-shadow: $shadow-large;
+            }
+            h3{
+                margin-bottom: 20px;
+                font-size: 23px;
+                font-weight:600;
+            }   
+            h5{
+                margin-bottom: 20px;
+                font-size: 18px;
+                font-weight: 400;   
+            }   
+        }
         .wrapper {
             max-width: 28rem;
             width: 100%;
             margin: 2rem auto;
-            padding: 2rem 2.5rem;
+            padding: 1.5rem 1.5rem 1rem 1.5rem; 
             border: none;
             outline: none;
             border-radius: 0.5rem;
@@ -83,7 +128,7 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-bottom: 1.25rem;
+                    margin-bottom: 1rem;
                 }
 
                 .input-field {
@@ -179,6 +224,36 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
                     }
                 }
             }
+        }
+    }
+}
+.register-page-hr {
+   background-color:  #beebf6;
+
+    // Main
+    .main {
+        .hr-left{
+            color:#115393;   
+            text-align: center;
+            img{
+                border-radius: 15px;
+                box-shadow: $shadow-large;
+            }
+
+            h4{
+                margin-bottom: 20px;
+                font-size: 23px;
+                font-weight: 600;
+            }   
+            h5{
+                margin-bottom: 20px;
+                font-size: 18px;
+                font-weight: 500;   
+            }   
+        }
+        .wrapper {
+            max-width: 35rem;
+            width: 100%;
         }
     }
 }

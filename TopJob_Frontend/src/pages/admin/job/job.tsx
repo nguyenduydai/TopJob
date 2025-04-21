@@ -25,7 +25,7 @@ const JobPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [query, setQuery] = useState('');
     const user = useAppSelector(state => state.account.user);
-    const title=user.company?.name ? `Danh sách jobs thuộc công ty ${user.company?.name ??''}` :"Danh sách tất cả Jobs";
+    const title=user.company?.name ? `Danh sách công việc thuộc công ty ${user.company?.name ??''}` :"Danh sách tất cả công việc";
     useEffect(() => {
         fetchJob(query);
     }, [])
@@ -78,7 +78,7 @@ const JobPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Tên Job',
+            title: 'Tên',
             dataIndex: 'name',
             sorter: true,
         },
@@ -98,7 +98,7 @@ const JobPage = () => {
             },
         },
         {
-            title: 'Level',
+            title: 'Trình độ',
             dataIndex: 'level',
             renderFormItem: (item, props, form) => (
                 <ProFormSelect
@@ -130,7 +130,7 @@ const JobPage = () => {
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -142,7 +142,7 @@ const JobPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày sửa',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -155,7 +155,7 @@ const JobPage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Sửa',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (

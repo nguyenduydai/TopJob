@@ -82,18 +82,18 @@ const ResumePage = () => {
         },
 
         {
-            title: 'Job',
+            title: 'Công việc',
             dataIndex: ["job", "name"],
             hideInSearch: true,
         },
         {
-            title: 'Company',
+            title: 'Công ty',
             dataIndex: "companyName",
             hideInSearch: true,
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -105,7 +105,7 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày sửa',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -117,8 +117,20 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         {
+            title: 'Xem CV',
+            dataIndex: "",
+            render(value, record, index) {
+                return (
+                    <a
+                        href={`${import.meta.env.VITE_BACKEND_URL}/storage/resume/${record?.url}`}
+                        target="_blank"
+                    >Chi tiết</a>
+                )
+            },
+        },
+        {
 
-            title: 'Actions',
+            title: 'Chỉnh sửa',
             hideInSearch: true,
             width: 100,
             render: (_value, entity, _index, _action) => (
@@ -204,7 +216,7 @@ const ResumePage = () => {
             >
                 <DataTable<IResume>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Resumes"
+                    headerTitle="Danh sách đơn ứng tuyển"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}

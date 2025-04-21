@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trạng thái đơn ứng tuyển</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            color: #333;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            color: #0a66c2;
+        }
+
+        .content {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .status {
+            font-weight: bold;
+            color: #0a66c2;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <table style="max-width: 80rem;  padding:1.5rem 2rem; margin: 0 auto; background-color: #f5f5f5;">
+            <table style="background-color: white; border-radius: 5px; padding: 20px;">
+                <div class="header">
+                    <div style="text-align: left; font-size: 20px; font-weight: 800;color: blue;">TOP JOB</div>
+                    <h2 >Thông báo trạng thái đơn ứng tuyển</h2>
+                </div>
+    
+                <div></div>
+                <div class="content">
+                    <div style="font-size: 16px;">Kính gửi <span th:text="${resume.nameUser}"></span></div>
+    
+                    <p>Cảm ơn bạn đã nộp ứng tuyển công việc <strong  th:text="${resume.jobName}"></strong> tại công ty <strong  th:text="${resume.companyName}"></strong>.</p>
+    
+                    <p>Chúng tôi muốn thông báo rằng trạng thái đơn ứng tuyển của bạn đã được cập nhật:</p>
+    
+                    <p>👉 <span class="status" th:text="${resume.message}"></span></p>
+    
+                    <p>Cảm ơn bạn đã quan tâm đến cơ hội việc làm tại công ty chúng tôi.</p>
+    
+                    <p>Trân trọng,<br />
+                    <strong  th:text="${resume.companyName}"></strong><br/>
+                    From Hr: <span th:text="${resume.emailHr}"></span></p>
+                </div>
+    
+                <div class="footer">
+                    Email này được gửi từ hệ thống TopJob - vui lòng không trả lời lại email này.
+                </div>
+            </table>
+            
+        </table>
+    </div>
+</body>
+</html>

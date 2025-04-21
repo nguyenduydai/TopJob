@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqLoginDTO;
+import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
 import com.nguyenduydai.TopJob.domain.response.ResLoginDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResCreateUserDTO;
 import com.nguyenduydai.TopJob.service.UserService;
@@ -81,9 +82,12 @@ public class AuthController {
 
     @GetMapping("/auth/account")
     @ApiMessage("fetch account")
-    public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() {
+    public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() throws IdInvalidException {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         User currUser = this.userService.handleGetUserByUsername(email);
+        if (currUser == null) {
+            throw new IdInvalidException("fetch account failed");
+        }
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         ResLoginDTO.UserGetAccount userGetAccount = new ResLoginDTO.UserGetAccount();
         if (currUser != null) {
@@ -147,16 +151,31 @@ public class AuthController {
                 deleteCookie.toString()).body(null);
     }
 
+    // @PostMapping("/auth/register")
+    // @ApiMessage("register user")
+    // public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User
+    // user) throws IdInvalidException {
+    // boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
+    // if (isEmailExist) {
+    // throw new IdInvalidException("email + " + user.getEmail() + " da ton tai");
+    // }
+    // String hashPassword = this.passwordEncoder.encode(user.getPassword());
+    // user.setPassword(hashPassword);
+    // User u = this.userService.handleCreateUser(user);
+    // return
+    // ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(u));
+    // }
     @PostMapping("/auth/register")
-    @ApiMessage("register user")
-    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user) throws IdInvalidException {
-        boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
-        if (isEmailExist) {
-            throw new IdInvalidException("email + " + user.getEmail() + " da ton tai");
+    @ApiMessage("create a register user")
+    public ResponseEntity<ResCreateUserDTO> register(@RequestBody ReqRegisterUserDTO postManUser)
+            throws IdInvalidException {
+        boolean emailExist = this.userService.isEmailExist(postManUser.getEmail());
+        if (emailExist) {
+            throw new IdInvalidException("Email " + postManUser.getEmail() + "da ton tai");
         }
-        String hashPassword = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashPassword);
-        User u = this.userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(u));
+        String hashPassword = this.passwordEncoder.encode(postManUser.getPassword());
+        postManUser.setPassword(hashPassword);
+        User user = this.userService.handleCreateRegisterUser(postManUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
     }
 }

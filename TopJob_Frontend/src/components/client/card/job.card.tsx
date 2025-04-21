@@ -1,4 +1,4 @@
-import { callFetchJob } from '@/config/api';
+import { callFetchJob ,callFetchJobByCompany} from '@/config/api';
 import { convertSlug, getLocationName } from '@/config/utils';
 import { IJob } from '@/types/backend';
 import { EnvironmentOutlined, ThunderboltOutlined } from '@ant-design/icons';
@@ -16,16 +16,17 @@ dayjs.extend(relativeTime);
 
 interface IProps {
     showPagination?: boolean;
+    companyId?:string|null;
 }
 
 const JobCard = (props: IProps) => {
-    const { showPagination = false } = props;
+    const { showPagination = false,companyId=null } = props;
 
     const [displayJob, setDisplayJob] = useState<IJob[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(8);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
@@ -64,13 +65,21 @@ const JobCard = (props: IProps) => {
 
             query += `&filter=${encodeURIComponent(q)}`;
         }
-
-        const res = await callFetchJob(query);
-        if (res && res.data) {
-            setDisplayJob(res.data.result);
-            setTotal(res.data.meta.total)
+        if(companyId===null){
+            const res = await callFetchJob(query);
+            if (res && res.data) {
+                setDisplayJob(res.data.result);
+                setTotal(res.data.meta.total)
+            }
+            setIsLoading(false);
+        } else{
+            const res = await callFetchJobByCompany(companyId,query);
+            if (res && res.data) {
+                setDisplayJob(res.data.result);
+                setTotal(res.data.meta.total)
+            }
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }
 
 
@@ -91,13 +100,13 @@ const JobCard = (props: IProps) => {
     }
 
     return (
-        <div className={`${styles["card-job-section"]}`}>
-            <div className={`${styles["job-content"]}`}>
+        <div className={`${styles["card-job-section"]}`} >
+            <div className={`${styles["job-content"]}`}  >
                 <Spin spinning={isLoading} tip="Loading...">
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}>Công Việc Mới Nhất</span>
+                                <span className={styles["title"]}> {companyId ?`Công ty hiện đang có ${total} công việc` :'Công Việc Mới Nhất'}</span>
                                 {!showPagination &&
                                     <Link to="job" className={styles["getAll"]}>Xem tất cả</Link>
                                 }
@@ -107,7 +116,7 @@ const JobCard = (props: IProps) => {
                         {displayJob?.map(item => {
                             return (
                                 <Col span={24} md={12} key={item.id}>
-                                    <Card size="small" title={null} hoverable
+                                    <Card size="small" title={null} hoverable className={styles["card-job-card"]}
                                         onClick={() => handleViewDetailJob(item)}
                                     >
                                         <div className={styles["card-job-content"]}>
@@ -124,7 +133,6 @@ const JobCard = (props: IProps) => {
                                                 <div className={styles["job-updatedAt"]}>{item.updatedAt ? dayjs(item.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
                                             </div>
                                         </div>
-
                                     </Card>
                                 </Col>
                             )

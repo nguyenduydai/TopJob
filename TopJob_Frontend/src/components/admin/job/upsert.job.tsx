@@ -11,9 +11,18 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { CheckSquareOutlined } from "@ant-design/icons";
 import enUS from 'antd/lib/locale/en_US';
-import dayjs from 'dayjs';
 import { IJob, ISkill } from "@/types/backend";
+import { useRef } from 'react';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
+import 'dayjs/locale/en'; // hoặc 'en' tùy bạn
 
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.locale('en');
+dayjs.extend(customParseFormat);
 interface ISkillSelect {
     label: string;
     value: string;
@@ -32,7 +41,8 @@ const ViewUpsertJob = (props: any) => {
     const id = params?.get("id"); // job id
     const [dataUpdate, setDataUpdate] = useState<IJob | null>(null);
     const [form] = Form.useForm();
-
+    const inputRef = useRef<any>(null);
+    const clearIconSelector = '.ant-picker-clear';
     useEffect(() => {
         const init = async () => {
             const temp = await fetchSkillList();
@@ -61,12 +71,15 @@ const ViewUpsertJob = (props: any) => {
                     })
                     form.setFieldsValue({
                         ...res.data,
+                        startDate: dayjs(res.data.startDate, "YYYY-MM-DD hh:mm:ss A"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
+                        endDate: dayjs(res.data.endDate, "YYYY-MM-DD hh:mm:ss A"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
                         company: {
                             label: res.data.company?.name as string,
                             value: `${res.data.company?.id}@#$${res.data.company?.logo}` as string,
                             key: res.data.company?.id
                         },
-                        skills: temp
+                        skills: temp,
+                       
                     })
                 }
             }
@@ -115,7 +128,7 @@ const ViewUpsertJob = (props: any) => {
             } else {
                 arrSkills = values?.skills?.map((item: any) => { return { id: +item } });
             }
-
+            console.log('chay voa day');
             const job = {
                 name: values.name,
                 skills: arrSkills,
@@ -129,10 +142,10 @@ const ViewUpsertJob = (props: any) => {
                 quantity: values.quantity,
                 level: values.level,
                 description: value,
+
                 startDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.startDate) ? dayjs(values.startDate, 'DD/MM/YYYY').toDate() : values.startDate,
                 endDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.endDate) ? dayjs(values.endDate, 'DD/MM/YYYY').toDate() : values.endDate,
                 active: values.active,
-
             }
 
             const res = await callUpdateJob(job, dataUpdate.id);
@@ -183,16 +196,17 @@ const ViewUpsertJob = (props: any) => {
 
     return (
         <div className={styles["upsert-job-container"]}>
+            <h2>{dataUpdate?.id ?"Cập nhật việc làm" :"Thêm việc làm mới"}</h2>
             <div className={styles["title"]}>
                 <Breadcrumb
                     separator=">"
                     items={[
                         {
-                            title: <Link to="/admin/job">Manage Job</Link>,
+                            title: <Link to="/admin/job">Quản lý công việc</Link>,
                         },
                         {
-                            title: 'Upsert Job',
-                        },
+                            title: <>{dataUpdate?.id ?"Cập nhật việc làm" :"Thêm việc làm mới"}</> ,
+                        }
                     ]}
                 />
             </div>
@@ -218,6 +232,7 @@ const ViewUpsertJob = (props: any) => {
                     >
                         <Row gutter={[20, 20]}>
                             <Col span={24} md={12}>
+
                                 <ProFormText
                                     label="Tên Job"
                                     name="name"
@@ -317,31 +332,39 @@ const ViewUpsertJob = (props: any) => {
                         </Row>
                         <Row gutter={[20, 20]}>
                             <Col span={24} md={6}>
-                                <ProFormDatePicker
+                                    <ProFormDatePicker 
                                     label="Ngày bắt đầu"
                                     name="startDate"
-                                    normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
+                                    //normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
-
+                                        inputReadOnly: true,
+                                        onClick: () => {
+                                            form.setFieldsValue({ startDate: null }); 
+                                          }
                                     }}
-                                    rules={[{ required: true, message: 'Vui lòng chọn ngày cấp' }]}
+                                    rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
                                     placeholder="dd/mm/yyyy"
                                 />
+                            
                             </Col>
                             <Col span={24} md={6}>
                                 <ProFormDatePicker
                                     label="Ngày kết thúc"
                                     name="endDate"
-                                    normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
+                                    //normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
-
+                                        inputReadOnly: true,
+                                        onClick: () => {
+                                            form.setFieldsValue({ startDate: null }); 
+                                          }
                                     }}
                                     // width="auto"
-                                    rules={[{ required: true, message: 'Vui lòng chọn ngày cấp' }]}
+                                    rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc' }]}
                                     placeholder="dd/mm/yyyy"
                                 />
+                                
                             </Col>
                             <Col span={24} md={6}>
                                 <ProFormSwitch

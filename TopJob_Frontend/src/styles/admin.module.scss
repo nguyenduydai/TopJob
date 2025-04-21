@@ -8,6 +8,7 @@
     .title {
         padding: 10px 0 20px 0;
     }
+  
 }
 .layout-admin{
     // .icon-robotadmin{
@@ -16,16 +17,44 @@
     .hiden{
         display: none;
     }
+    //background-color:aqua;
 }
-.videoDashboard{
-    position:absolute;
-    //     top:0;
-    //     left: 0;
-    //z-index:-1;
-    width: 85.5%;
-    //object-fit:cover;
-    video{  
-        width: 100%;
+.dashboard{
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    gap:8px;
+
+    .dashboard-center{
+        width:800px;
+        margin:auto;
+        .dashboard-header{
+       
+            display: flex;
+            justify-content:space-between;
+            span{
+                text-align: center;
+                color: #1677ff;
+                font-size:medium;
+                font-weight: bold;
+                animation: pulse 3s infinite; /* Thêm animation */
+                &:hover{
+                    color:cyan !important;
+                    cursor: pointer;
+                }
+            }
+    
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); color: #000; } /* Màu thay đổi trong quá trình tăng */
+                100% { transform: scale(1); color: #1677ff; } /* Trở về trạng thái ban đầu */
+            }
+        }
+        .dashboard-footer{
+            margin-top: 40px;
+            font-size:16px;
+            text-align: center;
+        }
     }
+   
 }
-.buttonDashboard{}

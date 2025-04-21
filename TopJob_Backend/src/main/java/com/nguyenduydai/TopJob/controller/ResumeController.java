@@ -55,8 +55,11 @@ public class ResumeController {
     @ApiMessage("create a Resume")
     public ResponseEntity<ResCreateResumeDTO> createResume(@Valid @RequestBody Resume resume)
             throws IdInvalidException {
-        if (!this.resumeService.checkResumeExistByUserAndJob(resume)) {
-            throw new IdInvalidException("user or Job not exists");
+        if (!this.resumeService.checkHaveUserAndJob(resume)) {
+            throw new IdInvalidException("Người dùng hoặc công việc không tồn tại");
+        }
+        if (this.resumeService.checkResumeExist(resume)) {
+            throw new IdInvalidException("Bạn đã ứng tuyển công việc này rồi");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.resumeService.handleCreateResume(resume));
     }

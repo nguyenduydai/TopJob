@@ -41,13 +41,15 @@ public class JobService {
     private final SkillRepository skillRepository;
     private final CompanyRepository companyRepository;
     private final UserService userService;
+    private final CompanyService companyService;
 
     public JobService(JobRepository jobRepository, SkillRepository skillRepository,
-            CompanyRepository companyRepository, UserService userService) {
+            CompanyRepository companyRepository, UserService userService, CompanyService companyService) {
         this.skillRepository = skillRepository;
         this.jobRepository = jobRepository;
         this.companyRepository = companyRepository;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     public ResCreateJobDTO handleCreateJob(Job j) {
@@ -130,6 +132,29 @@ public class JobService {
         } else {
             Specification<Job> jobInSpec = filterSpecificationConverter.convert(fb.field("company")
                     .in(fb.input(userCompany.getId())).get());
+            finalSpec = jobInSpec.and(spec);
+        }
+        Page<Job> page = this.jobRepository.findAll(finalSpec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+        mt.setPage(page.getNumber() + 1);
+        mt.setPageSize(page.getSize());
+        mt.setPages(page.getTotalPages());
+        mt.setTotal(page.getTotalElements());
+        rs.setMeta(mt);
+        rs.setResult(page.getContent());
+        return rs;
+    }
+
+    public ResultPaginationDTO fetchAllJobByCompany(long id, Specification<Job> spec, Pageable pageable) {
+        // query builder
+        Company cOptional = this.companyService.fetchCompanyById(id);
+        Specification<Job> finalSpec = null;
+        if (cOptional == null) {
+            finalSpec = spec;
+        } else {
+            Specification<Job> jobInSpec = filterSpecificationConverter.convert(fb.field("company")
+                    .in(fb.input(id)).get());
             finalSpec = jobInSpec.and(spec);
         }
         Page<Job> page = this.jobRepository.findAll(finalSpec, pageable);

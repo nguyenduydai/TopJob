@@ -17,6 +17,7 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqChangePasswordDTO;
+import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResCreateUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUpdateUserDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUserDTO;

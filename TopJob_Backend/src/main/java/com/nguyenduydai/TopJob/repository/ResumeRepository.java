@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long>, JpaSpecificationExecutor<Resume> {
-
+    boolean existsByUserIdAndJobId(long userId, long jobId);
 }

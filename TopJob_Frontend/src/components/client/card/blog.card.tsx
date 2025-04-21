@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from 'styles/client.module.scss';
-
+import parse from 'html-react-parser';
 interface IProps {
     showPagination?: boolean;
 }
@@ -66,44 +66,42 @@ const BlogCard = (props: IProps) => {
     }
 
     return (
-        <div className={`${styles["blog-section"]}`}>
-            <div className={styles["blog-content"]}>
+        <div className={`${styles["card-job-section"]}`}>
+            <div className={styles["job-content"]}>
                 <Spin spinning={isLoading} tip="Loading...">
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <h2 style={{ marginBottom:50, marginTop:20 }}>Tin tức công nghệ được yêu thích nhất</h2>
+                                <h2 style={{ marginBottom:30, marginTop:50 }}>Tin Tức Công Nghệ Được Yêu Thích Nhất</h2>
                                 {!showPagination &&
-                                    <Link to="blog"  className={styles["getAll"]}>Xem tất cả</Link>
+                                    <Link to="blog"  className={styles["getAll"]} style={{ marginBottom:30, marginTop:50 }}>Xem tất cả</Link>
                                 }
                             </div>
                         </Col>
 
                         {displayBlog?.map(item => {
                             return (
-                                <Col span={24} md={12} key={item.id} >
+                                <Col span={24} md={24} key={item.id} >
                                     <Card 
-                                    
+                                        className={styles["card-job-card"]}
                                         onClick={() => handleViewDetailBlog(item)}
-                                        style={{ height: 200 }}
+                                        style={{ height: 150 }}
                                         hoverable
                                         cover={
                                             <div className={styles["card-customize"]} style={{ display:"flex" }}>
                                                 <img
-                                                    style={{ maxWidth: "180px" }}
+                                                    style={{ maxWidth:150,maxHeight:150, borderRadius: 12} }
                                                     alt="example"
                                                     src={`${import.meta.env.VITE_BACKEND_URL}/storage/blog/${item?.thumbnail}`}
                                                 />
                                                 <div>   
                                                     <h3 style={{ textAlign: "center" }}>{item.title}</h3>
-                                                <div style={{ textAlign: "center", marginTop:10}}>Lượt thích : {item.likeCount} <HeartOutlined style={{color:"#ff0000" }}/></div>
-                                            </div>
+                                                    <div style={{ marginLeft:10}}>{parse(item.content?.substring(0,250)?? "")}</div>
+                                                    <div style={{ textAlign: "center", marginTop:10}}>Lượt thích : {item.likeCount} <HeartOutlined style={{color:"#ff0000" }}/></div>
+                                                </div>
                                             </div>
                                         }
                                     >
-   
-
-
                                     </Card>
                                 </Col>
                             )

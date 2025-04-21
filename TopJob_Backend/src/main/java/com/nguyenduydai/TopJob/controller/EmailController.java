@@ -3,10 +3,16 @@ package com.nguyenduydai.TopJob.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.nguyenduydai.TopJob.domain.entity.Resume;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.service.EmailService;
+import com.nguyenduydai.TopJob.service.ResumeService;
 import com.nguyenduydai.TopJob.service.SubscriberService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 
@@ -14,22 +20,35 @@ import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 @RequestMapping("/api/v1")
 public class EmailController {
     private final SubscriberService subscriberService;
+    private final ResumeService resumeService;
     private final EmailService emailService;
 
-    public EmailController(SubscriberService subscriberService, EmailService emailService) {
+    public EmailController(SubscriberService subscriberService, EmailService emailService,
+            ResumeService resumeService) {
+        this.resumeService = resumeService;
         this.subscriberService = subscriberService;
         this.emailService = emailService;
     }
 
-    @GetMapping("/email")
+    @GetMapping("/email/job")
     @ApiMessage("send simple email")
     // @Scheduled(cron = "*/30 * * * * *")
-    // @Transactional
-    public ResponseEntity<String> sendSimpleEmail() {
+    @Transactional
+    public ResponseEntity<ResString> sendSimpleEmail() {
         // this.emailService.sendEmailSync("nguyenduydai5588@gmail.com", "test",
         // "<b>test send email</b>", false, true);
         this.subscriberService.sendSubscriberEmailJobs();
-        return ResponseEntity.status(HttpStatus.OK).body("send email ok");
+        ResString res = new ResString("send email ok");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @GetMapping("/email/resume/{id}")
+    @ApiMessage("send simple email status resume")
+    @Transactional
+    public ResponseEntity<ResString> sendSimpleEmailResume(@PathVariable("id") long id) {
+        this.resumeService.sendEmailStatusResume(id);
+        ResString res = new ResString("send email status resume ok");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
 }

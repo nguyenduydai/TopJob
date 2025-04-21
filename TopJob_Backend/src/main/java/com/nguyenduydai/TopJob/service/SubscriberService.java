@@ -1,6 +1,8 @@
 package com.nguyenduydai.TopJob.service;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -10,8 +12,8 @@ import org.springframework.stereotype.Service;
 import com.nguyenduydai.TopJob.domain.entity.Job;
 import com.nguyenduydai.TopJob.domain.entity.Skill;
 import com.nguyenduydai.TopJob.domain.entity.Subscriber;
-import com.nguyenduydai.TopJob.domain.response.ResEmailJob;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
+import com.nguyenduydai.TopJob.domain.response.email.ResEmailJob;
 import com.nguyenduydai.TopJob.repository.JobRepository;
 import com.nguyenduydai.TopJob.repository.SkillRepository;
 import com.nguyenduydai.TopJob.repository.SubscriberRepository;
@@ -46,6 +48,7 @@ public class SubscriberService {
             List<Skill> listSkill = this.skillRepository.findByIdIn(idSkills);
             subscriberInDb.setSkills(listSkill);
         }
+        subscriberInDb.setEmail(subscriber.getEmail());
         return this.subscriberRepository.save(subscriberInDb);
     }
 
@@ -104,8 +107,8 @@ public class SubscriberService {
     public ResEmailJob convertJobToSendEmailJob(Job job) {
         ResEmailJob res = new ResEmailJob();
         res.setName(job.getName());
-        res.setSalary(job.getSalary());
-        res.setCompany(new ResEmailJob.CompanyEmail(job.getCompany().getName()));
+        res.setSalary("Lương: " + formatSalary(job.getSalary()) + " VNĐ");
+        res.setCompany("Công ty: " + (job.getCompany().getName()));
         List<Skill> skills = job.getSkills();
         List<ResEmailJob.SkillEmail> s = skills.stream().map(skill -> new ResEmailJob.SkillEmail(skill.getName()))
                 .collect(Collectors.toList());
@@ -116,4 +119,10 @@ public class SubscriberService {
     public Subscriber findByEmail(String email) {
         return this.subscriberRepository.findByEmail(email);
     }
+
+    public String formatSalary(double salary) {
+        NumberFormat formatter = NumberFormat.getInstance(Locale.US);
+        return formatter.format(salary);
+    }
+
 }

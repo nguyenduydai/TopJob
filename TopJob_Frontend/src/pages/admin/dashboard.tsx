@@ -1,12 +1,42 @@
-import { Button, Card, Col, Row, Statistic } from "antd";
+import { Button, Card, Col, Divider, Row, Statistic } from "antd";
 import CountUp from 'react-countup';
 import videoHomeHrpage from '../../assets/video-homepage.mp4';
 import styles from 'styles/admin.module.scss';
 import { useAppSelector } from "@/redux/hooks";
 import { useEffect, useState } from "react";
 import { callFetchCompanyById } from "@/config/api";
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+import a1 from '../../assets/layoutadmin1.jpg';
+import a2 from '../../assets/layoutadmin2.jpg';
+import a3 from '../../assets/layoutadmin7.jpg';
+import a4 from '../../assets/layoutadmin4.jpg';
+import a5 from '../../assets/layoutadmin5.jpg';
+import a8 from '../../assets/layoutadmin8.jpg';
+import a9 from '../../assets/layoutadmin9.jpg';
+import { useNavigate } from "react-router-dom";
 const DashboardPage = () => {
+    const navigate = useNavigate();
+    const gotoJob=()=>{
+        navigate('/admin/job/upsert');
+    }
+    const gotoCompany=()=>{
+        navigate('/admin/company');
+    }
+    const gotoResume=()=>{
+        navigate('/admin/resume');
+    }
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000
+      };
+      const images = [a5,a1,a2,a4,a3];
     const formatter = (value: number | string) => {
         return (
             <CountUp end={Number(value)} separator="," />
@@ -110,17 +140,32 @@ const DashboardPage = () => {
                 </Row>
                 <Button type="primary" style={{marginLeft:1135,marginTop:30}} >Xuất báo cáo thống kê</Button>
             </>:
-            <div>
-                
-                <div className={`${styles["videoDashboard"]}`}>
-                    <video autoPlay muted loop>
-                        <source src={videoHomeHrpage}
-                                type = "video/mp4"  
-                        />
-                    </video>
-                    <Button  className={`${styles["buttonDashboard"]}`}>Nâng cấp tài khoản để thực hiện nhiều tính năng hơn</Button>
-                </div>
-            </div>
+                 <div className={`${styles["dashboard"]}`}>     
+                   <img src={a8} alt="left" style={{ width: 200, height: 675, objectFit: 'cover', borderRadius: 8 }} />
+                    <div className={`${styles["dashboard-center"]}`}>
+                        <div className={`${styles["dashboard-header"]}`}>
+                            <span onClick={()=>gotoJob()}>Đăng tin tuyển dụng ngay</span> 
+                            <span onClick={()=>gotoCompany()}>Cập nhật hồ sơ công ty</span>
+                            <span onClick={()=>gotoResume()}>Xem các đơn ứng tuyển</span>   
+                        </div>
+                        <Divider/>
+                        <Slider {...settings}>
+                        {images.map((img, index) => (
+                            <div key={index}>
+                            <img
+                                src={img}
+                                alt={`slide-${index}`}
+                                style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
+                            />   
+                            </div>
+                        ))}
+                        </Slider>
+                        <div className={`${styles["dashboard-footer"]}`}>Tuyển Dụng IT cùng TopJob - Tối Ưu Chi Phí, Tối Đa Hỗ Trợ</div>
+                    </div>
+                    <img src={a9} alt="right" style={{ width: 200, height: 675, objectFit: 'cover', borderRadius: 8 }} />
+
+                    
+               </div>
         }
 
        </>

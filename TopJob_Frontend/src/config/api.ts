@@ -5,8 +5,11 @@ import axios from 'config/axios-customize';
  * 
 Module Auth
  */
-export const callRegister = (name: string, email: string, password: string, age: number, gender: string, address: string) => {
-    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
+// export const callRegister = (name: string, email: string, password: string, age: number, gender: string, address: string) => {
+//     return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
+// }
+export const callRegister = (name: string,phone:string, email: string, password: string|undefined, companyName: string|null,companyAddress:string,roleId:number, age: number, gender: string|null, address: string) => {
+    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address })
 }
 
 export const callLogin = (username: string, password: string) => {
@@ -143,6 +146,10 @@ export const callFetchJobById = (id: string) => {
 export const callFetchJobAdmin = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobsadmin?${query}`);
 }
+export const callFetchJobByCompany = (companyId:string,query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobsbycompany/${companyId}?${query}`);
+}
+
 /**
  * 
 Module Resume
@@ -280,4 +287,16 @@ export const callFetchAllBlog  = (query: string) => {
 
 export const callFetchBlogById = (id: string) => {
     return axios.get<IBackendRes<IBlog>>(`/api/v1/blogs/${id}`);
+}
+
+/**
+ * 
+Module Email
+ */
+
+export const callsendEmailJob =()  => {
+    return axios.get<IBackendRes<IString>>('/api/v1/email/job');
+}
+export const callsendEmailResume =(id: string)  => {
+    return axios.get<IBackendRes<IString>>(`/api/v1/email/resume/${id}`);
 }

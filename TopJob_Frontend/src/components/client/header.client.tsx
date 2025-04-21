@@ -66,7 +66,7 @@ const Header = (props: any) => {
 
     const handleLogout = async () => {
         const res = await callLogout();
-        if (res && res && +res.statusCode === 200) {
+        if (res && +res.statusCode === 200) {
             dispatch(setLogoutAction({}));
             message.success('Đăng xuất thành công');
             navigate('/')
@@ -82,13 +82,13 @@ const Header = (props: any) => {
             key: 'manage-account',
             icon: <ContactsOutlined />
         },
-        ...(user.role?.permissions?.length ? [{
-            label: <Link
-                to={"/admin"}
-            >Trang Quản Trị</Link>,
-            key: 'admin',
-            icon: <FireOutlined />
-        },] : []),
+        // ...(user.role?.permissions?.length ? [{
+        //     label: <Link
+        //         to={"/admin"}
+        //     >Trang Quản Trị</Link>,
+        //     key: 'admin',
+        //     icon: <FireOutlined />
+        // },] : []),
 
         {
             label: <label
@@ -131,11 +131,14 @@ const Header = (props: any) => {
                                 </ConfigProvider>
                                 <div className={styles['extra']}>
                                     {isAuthenticated === false ?
-                                        <Link to={'/login'}>Đăng Nhập</Link>
+                                        <div  className={styles['extra-login']}>
+                                            <Link className={styles['extra-login-hr']}  to={'/registerhr'}>Bạn là nhà tuyển dụng?</Link>
+                                            <Link to={'/login?user=candidate'}>Đăng Nhập</Link>
+                                        </div>
                                         :
                                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                             <Space style={{ cursor: "pointer" }}>
-                                                <span>Welcome {user?.name}</span>
+                                                <span>Xin chào {user?.name}</span>
                                                 {/* <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar> */}
                                                
                                                 <Avatar className={styles['avatar']}> 

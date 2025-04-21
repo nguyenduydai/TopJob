@@ -61,7 +61,7 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
             sorter: true,
         },
@@ -72,21 +72,21 @@ const UserPage = () => {
         },
 
         {
-            title: 'Role',
+            title: 'Vai trò',
             dataIndex: ["role", "name"],
             sorter: true,
             hideInSearch: true
         },
 
         {
-            title: 'Company',
+            title: 'Công ty',
             dataIndex: ["company", "name"],
             sorter: true,
             hideInSearch: true
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -98,7 +98,7 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày sửa',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -111,7 +111,7 @@ const UserPage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (

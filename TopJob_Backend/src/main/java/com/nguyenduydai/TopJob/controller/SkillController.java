@@ -56,7 +56,7 @@ public class SkillController {
     public ResponseEntity<String> deleteSkill(@PathVariable("id") long id) throws IdInvalidException {
         Skill currSkill = this.skillService.fetchSkillById(id);
         if (currSkill == null)
-            throw new IdInvalidException("skill id = " + currSkill.getId() + "khong ton tai");
+            throw new IdInvalidException("skill id = " + id + "khong ton tai");
         this.skillService.handleDeleteSkill(id);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted skill");
     }

@@ -38,19 +38,20 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register",
-                "/api/v1/auth/logout",
-                "/api/v1/auth/account", "/storage/**", "/api/v1/email/**", "/v3/api-docs/**", "/swagger-ui/**",
-                "/swagger-ui.html" };
+        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh",
+                "/api/v1/auth/register", "/api/v1/auth/logout", "/api/v1/auth/account",
+                "/api/v1/email/**", "/storage/**",
+                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz.requestMatchers(whiteList).permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/companies/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/jobs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/blogs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/skills/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobsbycompany/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").permitAll()
                                 .anyRequest().authenticated())
