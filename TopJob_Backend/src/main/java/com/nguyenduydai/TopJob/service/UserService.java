@@ -95,6 +95,8 @@ public class UserService {
                 Role r = this.roleService.fetchRoleById(user.getRole().getId());
                 u.setRole(r != null ? r : null);
             }
+            if (user.getCv() != null || user.getCv().equals(""))
+                u.setCv(user.getCv());
             u = this.userRepository.save(u);
         }
         return u;
@@ -184,6 +186,7 @@ public class UserService {
         res.setExperience(user.getExperience());
         res.setEducation(user.getEducation());
         res.setPhone(user.getPhone());
+        res.setCv(user.getCv());
         return res;
     }
 

@@ -5,12 +5,14 @@ import JobCard from '@/components/client/card/job.card';
 
 const ClientJobPage = (props: any) => {
     return (
-        <div className={styles["container"]} style={{ marginTop: 20 }}>
+        <div className={`${styles["container"]} ${styles["modal-infor"]}`} >
             <Row gutter={[20, 20]}>
                 <Col span={24}>
+                    <div style={{marginTop:30,marginLeft:110}}>
                     <SearchClient />
+                    </div>
                 </Col>
-                <Divider />
+                {/* <Divider /> */}
 
                 <Col span={24}>
                     <JobCard

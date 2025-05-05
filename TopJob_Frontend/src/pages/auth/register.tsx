@@ -5,7 +5,7 @@ import { callRegister } from 'config/api';
 import styles from 'styles/auth.module.scss';
 import { IUser, IUserRegister } from '@/types/backend';
 const { Option } = Select;
-import auser from '../../assets/auser.jpg';
+import auser from '../../assets/auser.png';
 
 
 const RegisterPage = () => {
@@ -20,13 +20,9 @@ const RegisterPage = () => {
         let roleId=+3;
         let gender=null;
         setIsSubmit(true);
-        // const res = await callRegister(name, phone,email, password,companyName, companyAddress,roleId,age,gender,address );
-        // const { name, email, password, age, gender, address } = values;
-        
-        setIsSubmit(true);
         const res = await callRegister(name,phone, email, password,companyName, companyAddress,roleId, +age, gender, address);
         setIsSubmit(false);
-        if (res?.data?.id) {
+        if (res?.data) {
             message.success('Đăng ký tài khoản thành công!');
             navigate('/login?user=candidate')
         } else {
@@ -37,13 +33,14 @@ const RegisterPage = () => {
                 duration: 5
             })
         }
+        
     };
         
 
     return (
         <div className={styles["register-page"]} >
 
-            <main className={styles.main} style={{backgroundColor:'#fcf4e6'}}>
+            <main className={styles.main} style={{backgroundColor:'#beebf6'}}>
                 <div className={styles.container} >
                         <div  className={` ${styles["user-left"]}`}>
                             <h3>Tìm việc làm nhanh 24h, việc làm mới nhất trên toàn quốc</h3>

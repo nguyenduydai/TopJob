@@ -19,6 +19,7 @@ import enUS from 'antd/lib/locale/en_US';
 interface ICompanyForm {
     name: string;
     address: string;
+    website:string
 }
 
 interface ICompanyLogo {
@@ -49,7 +50,7 @@ const CompanyPage = () => {
         const [value, setValue] = useState<string>("");
         const [form] = Form.useForm();
             const submitCompany = async (valuesForm: ICompanyForm) => {
-                const { name, address } = valuesForm;
+                const { name, address,website } = valuesForm;
         
                 if (dataLogo.length === 0) {
                     message.error('Vui lòng upload ảnh Logo')
@@ -58,7 +59,7 @@ const CompanyPage = () => {
         
                 if (dataInit?.id) {
                     //update
-                    const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name);
+                    const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name);
                     if (res.data) {
                         message.success("Cập nhật company thành công");
                         handleReset();
@@ -71,7 +72,7 @@ const CompanyPage = () => {
                     }
                 } else {
                     //create
-                    const res = await callCreateCompany(name, address, value, dataLogo[0].name);
+                    const res = await callCreateCompany(name, address,website, value, dataLogo[0].name);
                     if (res.data) {
                         message.success("Thêm mới company thành công");
                         handleReset();
@@ -292,14 +293,14 @@ const CompanyPage = () => {
                             okText="Xác nhận"
                             cancelText="Hủy"
                         >
-                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
                                     style={{
                                         fontSize: 20,
                                         color: '#ff4d4f',
                                     }}
                                 />
-                            </span>
+                        </span>
                         </Popconfirm>
                     </Access>
                 </Space >
@@ -374,11 +375,11 @@ const CompanyPage = () => {
                         scroll={{ x: true }}
                         pagination={
                             {
-                                current: meta.page,
-                                pageSize: meta.pageSize,
+                                current: meta.page, 
+                                pageSize: meta.pageSize,    
                                 showSizeChanger: true,
                                 total: meta.total,
-                                showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                                showTotal: (total, range) => { return (<div style={{color:'#a7a7a7'}}>STT {range[0]} -&gt; {range[1]}</div>) }
                             }
                         }
                         rowSelection={false}
@@ -417,7 +418,7 @@ const CompanyPage = () => {
             // setDataInit={setDataInit}
             // /> 
             <div>
-                <h2>Thông tin công ty</h2>
+                <h2 style={{textAlign:'center'}}>Thông tin công ty</h2>
                 <ProForm
                     form={form}
                     onFinish={submitCompany}
@@ -492,9 +493,9 @@ const CompanyPage = () => {
                         </Form.Item>
                     </Col>
             
-                    <Col span={16}>
+                    <Col span={8}>
                         <ProFormTextArea
-                        label="Địa chỉ"
+                        label="Địa chỉ công ty"
                         name="address"
                         rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
                         placeholder="Nhập địa chỉ công ty"
@@ -503,7 +504,17 @@ const CompanyPage = () => {
                         }}
                         />
                     </Col>
-            
+                    <Col span={8}>
+                        <ProFormTextArea
+                        label="Website công ty"
+                        name="website"
+                        rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
+                        placeholder="Nhập website công ty"
+                        fieldProps={{
+                            autoSize: { minRows: 4 }
+                        }}
+                        />
+                    </Col>
                     <ProCard
                         title="Miêu tả"
                         headStyle={{ color: "#d81921" }}

@@ -4,6 +4,7 @@ package com.nguyenduydai.TopJob.controller;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Permission;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.PermissionService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -58,12 +59,13 @@ public class PermissionController {
 
     @DeleteMapping("/permissions/{id}")
     @ApiMessage("delete Permission")
-    public ResponseEntity<String> deletePermission(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deletePermission(@PathVariable("id") long id) throws IdInvalidException {
         Permission currPermission = this.permissionService.fetchPermissionById(id);
         if (currPermission == null)
             throw new IdInvalidException("Permission id = " + currPermission.getId() + "khong ton tai");
         this.permissionService.handleDeletePermission(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Permission");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/permissions/{id}")

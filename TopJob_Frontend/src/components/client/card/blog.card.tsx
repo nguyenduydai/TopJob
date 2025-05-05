@@ -71,8 +71,8 @@ const BlogCard = (props: IProps) => {
                 <Spin spinning={isLoading} tip="Loading...">
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
-                            <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <h2 style={{ marginBottom:30, marginTop:50 }}>Tin Tức Công Nghệ Được Yêu Thích Nhất</h2>
+                            <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>  
+                                <h2  className={styles["card-blog-title"]}>Tin Tức Công Nghệ Được Yêu Thích Nhất</h2>
                                 {!showPagination &&
                                     <Link to="blog"  className={styles["getAll"]} style={{ marginBottom:30, marginTop:50 }}>Xem tất cả</Link>
                                 }
@@ -97,7 +97,7 @@ const BlogCard = (props: IProps) => {
                                                 <div>   
                                                     <h3 style={{ textAlign: "center" }}>{item.title}</h3>
                                                     <div style={{ marginLeft:10}}>{parse(item.content?.substring(0,250)?? "")}</div>
-                                                    <div style={{ textAlign: "center", marginTop:10}}>Lượt thích : {item.likeCount} <HeartOutlined style={{color:"#ff0000" }}/></div>
+                                                    <div style={{ textAlign: "center", marginTop:10}}>Lượt thích : {item.likeCount} <HeartOutlined/></div>
                                                 </div>
                                             </div>
                                         }
@@ -124,7 +124,7 @@ const BlogCard = (props: IProps) => {
                                 responsive
                                 onChange={(p: number, s: number) => handleOnchangePage({ current: p, pageSize: s })}
                             />
-                            <div style={{ marginBottom: 50 }}></div>
+                            <div style={{ marginBottom: 80 }}></div>
                         </Row>
                     </>}
                 </Spin>

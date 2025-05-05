@@ -43,6 +43,7 @@ public class CompanyService {
             c.setName(company.getName());
             c.setAddress(company.getAddress());
             c.setLogo(company.getLogo());
+            c.setWebsite(company.getWebsite());
             c = this.companyRepository.save(c);
         }
         return c;

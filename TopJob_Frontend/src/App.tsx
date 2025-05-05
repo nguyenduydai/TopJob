@@ -39,6 +39,8 @@ import TalentCandidatePage from './pages/admin/talentcandidate';
 import FooterComponent from 'components/client/footer.client';
 import ClientBlogDetailPage from './pages/blog/detail';
 import RegisterHrPage from './pages/auth/register.hr';
+import TalentCandidateForJob from './components/admin/talentcandidate/talentCandidateForJob';
+import AccountupgradePage from './pages/admin/accountupgrade';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -171,11 +173,25 @@ export default function App() {
         },
         {
           path: "talentcandidate",
+          children: [
+            {
+              index: true,
+              element: <ProtectedRoute><TalentCandidatePage/></ProtectedRoute>
+            },
+            {
+              path: "forjob",
+              element:<ProtectedRoute><TalentCandidateForJob /></ProtectedRoute>
+            }
+          ]
+         
+        },
+        {
+          path: "accountupgrade",
           element:
             <ProtectedRoute>
-              <TalentCandidatePage />
+              <AccountupgradePage />
             </ProtectedRoute>
-        }
+        },
       ],
     },
 

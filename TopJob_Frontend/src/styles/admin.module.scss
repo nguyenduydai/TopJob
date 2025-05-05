@@ -14,10 +14,26 @@
     // .icon-robotadmin{
     //     font-size: 20px;
     // }
-    .hiden{
-        display: none;
+
+    .menu {
+        background-image: url("../assets/ahr.jpg"); /* Thay đổi đường dẫn tới ảnh của bạn */
+        background-size: cover; /* Đảm bảo ảnh bao phủ toàn bộ thẻ */
+        background-position:630px 65px; /* Căn giữa ảnh */
+        .ant-menu{
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #000;
+            font-weight: 799;
+            height: 100%;
+        }
+       
     }
-    //background-color:aqua;
+    .slogan{
+        line-height: 55px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
 }
 .dashboard{
     display:flex;

@@ -21,8 +21,18 @@ public class BlogService {
         return this.blogRepository.save(c);
     }
 
-    public Blog handleUpdateBlog(Blog Blog) {
-        return this.blogRepository.save(Blog);
+    public Blog handleUpdateBlog(Blog blog) {
+        Blog blogInDb = this.fetchBlogById(blog.getId());
+        if (blog.getContent() != null)
+            blogInDb.setContent(blog.getContent());
+        if (blog.getThumbnail() != null)
+            blogInDb.setThumbnail(blog.getThumbnail());
+        if (blog.getTitle() != null)
+            blogInDb.setTitle(blog.getTitle());
+        if (blog.getLikeCount() != -1)
+            blogInDb.setLikeCount(blog.getLikeCount());
+
+        return this.blogRepository.save(blogInDb);
     }
 
     public void handleDeleteBlog(long id) {

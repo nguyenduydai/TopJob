@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Blog;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.BlogService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -56,12 +57,13 @@ public class BlogController {
 
     @DeleteMapping("/blogs/{id}")
     @ApiMessage("delete blog")
-    public ResponseEntity<String> deleteBlog(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteBlog(@PathVariable("id") long id) throws IdInvalidException {
         Blog currBlog = this.blogService.fetchBlogById(id);
         if (currBlog == null)
             throw new IdInvalidException("blog id = " + currBlog.getId() + "khong ton tai");
         this.blogService.handleDeleteBlog(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted blog");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/blogs/{id}")

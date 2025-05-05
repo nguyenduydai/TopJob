@@ -26,6 +26,28 @@ export const LOCATION_LIST =
         { label: "Others", value: "OTHER" },
     ];
 
+    export const EDUCATION_LIST =
+    [
+        { label: "Trung học", value: "HIGH_SCHOOL" },
+        { label: "Đại học", value: "BACHELOR" },
+        { label: "Thạc sĩ", value: "MASTER" },
+        { label: "Khác", value: "OTHER" },
+    ];
+    export const EXPERIENCE_LIST =
+    [
+        { label: "0 năm kinh nghiệm", value: "0 YEARS" },
+        { label: "1 năm kinh nghiệm", value: "1 YEARS" },
+        { label: "2 năm kinh nghiệm", value: "2 YEARS" },
+        { label: "3 năm kinh nghiệm", value: "3 YEARS" },
+        { label: "4 năm kinh nghiệm", value: "4 YEARS" },
+        { label: "5 năm kinh nghiệm", value: "5 YEARS" },
+        { label: "6 năm kinh nghiệm", value: "6 YEARS" },
+        { label: "7 năm kinh nghiệm", value: "7 YEARS" },
+        { label: "8 năm kinh nghiệm", value: "8 YEARS" },
+        { label: "9 năm kinh nghiệm", value: "9 YEARS" },
+        { label: "10 năm kinh nghiệm", value: "10 YEARS" },
+
+    ];
 export const nonAccentVietnamese = (str: string) => {
     str = str.replace(/A|Á|À|Ã|Ạ|Â|Ấ|Ầ|Ẫ|Ậ|Ă|Ắ|Ằ|Ẵ|Ặ/g, "A");
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -73,6 +95,16 @@ export const getLocationName = (value: string) => {
     return 'unknown'
 }
 
+export const getEducationnName = (value: string) => {
+    const locationFilter = EDUCATION_LIST.filter(item => item.value === value);
+    if (locationFilter.length) return locationFilter[0].label;
+    return 'unknown'
+}
+export const getExperienceName = (value: string) => {
+    const locationFilter = EXPERIENCE_LIST.filter(item => item.value === value);
+    if (locationFilter.length) return locationFilter[0].label;
+    return 'unknown'
+}
 export function colorMethod(method: "POST" | "PUT" | "GET" | "DELETE" | string) {
     switch (method) {
         case "POST":

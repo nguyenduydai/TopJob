@@ -85,6 +85,11 @@ public class ResumeService {
         return null;
     }
 
+    public List<Resume> fetchResumeByEmail(String email) {
+        List<Resume> resume = this.resumeRepository.findByEmail(email);
+        return resume;
+    }
+
     public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
         List<Long> arrJobIds = null;
         Specification<Resume> finalSpec = null;

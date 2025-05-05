@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog, IRecommendation, ITalentCandidate } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -9,7 +9,15 @@ Module Auth
 //     return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
 // }
 export const callRegister = (name: string,phone:string, email: string, password: string|undefined, companyName: string|null,companyAddress:string,roleId:number, age: number, gender: string|null, address: string) => {
-    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address })
+    //return axios.post<IBackendRes<string>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address })
+
+    try {
+        const res = axios.post<IBackendRes<string>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address });
+        return res;
+    } catch (error: any) {
+        // Luôn trả về format tương tự res
+        return error.response?.data || { statusCode: 500, message: "Unknown error" };
+    }
 }
 
 export const callLogin = (username: string, password: string) => {
@@ -53,12 +61,12 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
  * 
 Module Company
  */
-export const callCreateCompany = (name: string, address: string, description: string, logo: string) => {
-    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address, description, logo })
+export const callCreateCompany = (name: string, address: string,website:string, description: string, logo: string) => {
+    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address,website, description, logo })
 }
 
-export const callUpdateCompany = (id: string, name: string, address: string, description: string, logo: string) => {
-    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address, description, logo })
+export const callUpdateCompany = (id: string, name: string, address: string,website:string, description: string, logo: string) => {
+    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address,website, description, logo })
 }
 
 export const callDeleteCompany = (id: string) => {
@@ -276,6 +284,10 @@ export const callCreateBlog =(title: string, likeCount: number, content: string,
 export const callUpdateBlog  = (id: string, title: string, likeCount: number, content: string, thumbnail: string)  => {
     return axios.put<IBackendRes<IBlog>>(`/api/v1/blogs`, { id,title, likeCount, content, thumbnail })
 }
+export const callUpdateLikeBlog  = (id: string|undefined, likeCount: number)  => {
+    return axios.put<IBackendRes<IBlog>>(`/api/v1/blogs`, { id, likeCount})
+}
+
 
 export const callDeleteBlog  = (id: string) => {
     return axios.delete<IBackendRes<IBlog>>(`/api/v1/blogs/${id}`);
@@ -299,4 +311,33 @@ export const callsendEmailJob =()  => {
 }
 export const callsendEmailResume =(id: string)  => {
     return axios.get<IBackendRes<IString>>(`/api/v1/email/resume/${id}`);
+}
+
+/**
+ * 
+Module Job Recommendation
+ */
+export const callCreateJobRecommendation =(skills:ISkill[],location: string,salary: number, quality: boolean, level:string,
+    jobEnvironment: string,educationRequirement: string, experienceRequirement:string,ageRequirement: number)  => {
+    return axios.post<IBackendRes<IString>>('/api/v1/jobrecommendation',{skills,location,salary,quality,level,jobEnvironment,educationRequirement,experienceRequirement,ageRequirement});
+}
+export const callFetchJobRecommendation =(query: string)  => {
+    return axios.get<IBackendRes<IModelPaginate<IRecommendation>>>(`/api/v1/jobrecommendation?${query}`);
+}
+
+/**
+ * 
+Module Talent Candidate
+ */
+export const callCreateTalentCandidateForJob =(id:string|null)  => {
+    return axios.post<IBackendRes<IString>>(`/api/v1/talentcandidate/${id}`);
+}
+export const callFetchTalentCandidateForJob =(id:string|null,query: string)  => {
+    return axios.get<IBackendRes<IModelPaginate<ITalentCandidate>>>(`/api/v1/talentcandidate/${id}?${query}`);
+}
+export const callCreateTalentCandidateForCompany =(address:string,skills:ISkill[], education: string, age: string,experience:string,activity:boolean)  => {
+    return axios.post<IBackendRes<IString>>('/api/v1/talentcandidate',{address,skills,education,experience,age,activity});
+}
+export const callFetchTalentCandidateForCompany =(query: string)  => {
+    return axios.get<IBackendRes<IModelPaginate<ITalentCandidate>>>(`/api/v1/talentcandidate?${query}`);
 }

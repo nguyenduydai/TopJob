@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Role;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.RoleService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -55,12 +56,13 @@ public class RoleController {
 
     @DeleteMapping("/roles/{id}")
     @ApiMessage("delete Role")
-    public ResponseEntity<String> deleteRole(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteRole(@PathVariable("id") long id) throws IdInvalidException {
         Role currRole = this.roleService.fetchRoleById(id);
         if (currRole == null)
             throw new IdInvalidException("Role id = " + currRole.getId() + "khong ton tai");
         this.roleService.handleDeleteRole(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Role");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/roles/{id}")

@@ -3,6 +3,7 @@ package com.nguyenduydai.TopJob.controller;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Company;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.CompanyService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -42,11 +43,12 @@ public class CompanyController {
     }
 
     @DeleteMapping("/companies/{id}")
-    public ResponseEntity<String> deleteCompany(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteCompany(@PathVariable("id") long id) throws IdInvalidException {
         if (id > 1500)
-            throw new IdInvalidException(" loi id lon hon 1500 ");
+            throw new IdInvalidException(" loi id lon hon 15000 "); // test
         this.companyService.handleDeleteCompany(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Company");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/companies/{id}")

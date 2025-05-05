@@ -1,19 +1,20 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Table, Tabs, message, notification } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Table, Tabs, Upload, message, notification } from "antd";
 import { isMobile } from "react-device-detect";
-import type { TabsProps } from 'antd';
+import type { TabsProps, UploadProps } from 'antd';
 import { IResume, ISubscribers } from "@/types/backend";
 import { useState, useEffect } from 'react';
-import { callChangePasswordUser, callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber } from "@/config/api";
+import { callChangePasswordUser, callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callUploadSingleFile } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { MonitorOutlined,CheckSquareOutlined } from "@ant-design/icons";
-import { SKILLS_LIST } from "@/config/utils";
+import { MonitorOutlined,CheckSquareOutlined, UploadOutlined } from "@ant-design/icons";
+import { getEducationnName, getExperienceName, SKILLS_LIST } from "@/config/utils";
 import { useAppSelector } from "@/redux/hooks";
 import { IUser } from "@/types/backend";
 import { callCreateUser, callFetchCompany, callFetchRole, callUpdateUser,callUserById } from "@/config/api";
 import { ModalForm, ProForm, ProFormDigit, ProFormSelect, ProFormText ,FooterToolbar} from "@ant-design/pro-components";
 import { DebounceSelect } from "@/components/admin/user/debouce.select";
 import { useNavigate } from "react-router-dom";
+import styles from '@/styles/client.module.scss';
 
 interface IProps {
     open: boolean;
@@ -140,12 +141,15 @@ const UserUpdateInfo = ({ onCancel }: UserUpdateInfoProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [notReset,setNotReset]= useState<boolean>(false);
     const [candidate,setCandidate]= useState<boolean>(true);
+     const [urlCV, setUrlCV] = useState<string>("");
 useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
         const res = await callUserById(user.id);
         setDataInit(res.data || null);
-        
+        if(res.data?.cv){
+            setUrlCV(res?.data?.cv);
+        }
         // Set giá trị trực tiếp vào Form KHÔNG dùng state trung gian
         form.setFieldsValue({
                 email: res.data?.email,
@@ -154,8 +158,8 @@ useEffect(() => {
                 age: res.data?.age,
                 gender: res.data?.gender,
                 address: res.data?.address,
-                education: res.data?.education,
-                experience: res.data?.experience,
+                education: getEducationnName(res.data?.education?res.data?.education:"") ,
+                experience: getExperienceName(res.data?.experience?res.data?.experience:"") ,
                 phone: res.data?.phone,
             role: res.data?.role ? {
                 label: res.data.role.name,
@@ -197,8 +201,10 @@ useEffect(() => {
                     company: company?{
                         id: company.value,
                         name: company.label
-                    }:undefined
+                    }:undefined,
+                    cv:urlCV,
                 }
+                console.log(user);
                 const res = await callUpdateUser(user);
                 if (res.data) {
                     message.success("Cập nhật user thành công");
@@ -257,6 +263,34 @@ useEffect(() => {
             }
         }
     }
+    const propsUpload: UploadProps = {
+            maxCount: 1,
+            multiple: false,
+            accept: "application/pdf,application/msword, .doc, .docx, .pdf",
+            async customRequest({ file, onSuccess, onError }: any) {
+                const res = await callUploadSingleFile(file, "cvuser");
+                if (res && res.data) {
+                    setUrlCV(res.data.fileName);
+                    if (onSuccess) onSuccess('ok')
+                } else {
+                    if (onError) {
+                        setUrlCV("");
+                        const error = new Error(res.message);
+                        onError({ event: error });
+                    }
+                }
+            },
+            onChange(info) {
+                if (info.file.status !== 'uploading') {
+                    // console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    message.success(`${info.file.name} file uploaded successfully`);
+                } else if (info.file.status === 'error') {
+                    message.error(info?.file?.error?.event?.message ?? "Đã có lỗi xảy ra khi upload file.")
+                }
+            },
+        };
     return (
         <>
             <h3>Thông tin cá nhân người dùng</h3>
@@ -327,7 +361,7 @@ useEffect(() => {
                             placeholder="Nhập nhập tuổi"
                         />
                     </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
+                    <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormSelect
                             name="gender"
                             label="Giới Tính"
@@ -340,7 +374,15 @@ useEffect(() => {
                             rules={[{ required: false, message: 'Vui lòng chọn giới tính!' }]}
                         />
                     </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
+                    <Col lg={12} md={12} sm={24} xs={24}>
+                        <ProFormText
+                            label="Địa chỉ"
+                            name="address"
+                            rules={[{ required: false, message: 'Vui lòng không bỏ trống' }]}
+                            placeholder="Nhập địa chỉ"
+                        />
+                    </Col>
+                    <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormSelect
                             name="education"
                             label="Trình độ giáo dục"
@@ -354,35 +396,28 @@ useEffect(() => {
                             rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
                         />
                     </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
+                    <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormSelect
                            label="Kinh nghiệm"
                             name="experience"
                             valueEnum={{
-                                '0 YEAR': "dưới 1 năm kinh nghiệm",     
-                                '1 YEAR': "1 năm kinh nghiệm",
-                                '2 YEAR': "2 năm kinh nghiệm",
-                                '3 YEAR': "3 năm kinh nghiệm",
-                                '4 YEAR': "4 năm kinh nghiệm",
-                                '5 YEAR': "5 năm kinh nghiệm",
-                                '6 YEAR': "6 năm kinh nghiệm",
-                                '7 YEAR': "7 năm kinh nghiệm",
-                                '8 YEAR': "8 năm kinh nghiệm",
-                                '9 YEAR': "9 năm kinh nghiệm",
-                                '10 YEAR': "10 năm kinh nghiệm",       
+                                '0 YEARS': "dưới 1 năm kinh nghiệm",     
+                                '1 YEARS': "1 năm kinh nghiệm",
+                                '2 YEARS': "2 năm kinh nghiệm",
+                                '3 YEARS': "3 năm kinh nghiệm",
+                                '4 YEARS': "4 năm kinh nghiệm",
+                                '5 YEARS': "5 năm kinh nghiệm",
+                                '6 YEARS': "6 năm kinh nghiệm",
+                                '7 YEARS': "7 năm kinh nghiệm",
+                                '8 YEARS': "8 năm kinh nghiệm",
+                                '9 YEARS': "9 năm kinh nghiệm",
+                                '10 YEARS': "10 năm kinh nghiệm",       
                             }}
                             placeholder="Nhập kinh nghiệm"
                             rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
                         />
                     </Col>
-                    <Col lg={8} md={8} sm={24} xs={24}>
-                        <ProFormText
-                            label="Địa chỉ"
-                            name="address"
-                            rules={[{ required: false, message: 'Vui lòng không bỏ trống' }]}
-                            placeholder="Nhập địa chỉ"
-                        />
-                    </Col>
+                   
                     {(!candidate) && (
                         <>
                         <Col lg={8} md={8} sm={24} xs={24}>
@@ -427,7 +462,29 @@ useEffect(() => {
                         </Col>
                         </>
                     )}
-                  
+                    {(candidate) && (
+                        <Col span={24}>
+                        <ProForm.Item   
+                            label={"Upload file CV"}
+                            rules={[{ required: false }]}
+                            > 
+                            {urlCV &&
+                                <div style={{color:'#a7a7a7',marginBottom:8}}>
+                                    <span>{urlCV}</span> &gt;&gt;&gt; &nbsp;
+                                    <a
+                                    href={`${import.meta.env.VITE_BACKEND_URL}/storage/cvuser/${urlCV}`}
+                                    target="_blank"
+                                    >Xem chi tiết</a>&nbsp; &lt;&lt;&lt;
+                                </div>
+
+                            }
+                            <Upload {...propsUpload}>
+                            <Button icon={<UploadOutlined />}>Tải lên CV mới của bạn ( Hỗ trợ *.doc, *.docx, *.pdf, and &lt; 5MB )</Button>
+                            </Upload>
+                        </ProForm.Item>
+                    </Col>
+                    )}
+                    
                 </Row>
             </ProForm>
     </>
@@ -699,6 +756,7 @@ const ManageAccount = (props: IProps) => {
                 footer={null}
                 destroyOnClose={true}
                 width={isMobile ? "100%" : "1000px"}
+                //className={styles["modal-infor"]}
             >
 
                 <div style={{ minHeight: 400 }}>

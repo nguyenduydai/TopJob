@@ -133,7 +133,7 @@
             span {
                 cursor: pointer;
                 display: block;
-                color: #a7a7a7;
+                color:  #a7a7a7;
                 text-decoration: none;
 
                 &:hover {
@@ -301,6 +301,13 @@
                 color: #007BFF; 
             }
         }
+    }
+    .card-blog-title{
+        font-size: 22px;
+        font-weight: 600;
+        font-family: "Roboto", sans-serif;
+        margin-top: 50px;
+        margin-bottom: 20px;
     }
 }
 
@@ -493,6 +500,9 @@
 }
 
 .detail-job-section {   
+    background-color:  #f2fdfd; 
+    width: 100%;
+   
     .header {
         margin: 20px 0;
         color: #353535;
@@ -561,6 +571,25 @@
         align-items: center;
     }
 }
+
+.recommendation{
+    background-color:#6eb4ff;
+    margin-left:860px ;
+    //margin-top: 25px;    
+    padding: 10px;
+    text-align: center;
+    width: 430px;
+    box-shadow: 0 8px 16px rgba(0, 123, 255, 0.2);
+    border-radius: 10px;
+    line-height: 30px;
+    color: #ffffff;
+    &:hover{
+        background-color:  #f2f2f2;
+        color: #6eb4ff;
+    }
+}
+
+
 .footer-section{
     background-color: #1d1d1d;
     color: #fff;
@@ -575,3 +604,26 @@
     }
     
 }
+
+.seeCV{
+    color: #000;
+    font-weight: 600;   
+    a{
+        color: #000;    
+        text-align: center;
+        &:hover{
+            color: #a7a7a7;
+        } 
+    }
+    text-align: center;
+    &:hover{
+        color: #a7a7a7;
+    }  
+}
+.modal-infor{
+    background-image: url("../assets/auser.png");
+    background-size: cover; /* Đảm bảo ảnh bao phủ toàn bộ thẻ */
+    background-position: center; /* Căn giữa ảnh */ 
+    width: 100%;
+    min-height: 750px;
+}   

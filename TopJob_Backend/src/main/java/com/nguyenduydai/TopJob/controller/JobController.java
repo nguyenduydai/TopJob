@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Job;
 import com.nguyenduydai.TopJob.domain.response.job.ResCreateJobDTO;
 import com.nguyenduydai.TopJob.domain.response.job.ResUpdateJobDTO;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.JobService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -49,12 +50,13 @@ public class JobController {
 
     @DeleteMapping("/jobs/{id}")
     @ApiMessage("delete Job")
-    public ResponseEntity<String> deleteJob(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteJob(@PathVariable("id") long id) throws IdInvalidException {
         Job currJob = this.jobService.fetchJobById(id);
         if (currJob == null)
             throw new IdInvalidException("Job id = " + currJob.getId() + "khong ton tai");
         this.jobService.handleDeleteJob(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Job");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/jobs/{id}")

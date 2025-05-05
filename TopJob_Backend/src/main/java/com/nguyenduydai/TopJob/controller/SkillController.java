@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import com.nguyenduydai.TopJob.domain.entity.Skill;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.SkillService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
@@ -53,12 +54,13 @@ public class SkillController {
 
     @DeleteMapping("/skills/{id}")
     @ApiMessage("delete skill")
-    public ResponseEntity<String> deleteSkill(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteSkill(@PathVariable("id") long id) throws IdInvalidException {
         Skill currSkill = this.skillService.fetchSkillById(id);
         if (currSkill == null)
             throw new IdInvalidException("skill id = " + id + "khong ton tai");
         this.skillService.handleDeleteSkill(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted skill");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/skills/{id}")

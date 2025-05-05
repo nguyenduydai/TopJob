@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenduydai.TopJob.domain.entity.Resume;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.domain.response.resume.ResCreateResumeDTO;
 import com.nguyenduydai.TopJob.domain.response.resume.ResFetchResumeDTO;
@@ -76,12 +77,13 @@ public class ResumeController {
 
     @DeleteMapping("/resumes/{id}")
     @ApiMessage("delete Resume")
-    public ResponseEntity<String> deleteResume(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResString> deleteResume(@PathVariable("id") long id) throws IdInvalidException {
         Resume currResume = this.resumeService.fetchResumeById(id);
         if (currResume == null)
             throw new IdInvalidException("Resume id = " + currResume.getId() + "khong ton tai");
         this.resumeService.handleDeleteResume(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Resume");
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/resumes/{id}")

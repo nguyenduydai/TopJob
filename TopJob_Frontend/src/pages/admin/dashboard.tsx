@@ -160,7 +160,7 @@ const DashboardPage = () => {
                             </div>
                         ))}
                         </Slider>
-                        <div className={`${styles["dashboard-footer"]}`}>Tuyển Dụng IT cùng TopJob - Tối Ưu Chi Phí, Tối Đa Hỗ Trợ</div>
+                        <div className={`${styles["dashboard-footer"]}`}>Tìm kiếm ứng viên xuất sắc, phát triển doanh nghiệp bền vững</div>
                     </div>
                     <img src={a9} alt="right" style={{ width: 200, height: 675, objectFit: 'cover', borderRadius: 8 }} />
 

@@ -18,6 +18,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import 'dayjs/locale/en'; // hoặc 'en' tùy bạn
+import { useAppSelector } from "@/redux/hooks";
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -43,11 +44,21 @@ const ViewUpsertJob = (props: any) => {
     const [form] = Form.useForm();
     const inputRef = useRef<any>(null);
     const clearIconSelector = '.ant-picker-clear';
+    const user = useAppSelector(state => state.account.user);
+    const displayCompany=user?.role?.id=="1" ? false:true;
     useEffect(() => {
         const init = async () => {
             const temp = await fetchSkillList();
             setSkills(temp);
-
+            if(user?.role?.id!="1"){
+                setCompanies([
+                    {
+                        label: user?.company?.name as string,
+                        value: user?.company?.id as string,
+                        key:user?.company?.id 
+                    }
+                ])
+            }
             if (id) {
                 const res = await callFetchJobById(id);
                 if (res && res.data) {
@@ -71,8 +82,8 @@ const ViewUpsertJob = (props: any) => {
                     })
                     form.setFieldsValue({
                         ...res.data,
-                        startDate: dayjs(res.data.startDate, "YYYY-MM-DD hh:mm:ss A"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
-                        endDate: dayjs(res.data.endDate, "YYYY-MM-DD hh:mm:ss A"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
+                        startDate: dayjs(res.data.startDate, "YYYY-MM-DD hh:mm:ss"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
+                        endDate: dayjs(res.data.endDate, "YYYY-MM-DD hh:mm:ss"), // hoặc "YYYY-MM-DD" nếu định dạng là ISO
                         company: {
                             label: res.data.company?.name as string,
                             value: `${res.data.company?.id}@#$${res.data.company?.logo}` as string,
@@ -247,7 +258,7 @@ const ViewUpsertJob = (props: any) => {
                                     name="skills"
                                     label="Kỹ năng yêu cầu"
                                     options={skills}
-                                    placeholder="Please select a skill"
+                                    placeholder="Chọn kỹ năng"
                                     rules={[{ required: true, message: 'Vui lòng chọn kỹ năng!' }]}
                                     allowClear
                                     mode="multiple"
@@ -262,7 +273,7 @@ const ViewUpsertJob = (props: any) => {
                                     name="location"
                                     label="Địa điểm"
                                     options={LOCATION_LIST.filter(item => item.value !== 'ALL')}
-                                    placeholder="Please select a location"
+                                    placeholder="Nhập địa điểm"
                                     rules={[{ required: true, message: 'Vui lòng chọn địa điểm!' }]}
                                 />
                             </Col>
@@ -298,7 +309,7 @@ const ViewUpsertJob = (props: any) => {
                                         MIDDLE: 'MIDDLE',
                                         SENIOR: 'SENIOR',
                                     }}
-                                    placeholder="Please select a level"
+                                    placeholder="Nhập trình độ"
                                     rules={[{ required: true, message: 'Vui lòng chọn level!' }]}
                                 />
                             </Col>
@@ -309,8 +320,10 @@ const ViewUpsertJob = (props: any) => {
                                         name="company"
                                         label="Thuộc Công Ty"
                                         rules={[{ required: true, message: 'Vui lòng chọn company!' }]}
+                                        
                                     >
                                         <DebounceSelect
+                                            disabled={displayCompany}
                                             allowClear
                                             showSearch
                                             defaultValue={companies}
@@ -318,9 +331,10 @@ const ViewUpsertJob = (props: any) => {
                                             placeholder="Chọn công ty"
                                             fetchOptions={fetchCompanyList}
                                             onChange={(newValue: any) => {
-                                                if (newValue?.length === 0 || newValue?.length === 1) {
-                                                    setCompanies(newValue as ICompanySelect[]);
-                                                }
+                                                // if (newValue?.length === 0 || newValue?.length === 1) {
+                                                //     setCompanies(newValue as ICompanySelect[]);
+                                                // }
+                                                setCompanies(newValue as ICompanySelect[]);
                                             }}
                                             style={{ width: '100%' }}
                                         />
@@ -338,10 +352,7 @@ const ViewUpsertJob = (props: any) => {
                                     //normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
-                                        inputReadOnly: true,
-                                        onClick: () => {
-                                            form.setFieldsValue({ startDate: null }); 
-                                          }
+                                        
                                     }}
                                     rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
                                     placeholder="dd/mm/yyyy"
@@ -355,10 +366,7 @@ const ViewUpsertJob = (props: any) => {
                                     //normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
-                                        inputReadOnly: true,
-                                        onClick: () => {
-                                            form.setFieldsValue({ startDate: null }); 
-                                          }
+                                        
                                     }}
                                     // width="auto"
                                     rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc' }]}

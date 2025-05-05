@@ -30,32 +30,23 @@ import com.nguyenduydai.TopJob.util.constant.LevelEnum;
 @Getter
 @Setter
 public class Job extends BaseEntity {
-
     @NotBlank(message = "name khong duoc de trong")
     private String name;
-
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
-
     @Enumerated(EnumType.STRING)
     private LevelEnum level;
-
     private String location;
-
     private double salary;
-
     private int quantity;
-
     private boolean active;
-    private int viewCount;
-
-    private String jobType;
-    private String jobRequirement;
-    private String jobEnvironment;
-    private String position;
-
     private Instant startDate;
     private Instant endDate;
+
+    private String jobEnvironment;
+    private String educationRequirement;
+    private String ageRequirement;
+    private String experienceRequirement;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -73,4 +64,14 @@ public class Job extends BaseEntity {
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     @JsonIgnore
     List<JobRecommendation> jobRecommendations;
+
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<TalentCandidate> talentCandidate;
+
+    // chưa dùng đến :)))
+    private int viewCount;
+    private String jobType;
+    private String jobRequirement;
+    private String position;
 }

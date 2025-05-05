@@ -49,6 +49,12 @@ export const ALL_PERMISSIONS = {
         UPDATE: { method: "PUT", apiPath: '/api/v1/subscribers', module: "SUBSCRIBERS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/subscribers/{id}', module: "SUBSCRIBERS" },
     },
+    TALENTCANDIDATE: {
+        GET_PAGINATE_FOR_JOB: { method: "GET", apiPath: '/api/v1/talentcandidate/{id}', module: "TALENTCANDIDATE" },
+        CREATE_FOR_JOB: { method: "POST", apiPath: '/api/v1/talentcandidate/{id}', module: "TALENTCANDIDATE" },
+        GET_PAGINATE_FOR_COMPANY: { method: "GET", apiPath: '/api/v1/talentcandidate', module: "TALENTCANDIDATE" },
+        CREATE_FOR_COMPANY: { method: "POST", apiPath: '/api/v1/talentcandidate', module: "TALENTCANDIDATE" },
+    },
 }
 
 export const ALL_MODULES = {
@@ -60,5 +66,6 @@ export const ALL_MODULES = {
     ROLES: 'ROLES',
     USERS: 'USERS',
     SUBSCRIBERS: 'SUBSCRIBERS',
-    BLOGS:'BLOGS'
+    BLOGS:'BLOGS',
+    TALENTCANDIDATE:'TALENTCANDIDATE'
 }

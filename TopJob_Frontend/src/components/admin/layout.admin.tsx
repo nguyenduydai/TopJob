@@ -9,7 +9,8 @@ import {
     FormOutlined,ClusterOutlined,IdcardOutlined,
     DeploymentUnitOutlined,ReadOutlined,MonitorOutlined,RobotOutlined,
     LogoutOutlined,
-    ContactsOutlined
+    ContactsOutlined,
+    QqOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button ,Spin} from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -130,7 +131,11 @@ const LayoutAdmin = () => {
                     key: '/admin/talentcandidate',
                     icon: <MonitorOutlined />
                 }] : []),
-
+                ...(viewTalentCandidate || ACL_ENABLE === 'false' ? [{
+                    label: <Link to='/admin/accountupgrade'>Nâng cấp tàikhoản</Link>,
+                    key: '/admin/accountupgrade',
+                    icon: <MonitorOutlined />
+                }] : []),
             ];
 
             setMenuItems(full);
@@ -149,7 +154,7 @@ const LayoutAdmin = () => {
             dispatch(setLogoutAction({}));
             message.success(`Đăng xuất thành công `);
             (isHr ===undefined) ? navigate('/login') : navigate('/login?user=hr');
-            console.log('chay vao vong if');
+            ;
 
         }
     }
@@ -194,27 +199,28 @@ const LayoutAdmin = () => {
     return (
         <>
             <Layout
-                style={{ minHeight: '100vh' }}
+                style={{ minHeight: '100vh'}}
                 className={`${styles["layout-admin"]}` }
+                
             >
                   
                 {!isMobile ?
                     <Sider
-                        // style={{width:500}}
-                        className={`${styles["menu"]}`}
+                        className={user?.role?.id == "2" ? styles["menu"] : ""}
                         theme='light'
                         collapsible
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}>
-                        <div style={{ height: 32, margin: 16, textAlign: 'center', fontSize:18 }}>
-                        <AndroidOutlined/>
+                        <div style={{ height: 62, padding: 16, textAlign: 'center', fontSize:18 ,cursor:'pointer',backgroundColor:' rgba(255, 255, 255, 0.1)'}} onClick={() => navigate('/admin')}>
+                        <QqOutlined style={{ color:' #1677ff' ,fontWeight:1000}}/>
                             {!collapsed && (
                                 user.role?.name === "SUPER_ADMIN" 
-                                ? <span>Quản trị viên</span> 
-                                : <span>Nhà tuyển dụng</span>
+                                ? <span > Quản trị viên</span> 
+                                : <span style={{color:' #1677ff' ,fontWeight:800}}> Nhà tuyển dụng</span>
                             )}
                         </div>
                         <Menu
+                            className={`${styles["ant-menu"]}`}
 
                             selectedKeys={[activeMenu]}
                             mode="inline"
@@ -233,7 +239,7 @@ const LayoutAdmin = () => {
 
                 <Layout>
                     {!isMobile &&
-                        <div className='admin-header' style={{ display: "flex", justifyContent: "space-between", marginRight: 20 }}>
+                        <div className='admin-header' style={{ display: "flex", justifyContent: "space-between", paddingRight: 20,backgroundColor:'#fbebd2',height:55 }}>
                             <Button
                                 type="text"
                                 icon={collapsed ? React.createElement(MenuUnfoldOutlined) : React.createElement(MenuFoldOutlined)}
@@ -241,10 +247,12 @@ const LayoutAdmin = () => {
                                 style={{
                                     fontSize: '16px',
                                     width: 64,
-                                    height: 64,
+                                    height: 55,
                                 }}
                             />
-
+                            <div className={`${styles["slogan"]} `}>
+                            Tuyển Dụng IT cùng TopJob - Tối Ưu Chi Phí, Tối Đa Hỗ Trợ
+                            </div>
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
                                     Chào mừng bạn  {user?.name}
@@ -264,12 +272,9 @@ const LayoutAdmin = () => {
                     }
                     <Content style={{ padding: '15px' }}>
                         <Outlet />
-                        {/* <Spin spinning={isLoading} tip="Loading..."></Spin> */}
 
                     </Content>
-                    {/* <Footer style={{ padding: 10, textAlign: 'center' }}>
-                        React Typescript series Nest.JS &copy; Hỏi Dân IT - Made with <HeartTwoTone />
-                    </Footer> */}
+                   
                 </Layout>
             </Layout>
             <ManageAccount

@@ -5,7 +5,7 @@ import BlogCard from '@/components/client/card/blog.card';
 
 const ClientBlogPage = (props: any) => {
     return (
-        <div className={styles["container"]} style={{ marginTop: 20 }}>
+        <div className={`${styles["container"]} ${styles["modal-infor"]}`} >
             <Row gutter={[20, 20]}>
                 <Col span={24}>
                     <BlogCard

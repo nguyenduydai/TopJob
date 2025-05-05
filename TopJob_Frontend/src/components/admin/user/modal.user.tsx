@@ -67,10 +67,11 @@ const ModalUser = (props: IProps) => {
                     id: role.value,
                     name: role.label
                 }:undefined,
-                company: companies?{
+                company: company?{
                     id: company.value,
                     name: company.label
-                }:undefined
+                }:undefined,
+                cv:''
             }
 
             const res = await callUpdateUser(user);
@@ -100,10 +101,11 @@ const ModalUser = (props: IProps) => {
                     id: role.value,
                     name: role.label
                 }:undefined,
-                company: companies?{
+                company: company?{
                     id: company.value,
                     name: company.label
-                }:undefined
+                }:undefined,
+                cv:''
             }
             const res = await callCreateUser(user);
             if (res.data) {
@@ -263,7 +265,7 @@ const ModalUser = (props: IProps) => {
                         <ProFormText
                             label="Kinh nghiệm"
                             name="experience"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            
                             placeholder="Nhập kinh nghiệm"
                         />
                     </Col>

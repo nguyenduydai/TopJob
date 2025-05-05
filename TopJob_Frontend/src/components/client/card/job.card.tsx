@@ -157,7 +157,7 @@ const JobCard = (props: IProps) => {
                                 onChange={(p: number, s: number) => handleOnchangePage({ current: p, pageSize: s })}
                             />
                         </Row>
-                        <div style={{ marginBottom: 50 }}></div>
+                        <div style={{ marginBottom: 40 }}></div>
                     </>}
                 </Spin>
             </div>

@@ -27,6 +27,7 @@ public class ResUserDTO {
     private String phone;
     private String education;
     private String experience;
+    private String cv;
 
     @Getter
     @Setter

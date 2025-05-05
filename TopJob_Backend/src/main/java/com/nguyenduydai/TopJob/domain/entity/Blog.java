@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Blog extends BaseEntity {
-    @NotBlank(message = "name khong duoc de trong")
     private String title;
     private int likeCount;
     @Column(columnDefinition = "MEDIUMTEXT")

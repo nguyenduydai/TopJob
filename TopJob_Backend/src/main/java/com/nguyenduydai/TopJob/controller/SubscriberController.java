@@ -5,7 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import com.nguyenduydai.TopJob.domain.entity.Blog;
+import com.nguyenduydai.TopJob.domain.entity.Skill;
 import com.nguyenduydai.TopJob.domain.entity.Subscriber;
+import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.SubscriberService;
 import com.nguyenduydai.TopJob.util.SecurityUtil;
@@ -72,4 +76,14 @@ public class SubscriberController {
         return ResponseEntity.ok(this.subscriberService.fetchAllSubscriber(spec, pageable));
     }
 
+    @DeleteMapping("/subscribers/{id}")
+    @ApiMessage("delete subscribers")
+    public ResponseEntity<ResString> deleteSkilSubscriber(@PathVariable("id") long id) throws IdInvalidException {
+        Subscriber currS = this.subscriberService.fetchSubscriberById(id);
+        if (currS == null)
+            throw new IdInvalidException("subscriber id = " + id + "khong ton tai");
+        this.subscriberService.handleDeleteSubscriber(id);
+        ResString res = new ResString("delete success");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 }

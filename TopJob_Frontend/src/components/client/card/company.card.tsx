@@ -1,6 +1,7 @@
 import { callFetchCompany } from '@/config/api';
 import { convertSlug } from '@/config/utils';
 import { ICompany } from '@/types/backend';
+import { EnvironmentOutlined } from '@ant-design/icons';
 import { Card, Col, Divider, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -18,7 +19,7 @@ const CompanyCard = (props: IProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
+    const [pageSize, setPageSize] = useState(8);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     const [sortQuery, setSortQuery] = useState("sort=createdAt,asc");
@@ -71,7 +72,7 @@ const CompanyCard = (props: IProps) => {
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}>Nhà Tuyển Dụng Hàng Đầu</span>
+                                <span className={styles["title"]}>Nhà Tuyển Dụng Nổi Bật</span>
                                 {!showPagination &&
                                     <Link to="company"  className={styles["getAll"]}>Xem tất cả</Link>
                                 }
@@ -96,8 +97,9 @@ const CompanyCard = (props: IProps) => {
                                             </div>
                                         }
                                     >
-                                        <Divider />
+                                       
                                         <h3 style={{ textAlign: "center" }}>{item.name}</h3>
+                                        <div style={{ textAlign: "center" }}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{item.address}</div>
                                     </Card>
                                 </Col>
                             )
@@ -120,9 +122,11 @@ const CompanyCard = (props: IProps) => {
                                 responsive
                                 onChange={(p: number, s: number) => handleOnchangePage({ current: p, pageSize: s })}
                             />
-                            <div style={{ marginBottom: 50 }}></div>
+                
                         </Row>
+                        <div style={{ marginBottom: 40 }}></div>
                     </>}
+
                 </Spin>
             </div>
         </div>

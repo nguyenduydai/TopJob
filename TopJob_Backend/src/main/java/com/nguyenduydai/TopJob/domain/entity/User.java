@@ -24,18 +24,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User extends BaseEntity {
-
     private String name;
     @NotBlank(message = "email khong duoc de trong")
     private String email;
     private String password;
     private int age;
-
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
-
     private String address;
-
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
 

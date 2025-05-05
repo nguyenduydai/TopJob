@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import enUS from 'antd/lib/locale/en_US';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { callCreateResume, callUploadSingleFile } from "@/config/api";
-import { useState } from 'react';
+import { callCreateResume, callUploadSingleFile, callUserById } from "@/config/api";
+import { useEffect, useState } from 'react';
 
 interface IProps {
     isModalOpen: boolean;
@@ -20,7 +20,15 @@ const ApplyModal = (props: IProps) => {
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
     const user = useAppSelector(state => state.account.user);
     const [urlCV, setUrlCV] = useState<string>("");
-
+    useEffect(()=>{
+        const fetchData = async () => {
+        const res = await callUserById(user.id);
+            if(res.data?.cv){
+                setUrlCV(res?.data?.cv);
+            }
+        }
+        fetchData();
+    },[]);
     const navigate = useNavigate();
 
     const handleOkButton = async () => {
@@ -31,7 +39,7 @@ const ApplyModal = (props: IProps) => {
 
         if (!isAuthenticated) {
             setIsModalOpen(false);
-            navigate(`/login?callback=${window.location.href}`)
+            navigate(`/login?user=candidate&callback=${window.location.href}`)
         }
         else {
             //todo
@@ -113,7 +121,7 @@ const ApplyModal = (props: IProps) => {
                                             fieldProps={{
                                                 type: "email"
                                             }}
-                                            label="Email"
+                                            label="Email :"
                                             name={"email"}
                                             labelAlign="right"
                                             disabled
@@ -122,12 +130,21 @@ const ApplyModal = (props: IProps) => {
                                     </Col>
                                     <Col span={24}>
                                         <ProForm.Item
-                                            label={"Upload file CV"}
+                                            label={"Upload file CV :"}
                                             rules={[{ required: true, message: 'Vui lòng upload file!' }]}
                                         >
+                                            {urlCV &&
+                                                <div style={{color:'#a7a7a7',marginBottom:8,textAlign:'center'}}>
+                                                    <span>{urlCV}</span><br/> &gt;&gt;&gt; &nbsp;
+                                                    <a
+                                                    href={`${import.meta.env.VITE_BACKEND_URL}/storage/cvuser/${urlCV}`}
+                                                    target="_blank"
+                                                    >Xem chi tiết</a>&nbsp; &lt;&lt;&lt;
+                                                </div>
 
+                                            }
                                             <Upload {...propsUpload}>
-                                                <Button icon={<UploadOutlined />}>Tải lên CV của bạn ( Hỗ trợ *.doc, *.docx, *.pdf, and &lt; 5MB )</Button>
+                                                <Button icon={<UploadOutlined />} style={{marginLeft:20}}>Tải lên CV của bạn ( Hỗ trợ *.doc, *.docx, *.pdf, and &lt; 5MB )</Button>
                                             </Upload>
                                         </ProForm.Item>
                                     </Col>

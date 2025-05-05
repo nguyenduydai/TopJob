@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '@/redux/slice/accountSlide';
 import styles from 'styles/auth.module.scss';
 import { useAppSelector } from '@/redux/hooks';
-import ahr from '../../assets/ahr.png';
-import auser from '../../assets/auser.jpg';
+import ahr from '../../assets/ahr.jpg';
+import auser from '../../assets/auser.png';
 const LoginPage = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
@@ -30,13 +30,14 @@ const LoginPage = () => {
         if (user==="candidate") {
             setName('Đăng Nhập Ứng viên');
             setBackgroundColor('#fcf4e6');
-            setFontSizCandidate(22);
+
+            setFontSizCandidate(24);
             setHeightCandidate(300);
         }
         if (user==="hr") {
             setName('Đăng Nhập Nhà Tuyển Dụng');
-            setBackgroundColor('#beebf6');  
-            setFontSizeHr(22); 
+            setBackgroundColor('#beebf6'); 
+            setFontSizeHr(24); 
             setHeightHr(300);
         }
         console.log(user);
@@ -45,7 +46,8 @@ const LoginPage = () => {
     const handleClickUser = () => {
         setName('Đăng Nhập Ứng viên');
         setBackgroundColor('#fcf4e6');
-        setFontSizCandidate(22);
+        
+        setFontSizCandidate(24);
         setFontSizeHr(16);
         setHeightCandidate(300);
         setHeightHr(250);
@@ -55,8 +57,9 @@ const LoginPage = () => {
     };
     const handleClickHr = () => {
         setName('Đăng Nhập Nhà Tuyển Dụng');
+  
         setBackgroundColor('#beebf6');
-        setFontSizeHr(22);
+        setFontSizeHr(24);
         setFontSizCandidate(16);
         setHeightHr(300);
         setHeightCandidate(250);
@@ -162,17 +165,21 @@ const LoginPage = () => {
                                 </Button>   
                             </Form.Item>
                             <Divider>Nếu như</Divider>  
-                            <p className="text text-normal">Chưa có tài khoản ứng viên ?
-                                <span>
-                                    <Link to='/register' > Đăng Ký </Link>
-                                </span>
-                            </p>
+                            {name==="Đăng Nhập Ứng viên"? 
+                                (<p className="text text-normal">Chưa có tài khoản ứng viên ?
+                                    <span>
+                                        <Link to='/register' > Đăng Ký </Link>
+                                    </span>
+                                </p>):
+                                (<p style={{marginTop:16}} className="text text-normal">Chưa có tài khoản nhà tuyển dụng ?
+                                    <span>
+                                        <Link to='/registerhr' > Đăng Ký Ngay </Link>
+                                    </span>
+                                </p>) }
+                            
+                           
                           
-                            <p style={{marginTop:16}} className="text text-normal">Chưa có tài khoản nhà tuyển dụng ?
-                                <span>
-                                    <Link to='/registerhr' > Đăng Ký Ngay </Link>
-                                </span>
-                            </p>
+
                             <Divider/>
                         </Form>
                     </section>

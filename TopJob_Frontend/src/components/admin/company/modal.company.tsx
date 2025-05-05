@@ -22,6 +22,7 @@ interface IProps {
 interface ICompanyForm {
     name: string;
     address: string;
+    website:string
 }
 
 interface ICompanyLogo {
@@ -51,7 +52,7 @@ const ModalCompany = (props: IProps) => {
     }, [dataInit])
 
     const submitCompany = async (valuesForm: ICompanyForm) => {
-        const { name, address } = valuesForm;
+        const { name, address,website } = valuesForm;
 
         if (dataLogo.length === 0) {
             message.error('Vui lòng upload ảnh Logo')
@@ -60,7 +61,7 @@ const ModalCompany = (props: IProps) => {
 
         if (dataInit?.id) {
             //update
-            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name);
             if (res.data) {
                 message.success("Cập nhật company thành công");
                 handleReset();
@@ -73,7 +74,7 @@ const ModalCompany = (props: IProps) => {
             }
         } else {
             //create
-            const res = await callCreateCompany(name, address, value, dataLogo[0].name);
+            const res = await callCreateCompany(name, address,website, value, dataLogo[0].name);
             if (res.data) {
                 message.success("Thêm mới company thành công");
                 handleReset();
@@ -258,12 +259,23 @@ const ModalCompany = (props: IProps) => {
 
                             </Col>
 
-                            <Col span={16}>
+                            <Col span={8}>
                                 <ProFormTextArea
                                     label="Địa chỉ"
                                     name="address"
                                     rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
                                     placeholder="Nhập địa chỉ công ty"
+                                    fieldProps={{
+                                        autoSize: { minRows: 4 }
+                                    }}
+                                />
+                            </Col>
+                            <Col span={8}>
+                                <ProFormTextArea
+                                    label="Website"
+                                    name="website"
+                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                    placeholder="Nhập website công ty"
                                     fieldProps={{
                                         autoSize: { minRows: 4 }
                                     }}

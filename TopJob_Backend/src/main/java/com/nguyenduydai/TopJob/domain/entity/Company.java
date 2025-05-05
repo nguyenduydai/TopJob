@@ -39,5 +39,7 @@ public class Company extends BaseEntity {
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Job> jobs;
-
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<TalentCandidate> talentCandidate;
 }

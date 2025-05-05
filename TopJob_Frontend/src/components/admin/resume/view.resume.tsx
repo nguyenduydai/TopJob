@@ -60,7 +60,7 @@ const ViewDetailResume = (props: IProps) => {
     return (
         <>
             <Drawer
-                title="Thông Tin Resume"
+                title="Thông Tin Đơn ứng tuyển"
                 placement="right"
                 onClose={() => { onClose(false); setDataInit(null) }}
                 open={open}

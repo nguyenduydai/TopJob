@@ -59,6 +59,7 @@ instance.interceptors.response.use(
         if (error.config && error.response
             && (+error.response.status === 401 ||+error.response.status === 400)
             && error.config.url !== '/api/v1/auth/login'
+            && error.config.url !== '/api/v1/auth/register'
             && !error.config.headers[NO_RETRY_HEADER]
         ) {
             if (typeof window !== "undefined" && window?.localStorage) {

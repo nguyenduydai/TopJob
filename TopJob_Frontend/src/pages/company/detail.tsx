@@ -50,7 +50,7 @@ const ClientCompanyDetailPage = (props: any) => {
                 <Row gutter={[20, 20]}>
                     {companyDetail && companyDetail.id &&
                         <>
-                            <Col span={24} md={16}>
+                            <Col span={24} md={16} style={{marginLeft:100}}>
                                 <div className={styles["header"]}>
                                     {companyDetail.name}
                                 </div>
@@ -79,7 +79,7 @@ const ClientCompanyDetailPage = (props: any) => {
                                     </div>
                             </Col>
 
-                            <Col span={24} md={8}>
+                            <Col span={24} md={6}>
                                 <div className={styles["company"]}>
                                     <div>
                                         <img

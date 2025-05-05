@@ -52,6 +52,7 @@ export interface ICompany {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    website?:string;
 }
 
 export interface ISkill {
@@ -91,11 +92,13 @@ export interface IUser {
         id: string;
         name: string;
     }
+    cv:string;
     createdBy?: string;
     isDeleted?: boolean;
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    //avatar:string
 }
 
 
@@ -122,6 +125,7 @@ export interface IJob {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    jobEnvironment?:string;
 }
 
 export interface IResume {
@@ -174,7 +178,7 @@ export interface IBlog {
     createdBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    updated?: string;
+    updatedBy?: string;
     user?: {
         id: string;
         name: string;
@@ -217,4 +221,23 @@ export interface IUserRegister {
     companyAddress: string;
     phone: string;
     roleId:int
+}
+export interface IRecommendation {
+    id?: string;
+    user:{
+        id: string;
+        name:string;
+        email: string;
+    } 
+    job:IJob ,
+    matchScore:number;
+    createdAt?:string
+}
+export interface ITalentCandidate {
+    id?: string;
+    user:IUser,
+    job:IJob ,
+    company:ICompany,
+    compatibilityScore:number;
+    recommendedAt?:string
 }

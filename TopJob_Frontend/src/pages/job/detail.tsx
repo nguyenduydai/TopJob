@@ -45,7 +45,7 @@ const ClientJobDetailPage = (props: any) => {
                 <Row gutter={[20, 20]}>
                     {jobDetail && jobDetail.id &&
                         <>
-                            <Col span={24} md={16}>
+                            <Col span={24} md={16} style={{marginLeft:100}}>
                                 <div className={styles["header"]}>
                                     {jobDetail.name}
                                 </div>
@@ -79,7 +79,7 @@ const ClientJobDetailPage = (props: any) => {
                                 {parse(jobDetail.description)}
                             </Col>
 
-                            <Col span={24} md={8}>
+                            <Col span={24} md={6}>
                                 <div className={styles["company"]}>
                                     <div>
                                         <img

@@ -5,7 +5,7 @@ import { callRegister } from 'config/api';
 import styles from 'styles/auth.module.scss';
 import { IUser, IUserRegister } from '@/types/backend';
 const { Option } = Select;
-import ahr from '../../assets/ahr.png';
+import ahr from '../../assets/ahr.jpg';
 
 const RegisterHrPage = () => {
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const RegisterHrPage = () => {
             setIsSubmit(true);
             const res = await callRegister(name, phone,email, password,companyName, companyAddress,roleId,age,gender,address );
             setIsSubmit(false);
-            if (res?.data?.id) {
+            if (res?.data) {
                 message.success('Đăng ký tài khoản nhà tuyển dụng thành công!');
                 navigate('/login?user=hr')
             } else {
