@@ -53,6 +53,7 @@ export interface ICompany {
     createdAt?: string;
     updatedAt?: string;
     website?:string;
+    businessLicense:string;
 }
 
 export interface ISkill {
@@ -71,6 +72,11 @@ export interface IChangePassword {
 }
 export interface IString {
     infor:string;
+}
+export interface IPayment {
+    code:string;
+    message:string;
+    paymentUrl:string;
 }
 export interface IUser {
     id?: string;
@@ -98,7 +104,10 @@ export interface IUser {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    typeVip:string;
+    vipExpiry:string;
     //avatar:string
+    active:boolean;
 }
 
 
@@ -125,7 +134,8 @@ export interface IJob {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
-    jobEnvironment?:string;
+    jobEnvironment:string;
+    experienceRequirement?:string;
 }
 
 export interface IResume {
@@ -220,7 +230,8 @@ export interface IUserRegister {
     companyName: string;
     companyAddress: string;
     phone: string;
-    roleId:int
+    roleId:int;
+    businessLicense:string;
 }
 export interface IRecommendation {
     id?: string;
@@ -236,8 +247,36 @@ export interface IRecommendation {
 export interface ITalentCandidate {
     id?: string;
     user:IUser,
-    job:IJob ,
     company:ICompany,
     compatibilityScore:number;
-    recommendedAt?:string
+    
+    skills:ISkill[];
+    multiplierSkills:number;
+
+    address:string;
+    multiplierAddress;
+
+    education:string;
+    multiplierEducation:number;
+
+    age:string;
+    multiplierAge:number;
+
+    experience:string;
+    multiplierExperience:number;
+
+    activity:boolean;
+    multiplierActivity:number;
+
+    gender:string;
+    multiplierGender:number;
+}
+export interface IResPaymentDTO {
+    id:string;
+    paymentAt: string;
+    userName:string;
+    typeVip:string;
+    status:string;
+    companyName:string;
+    price: number;
 }

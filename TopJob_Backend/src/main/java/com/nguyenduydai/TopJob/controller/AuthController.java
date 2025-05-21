@@ -1,5 +1,9 @@
 package com.nguyenduydai.TopJob.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,12 +14,24 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest.Builder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
@@ -29,6 +45,7 @@ import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -51,7 +68,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) throws IdInvalidException {
         // nạp input gốm username/password vào security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername(), loginDTO.getPassword());
@@ -61,6 +78,9 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO resLoginDTO = new ResLoginDTO();
         User currUser = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        if (!currUser.isActive()) {
+            throw new IdInvalidException("Nhà tuyển dụng này chưa được xác thực");
+        }
         if (currUser != null) {
             Company company = currUser.getCompany();
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currUser.getId(),
@@ -178,4 +198,130 @@ public class AuthController {
         User user = this.userService.handleCreateRegisterUser(postManUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
     }
+
+    // @GetMapping("/auth/login/facebook")
+    // @ApiMessage("login facebook")
+    // public ResponseEntity<Map<String, String>> facebookLogin() {
+    // ClientRegistration facebookRegistration =
+    // clientRegistrationRepository.findByRegistrationId("facebook");
+    // if (facebookRegistration == null) {
+    // return ResponseEntity.badRequest().body(Map.of("error", "Facebook login not
+    // configured."));
+    // }
+    // // Sử dụng OAuth2AuthorizationRequest.Builder
+    // Builder builder =
+    // OAuth2AuthorizationRequest.builder(facebookRegistration.getRegistrationId());
+    // OAuth2AuthorizationRequest authorizationRequest = builder
+    // .redirectUri("/api/v1/login/oauth2/facebook") // Phải trùng với cấu hình trên
+    // Facebook và application.properties
+    // .scope("email", "public_profile") // Sử dụng .scopes() thay vì .scope() cho
+    // nhiều scope
+    // .state(java.util.UUID.randomUUID().toString()) // Optional: Thêm state để
+    // chống CSRF
+    // .build();
+    // // OAuth2AuthorizationRequest authorizationRequest =
+    // OAuth2AuthorizationRequest
+    // // .authorizationCode()
+    // // .clientId("facebook")
+    // // .redirectUri("/api/v1/login/oauth2/facebook")
+    // // .scope("email", "public_profile")
+    // // .state(java.util.UUID.randomUUID().toString())
+    // // .build();
+
+    // Map<String, String> response = new HashMap<>();
+    // response.put("authorizationUrl", authorizationRequest.getAuthorizationUri());
+    // return ResponseEntity.ok(response);
+    // public ResponseEntity<Map<String, String>> facebookLogin(HttpServletRequest
+    // request) {
+    // ClientRegistration facebookRegistration =
+    // clientRegistrationRepository.findByRegistrationId("facebook");
+    // if (facebookRegistration == null) {
+    // return ResponseEntity.badRequest().body(Map.of("error", "Facebook login not
+    // configured."));
+    // }
+    // OAuth2AuthorizationRequest authorizationRequest =
+    // authorizationRequestResolver.resolve(request, "facebook");
+    // if (authorizationRequest == null) {
+    // // Handle the case where authorization request cannot be resolved
+    // // This might happen if the client registration ID is incorrect
+    // return ResponseEntity.badRequest()
+    // .body(Map.of("error", "Could not resolve authorization request for
+    // Facebook."));
+    // }
+
+    // Map<String, String> response = new HashMap<>();
+    // response.put("authorizationUrl", authorizationRequest.getAuthorizationUri());
+    // return ResponseEntity.ok(response);
+    // }
+
+    // @GetMapping("/login/oauth2/facebook")
+    // @ApiMessage("login facebook callback")
+    // public ResponseEntity<ResLoginDTO> facebookCallback(
+    // @RequestParam("code") String code, // Mã ủy quyền từ Facebook
+    // OAuth2AuthenticationToken authenticationToken) {
+    // if (authenticationToken != null && authenticationToken.isAuthenticated()) {
+    // OAuth2AuthorizedClient authorizedClient = authorizedClientService
+    // .loadAuthorizedClient(
+    // authenticationToken.getAuthorizedClientRegistrationId(),
+    // authenticationToken.getName());
+    // if (authorizedClient != null) {
+    // OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+    // OAuth2User principal = (OAuth2User) authenticationToken.getPrincipal();
+    // // Tạo JWT dựa trên thông tin người dùng (principal)
+    // String email = principal.getAttribute("email").toString();
+    // String name = principal.getAttribute("name").toString();
+    // boolean emailExist = this.userService.isEmailExist(email);
+    // User user = new User();
+    // if (!emailExist) {
+    // ReqRegisterUserDTO req = new ReqRegisterUserDTO();
+    // req.setEmail(email);
+    // req.setName(name);
+    // user = this.userService.handleCreateRegisterUser(req);
+    // } else {
+    // user = this.userService.handleGetUserByUsername(email);
+    // }
+    // ResLoginDTO resLoginDTO = new ResLoginDTO();
+    // ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+    // user.getId(), user.getEmail(), user.getName(), user.getRole(),
+    // user.getCompany());
+    // resLoginDTO.setUser(userLogin);
+    // String access_token = securityUtil.createAccessToken(email, resLoginDTO);
+
+    // // Lưu thông tin người dùng vào database nếu cần (sử dụng
+    // // CustomOAuth2UserService)
+    // // ...
+    // // Map<String, String> response = new HashMap<>();
+    // // response.put("accessToken", jwtToken);
+    // // // Có thể trả về thêm thông tin người dùng nếu cần
+    // // response.put("userId", principal.getName());
+    // // response.put("email",
+    // // principal.getAttribute("email") != null ?
+    // // principal.getAttribute("email").toString() : null);
+    // // response.put("name",
+    // // principal.getAttribute("name") != null ?
+    // // principal.getAttribute("name").toString() : null);
+    // // return ResponseEntity.ok(response);
+
+    // resLoginDTO.setAccessToken(access_token);
+    // // create refresh token
+    // String refreshToken = this.securityUtil.createRefreshToken(email,
+    // resLoginDTO);
+    // // update user
+    // this.userService.updateUserToken(refreshToken, email);
+    // // set cookies
+    // ResponseCookie responseCookie = ResponseCookie.from("refresh_token",
+    // refreshToken)
+    // .httpOnly(true).secure(true).path("/").maxAge(refreshTokenExpiration).build();
+    // return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+    // responseCookie.toString()).body(resLoginDTO);
+    // } else {
+    // ResLoginDTO resLoginDTO = new ResLoginDTO();
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resLoginDTO);
+    // }
+    // } else {
+    // ResLoginDTO resLoginDTO = new ResLoginDTO();
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resLoginDTO);
+    // }
+
+    // }
 }

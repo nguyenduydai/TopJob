@@ -23,4 +23,7 @@ public class ReqRegisterUserDTO {
     private String companyName;
     private String companyAddress;
     private long roleId;
+    private String typeVip;
+    private String businessLicense;
+    private boolean active;
 }

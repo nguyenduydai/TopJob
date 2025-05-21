@@ -55,6 +55,11 @@ export const ALL_PERMISSIONS = {
         GET_PAGINATE_FOR_COMPANY: { method: "GET", apiPath: '/api/v1/talentcandidate', module: "TALENTCANDIDATE" },
         CREATE_FOR_COMPANY: { method: "POST", apiPath: '/api/v1/talentcandidate', module: "TALENTCANDIDATE" },
     },
+    PAYMENTHISTORY: {
+        GET_PAGINATE_PAYMENTHISTORY: { method: "GET", apiPath: '/api/v1/payment-history', module: "PAYMENTHISTORY" },
+        DELETE: { method: "DELETE", apiPath: '/api/v1/payment-history/{id}', module: "PAYMENTHISTORY" },
+        GET_PAYMENTHISTORY_BYID: { method: "GET", apiPath: '/api/v1/payment-history/{id}', module: "PAYMENTHISTORY" }
+    },
 }
 
 export const ALL_MODULES = {
@@ -67,5 +72,6 @@ export const ALL_MODULES = {
     USERS: 'USERS',
     SUBSCRIBERS: 'SUBSCRIBERS',
     BLOGS:'BLOGS',
-    TALENTCANDIDATE:'TALENTCANDIDATE'
+    TALENTCANDIDATE:'TALENTCANDIDATE',
+    PAYMENTHISTORY:'PAYMENTHISTORY'
 }

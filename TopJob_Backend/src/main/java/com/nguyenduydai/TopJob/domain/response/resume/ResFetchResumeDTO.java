@@ -28,6 +28,7 @@ public class ResFetchResumeDTO {
     private JobResume job;
     private UserResume user;
     private String companyName;
+    private String jobName;
 
     @Getter
     @Setter

@@ -1,7 +1,7 @@
 import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IJob } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SolutionOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useEffect, useRef, useState } from 'react';
@@ -80,17 +80,20 @@ const JobPage = () => {
         {
             title: 'Tên',
             dataIndex: 'name',
+            width: 250,
             sorter: true,
         },
         {
             title: 'Công ty',
             dataIndex: ["company", "name"],
+            width: 100,
             sorter: true,
             hideInSearch: true,
         },
         {
             title: 'Mức lương',
             dataIndex: 'salary',
+            width: 100,
             sorter: true,
             render(dom, entity, index, action, schema) {
                 const str = "" + entity.salary;
@@ -100,6 +103,7 @@ const JobPage = () => {
         {
             title: 'Trình độ',
             dataIndex: 'level',
+            width: 80,
             renderFormItem: (item, props, form) => (
                 <ProFormSelect
                     showSearch
@@ -119,6 +123,7 @@ const JobPage = () => {
         {
             title: 'Trạng thái',
             dataIndex: 'active',
+            width: 70,
             render(dom, entity, index, action, schema) {
                 return <>
                     <Tag color={entity.active ? "lime" : "red"} >
@@ -132,7 +137,7 @@ const JobPage = () => {
         {
             title: 'Ngày tạo',
             dataIndex: 'createdAt',
-            width: 200,
+            width: 150,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -144,7 +149,7 @@ const JobPage = () => {
         {
             title: 'Ngày sửa',
             dataIndex: 'updatedAt',
-            width: 200,
+            width: 150,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -199,7 +204,28 @@ const JobPage = () => {
                     </Access>
                 </Space >
             ),
-
+        },
+        {
+            title: 'Xem đơn ứng tuyển',
+            hideInSearch: true,
+            width: 90,
+            sorter: true,
+            render: (_value, entity, _index, _action) => {
+                return (
+                    <SolutionOutlined 
+                            style={{
+                                fontSize: 20,
+                                color: '#7fa500',
+                                textAlign:'center'
+                            }}
+                            type=""
+                            onClick={() => { 
+                                navigate(`/admin/resume/by-job?id=${entity.id}`)
+                            }}
+                        />
+                   
+                )
+            },
         },
     ];
 

@@ -6,7 +6,7 @@ import styles from 'styles/admin.module.scss';
 import { LOCATION_LIST, SKILLS_LIST } from "@/config/utils";
 import { ICompanySelect } from "../user/modal.user";
 import { useState, useEffect } from 'react';
-import { callCreateJob, callFetchAllSkill, callFetchCompany, callFetchJobById, callUpdateJob } from "@/config/api";
+import { callCreateJob, callFetchAllSkill, callFetchCompany, callFetchJobAdmin, callFetchJobById, callUpdateJob, callUserById } from "@/config/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { CheckSquareOutlined } from "@ant-design/icons";
@@ -46,6 +46,31 @@ const ViewUpsertJob = (props: any) => {
     const clearIconSelector = '.ant-picker-clear';
     const user = useAppSelector(state => state.account.user);
     const displayCompany=user?.role?.id=="1" ? false:true;
+     const [totalJob, setTotalJob] = useState<number>(0);
+     const [vip, setVip] = useState<string>('');
+    useEffect(() => {
+        fetchJob();
+        handleGetUser();
+    }, [])
+        
+        const fetchJob = async () => {
+                const res = await callFetchJobAdmin('');
+                if (res && res.data) {
+                    setTotalJob(res.data.meta.total);
+                }else {
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: res.message
+                    });
+                }
+        }
+           const handleGetUser=async()=>{
+                    const res=await callUserById(user.id);
+                    console.log(user.id);
+                    if(res?.data){
+                        setVip(res.data?.typeVip);
+                    }
+            } 
     useEffect(() => {
         const init = async () => {
             const temp = await fetchSkillList();
@@ -54,7 +79,7 @@ const ViewUpsertJob = (props: any) => {
                 setCompanies([
                     {
                         label: user?.company?.name as string,
-                        value: user?.company?.id as string,
+                        value: `${user.company?.id}` as string,
                         key:user?.company?.id 
                     }
                 ])
@@ -67,7 +92,7 @@ const ViewUpsertJob = (props: any) => {
                     setCompanies([
                         {
                             label: res.data.company?.name as string,
-                            value: `${res.data.company?.id}@#$${res.data.company?.logo}` as string,
+                            value: `${res.data.company?.id}` as string,
                             key: res.data.company?.id
                         }
                     ])
@@ -129,6 +154,18 @@ const ViewUpsertJob = (props: any) => {
     }
 
     const onFinish = async (values: any) => {
+        let companyHr=  {
+            id: '',
+            name: '',
+        };
+        if(!displayCompany){
+            companyHr={
+                id:user.company.id?user.company.id :'',
+                name:user.company.name?user.company.name:''
+            }
+        }
+
+
         if (dataUpdate?.id) {
             //update
             const cp = values?.company?.value?.split('@#$');
@@ -140,25 +177,27 @@ const ViewUpsertJob = (props: any) => {
                 arrSkills = values?.skills?.map((item: any) => { return { id: +item } });
             }
             console.log('chay voa day');
+            
             const job = {
                 name: values.name,
                 skills: arrSkills,
-                company: {
-                    id: cp && cp.length > 0 ? cp[0] : "",
-                    name: values.company.label,
-                    logo: cp && cp.length > 1 ? cp[1] : ""
-                },
+                 company: cp ?{
+                    id: cp[0],
+                    name:  values?.company?.label 
+                } : undefined,  
+                
+                
                 location: values.location,
                 salary: values.salary,
                 quantity: values.quantity,
                 level: values.level,
+                jobEnvironment:values.jobEnvironment,
                 description: value,
-
+                experienceRequirement:values.experienceRequirement,
                 startDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.startDate) ? dayjs(values.startDate, 'DD/MM/YYYY').toDate() : values.startDate,
                 endDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.endDate) ? dayjs(values.endDate, 'DD/MM/YYYY').toDate() : values.endDate,
                 active: values.active,
             }
-
             const res = await callUpdateJob(job, dataUpdate.id);
             if (res.data) {
                 message.success("Cập nhật job thành công");
@@ -170,27 +209,34 @@ const ViewUpsertJob = (props: any) => {
                 });
             }
         } else {
+            if(  (totalJob>=1&&vip==="VIP 0") || (totalJob>=5&&vip==="VIP 1") ){
+                notification.error({
+                    message: 'Tài khoản bạn đã đăng số tin tuyển dụng tối đa',
+                    description: "Hãy nâng cấp tài khoản để có thể đăng thêm tin tuyển dụng"
+                });
+            }else{
             //create
             const cp = values?.company?.value?.split('@#$');
             const arrSkills = values?.skills?.map((item: string) => { return { id: +item } });
             const job = {
                 name: values.name,
                 skills: arrSkills,
-                company: {
-                    id: cp && cp.length > 0 ? cp[0] : "",
-                    name: values.company.label,
-                    logo: cp && cp.length > 1 ? cp[1] : ""
-                },
+                company: cp ?{
+                    id: cp[0],
+                    name:  values?.company?.label 
+                } : undefined,  
+                
                 location: values.location,
                 salary: values.salary,
                 quantity: values.quantity,
                 level: values.level,
+                jobEnvironment:values.jobEnvironment,
                 description: value,
                 startDate: dayjs(values.startDate, 'DD/MM/YYYY').toDate(),
                 endDate: dayjs(values.endDate, 'DD/MM/YYYY').toDate(),
-                active: values.active
+                active: values.active,
+                 experienceRequirement:values.experienceRequirement
             }
-
             const res = await callCreateJob(job);
             if (res.data) {
                 message.success("Tạo mới job thành công");
@@ -201,13 +247,15 @@ const ViewUpsertJob = (props: any) => {
                     description: res.message
                 });
             }
+            }
+           
         }
     }
 
 
     return (
         <div className={styles["upsert-job-container"]}>
-            <h2>{dataUpdate?.id ?"Cập nhật việc làm" :"Thêm việc làm mới"}</h2>
+            <h2>{dataUpdate?.id ?"Cập nhật công việc" :"Thêm công việc mới"}</h2>
             <div className={styles["title"]}>
                 <Breadcrumb
                     separator=">"
@@ -216,10 +264,11 @@ const ViewUpsertJob = (props: any) => {
                             title: <Link to="/admin/job">Quản lý công việc</Link>,
                         },
                         {
-                            title: <>{dataUpdate?.id ?"Cập nhật việc làm" :"Thêm việc làm mới"}</> ,
+                            title: <>{dataUpdate?.id ?"Cập nhật công việc" :"Thêm công việc mới"}</> ,
                         }
                     ]}
                 />
+                <div style={{textAlign:'center',color:'#1677ff'}}>Bạn đã đăng {totalJob} tin tuyển dụng trong năm nay</div>
             </div>
             <div >
 
@@ -313,13 +362,47 @@ const ViewUpsertJob = (props: any) => {
                                     rules={[{ required: true, message: 'Vui lòng chọn level!' }]}
                                 />
                             </Col>
+                            <Col span={24} md={6}>
+                                <ProFormSelect
+                                    name="jobEnvironment"
+                                    label="Loại hình"
+                                    valueEnum={{
+                                        OFFICE: 'OFFICE',
+                                        REMOTE: 'REMOTE',
+                                        HYBRID: 'HYBRID',
+                                        FREELANCE: 'FREELANCE',
+                                        OTHER: 'OTHER',
+                                    }}
+                                    placeholder="Nhập loại hình"
+                                    rules={[{ required: true, message: 'Vui lòng chọn loại hình!' }]}
+                                />
+                            </Col>
 
-                            {(dataUpdate?.id || !id) &&
-                                <Col span={24} md={6}>
+
+                        </Row>
+                        <Row gutter={[20, 20]}>
+                                <Col span={24} md={5}>
+                                    <ProFormSelect
+                                        name="experienceRequirement"
+                                        label="Yêu cầu kinh nghiệm"
+                                        valueEnum={{
+                                            '0-2 YEARS': '0-2 năm kinh nghiệm',
+                                            '1-3 YEARS': '1-3 năm kinh nghiệm',
+                                            '2-4 YEARS': '2-4 năm kinh nghiệm',
+                                            '3-5 YEARS': '3-5 năm kinh nghiệm',
+                                            '4-6 YEARS': '4-6 năm kinh nghiệm',
+                                            '5-8 YEARS': '5-8 năm kinh nghiệm'
+                                        }}
+                                        placeholder="Nhập yêu cầu kinh nghiệm"
+                                        rules={[{ required: true, message: 'Vui lòng chọn yêu cầu kinh nghiệm!' }]}
+                                    />
+                                </Col>
+                                                        {(dataUpdate?.id || !id) &&
+                                <Col span={24} md={5}>
                                     <ProForm.Item
                                         name="company"
                                         label="Thuộc Công Ty"
-                                        rules={[{ required: true, message: 'Vui lòng chọn company!' }]}
+                                        rules={[{ required: false, message: 'Vui lòng chọn company!' }]}
                                         
                                     >
                                         <DebounceSelect
@@ -334,6 +417,7 @@ const ViewUpsertJob = (props: any) => {
                                                 // if (newValue?.length === 0 || newValue?.length === 1) {
                                                 //     setCompanies(newValue as ICompanySelect[]);
                                                 // }
+                                                form.setFieldsValue({ company: newValue });
                                                 setCompanies(newValue as ICompanySelect[]);
                                             }}
                                             style={{ width: '100%' }}
@@ -342,10 +426,7 @@ const ViewUpsertJob = (props: any) => {
 
                                 </Col>
                             }
-
-                        </Row>
-                        <Row gutter={[20, 20]}>
-                            <Col span={24} md={6}>
+                            <Col span={24} md={5}>
                                     <ProFormDatePicker 
                                     label="Ngày bắt đầu"
                                     name="startDate"
@@ -359,7 +440,7 @@ const ViewUpsertJob = (props: any) => {
                                 />
                             
                             </Col>
-                            <Col span={24} md={6}>
+                            <Col span={24} md={5}>
                                 <ProFormDatePicker
                                     label="Ngày kết thúc"
                                     name="endDate"
@@ -374,7 +455,7 @@ const ViewUpsertJob = (props: any) => {
                                 />
                                 
                             </Col>
-                            <Col span={24} md={6}>
+                            <Col span={24} md={4}>
                                 <ProFormSwitch
                                     label="Trạng thái"
                                     name="active"

@@ -5,17 +5,31 @@ import map from 'lodash/map';
 
 export const SKILLS_LIST =
     [
+        { label: "Java", value: "JAVA" },
+        { label: "PHP", value: "PHP" },
+        { label: "Python", value: "PYTHON" },
+        { label: "JavaScript", value: "JAVASCRIPT" },
+        { label: "C++", value: "C++" },
+        { label: "C#", value: "C#" },
+
         { label: "React.JS", value: "REACT.JS" },
         { label: "React Native", value: "REACT NATIVE" },
         { label: "Vue.JS", value: "VUE.JS" },
         { label: "Angular", value: "ANGULAR" },
+
         { label: "Nest.JS", value: "NEST.JS" },
-        { label: "TypeScript", value: "TYPESCRIPT" },
-        { label: "Java", value: "JAVA" },
         { label: "Java Spring", value: "JAVA SPRING" },
+        { label: "Asp.Net", value: "ASP.NET" },
+        { label: "Laravel", value: "LARAVEL" },
+
         { label: "Frontend", value: "FRONTEND" },
         { label: "Backend", value: "BACKEND" },
-        { label: "Fullstack", value: "FULLSTACK" }
+        { label: "Fullstack", value: "FULLSTACK" },
+        { label: "Game", value: "GAME" },
+        { label: "Android", value: "ANDROID" },
+        { label: "AI Engineer", value: "AI ENGINEER" },
+        { label: "DevOps", value: "DEVOPS" },
+        { label: "TESTER", value: "TESTER" }
     ];
 
 export const LOCATION_LIST =
@@ -23,6 +37,23 @@ export const LOCATION_LIST =
         { label: "Hà Nội", value: "HANOI" },
         { label: "Hồ Chí Minh", value: "HOCHIMINH" },
         { label: "Đà Nẵng", value: "DANANG" },
+        { label: "Others", value: "OTHER" }
+    ];
+    export const LEVEL_LIST =
+    [
+        { label: "Intern", value: "INTERN" },
+        { label: "Fresher", value: "FRESHER" },
+        { label: "Junior", value: "JUNIOR" },
+        { label: "Middle", value: "MIDDLE" },
+        { label: "Senior", value: "SENIOR" },
+        { label: "Others", value: "OTHER" }
+    ];
+    export const Environment_LIST =
+    [
+        { label: "Office", value: "OFFICE" },
+        { label: "Remote", value: "REMOTE" },
+        { label: "Hybrid", value: "HYBRID" },
+        { label: "Freelance", value: "FREELANCE" },
         { label: "Others", value: "OTHER" },
     ];
 
@@ -48,6 +79,7 @@ export const LOCATION_LIST =
         { label: "10 năm kinh nghiệm", value: "10 YEARS" },
 
     ];
+
 export const nonAccentVietnamese = (str: string) => {
     str = str.replace(/A|Á|À|Ã|Ạ|Â|Ấ|Ầ|Ẫ|Ậ|Ă|Ắ|Ằ|Ẵ|Ặ/g, "A");
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -89,6 +121,11 @@ export const convertSlug = (str: string) => {
     return str;
 }
 
+export const getLevelName = (value: string) => {
+    const levelFilter = LEVEL_LIST.filter(item => item.value === value);
+    if (levelFilter.length) return levelFilter[0].label;
+    return 'unknown'
+}
 export const getLocationName = (value: string) => {
     const locationFilter = LOCATION_LIST.filter(item => item.value === value);
     if (locationFilter.length) return locationFilter[0].label;
@@ -98,6 +135,12 @@ export const getLocationName = (value: string) => {
 export const getEducationnName = (value: string) => {
     const locationFilter = EDUCATION_LIST.filter(item => item.value === value);
     if (locationFilter.length) return locationFilter[0].label;
+    return 'unknown'
+}
+
+export const getEnvironmentName = (value: string) => {
+    const EnvironmentFilter = Environment_LIST.filter(item => item.value === value);
+    if (EnvironmentFilter.length) return EnvironmentFilter[0].label;
     return 'unknown'
 }
 export const getExperienceName = (value: string) => {

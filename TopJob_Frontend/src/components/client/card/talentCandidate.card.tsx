@@ -1,8 +1,8 @@
-import { callFetchAllBlog, callFetchTalentCandidateForCompany } from '@/config/api';
+import { callFetchAllBlog, callFetchTalentCandidateForCompany, callSendEmailTalentCandidate } from '@/config/api';
 import { convertSlug, getEducationnName, getExperienceName } from '@/config/utils';
 import { IBlog, ITalentCandidate, IUser } from '@/types/backend';
 import { HeartOutlined, StarOutlined } from '@ant-design/icons';
-import { Card, Col, Divider, Empty, Pagination, Row, Spin } from 'antd';
+import { Button, Card, Col, Divider, Empty, message, notification, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Link, useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ const TalentCandidateCard = (props: IProps) => {
 
     useEffect(() => {
         fetchCandidate();
-    }, [current, pageSize, filter, sortQuery]);
+    }, [reload,current, pageSize, filter, sortQuery]);
 
     const fetchCandidate = async () => {
         setIsLoading(true)
@@ -51,7 +51,20 @@ const TalentCandidateCard = (props: IProps) => {
         setIsLoading(false)
     }
 
-
+    const handleSendEmail=async(id:string|number) =>{
+        console.log(id);
+        console.log(typeof(id));
+        const res= await callSendEmailTalentCandidate(id);
+          
+         if (+res.statusCode===200) {
+            message.success("Gửi email thông báo thành công!");
+        } else {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.message
+            });
+        }
+    }
     const handleOnchangePage = (pagination: { current: number, pageSize: number }) => {
         if (pagination && pagination.current !== current) {
             setCurrent(pagination.current)
@@ -73,7 +86,7 @@ const TalentCandidateCard = (props: IProps) => {
         <div className={`${styles["card-job-section"]}`} style={{width:'100%',margin:0,padding:0}}>
             <div className={styles["job-content"]}  style={{width:'100%',margin:0,padding:0}}>
                 <Spin spinning={isLoading} tip="Loading...">
-                    <Row gutter={[15, 10]}>
+                    <Row gutter={[10, 10]}>
 
                         {displayCandidate?.map(item => {
                             return (
@@ -81,7 +94,7 @@ const TalentCandidateCard = (props: IProps) => {
                                     <Card 
                                         className={styles["card-job-card"]}
                                         onClick={() => handleViewDetailBlog(item)}
-                                        style={{ height: 123 }}
+                                        style={{ height: 156 }}
                                         hoverable
                                         cover={
                                             <div className={styles["card-customize"]} style={{ display:"flex" }}>
@@ -91,7 +104,7 @@ const TalentCandidateCard = (props: IProps) => {
                                                     alt="example"
                                                     src={avata}
                                                 />
-                                                <div style={{textAlign:'center'}}>{(item.compatibilityScore* 10).toFixed(2)}/10&nbsp;<StarOutlined /></div>
+                                                <div style={{textAlign:'center'}}>{(item.compatibilityScore).toFixed(2)}/10&nbsp;<StarOutlined /></div>
                                                 </div>
        
                                                 <div style={{ width:'100%'}}>   
@@ -108,6 +121,7 @@ const TalentCandidateCard = (props: IProps) => {
                                                         target="_blank"
                                                         >Xem CV</a>&nbsp; &lt;&lt;&lt;
                                                     </div>
+                                                    <Button style={{marginLeft:30,marginTop:5}} type='primary' onClick={()=>handleSendEmail(item.id?item.id:'')}>Gửi thư mời</Button>
                                                 </div>
                                             </div>
                                         }
@@ -137,6 +151,7 @@ const TalentCandidateCard = (props: IProps) => {
                             
                         </Row>
                     </>}
+                       <br/> 
                 </Spin>
             </div>
         </div>

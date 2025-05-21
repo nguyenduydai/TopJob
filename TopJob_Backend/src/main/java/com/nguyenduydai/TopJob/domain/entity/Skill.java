@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -31,4 +33,10 @@ public class Skill extends BaseEntity {
     @JsonIgnore
     List<Subscriber> subscribers;
 
+    @ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<TalentCandidate> talentCandidates;
+    // @ManyToOne
+    // @JoinColumn(name = "talentCandidate_id")
+    // private TalentCandidate talentCandidate;
 }

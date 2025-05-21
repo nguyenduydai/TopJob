@@ -49,7 +49,7 @@ const ClientBlogDetailPage = (props: any) => {
     }, [id]);
 
     return (
-        <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
+        <div className={`${styles["container"]} ${styles["detail-job-section"]} ${styles["modal-infor-detail"]}`}>
             {isLoading ?
                 <Skeleton />
                 :
@@ -58,17 +58,17 @@ const ClientBlogDetailPage = (props: any) => {
                         <>
                             <Col span={24} md={24}>
                                 <div className={styles["blog"]}>
-                                    <div style={{ marginLeft:350 ,marginTop:30} }>
+                                    <div style={{ marginLeft:450 ,marginTop:30} }>
                                         <img 
                                             
-                                            width={800}
+                                            width={600}
                                             alt="example"
                                             src={`${import.meta.env.VITE_BACKEND_URL}/storage/blog/${blogDetail?.thumbnail}`}
                                         />
                                     </div>
                                 </div>
                             </Col>
-                            <Col span={24} md={21} style={{marginLeft:100,marginRight:100,marginBottom:50}}>
+                            <Col span={24} md={21} style={{marginLeft:100,marginRight:100,marginBottom:30}}>
                                 <h1 className={styles["header"]}>
                                     {blogDetail.title}
                                 </h1>
@@ -77,7 +77,7 @@ const ClientBlogDetailPage = (props: any) => {
                                    Lượt thích :&nbsp; {likeCount} &nbsp; <HeartOutlined style={{ fontSize:20, fontWeight:900,color: like ? "#ff0000" : "#000000" }} />
                                 </span>
 
-                                <Divider />
+                                {/* <Divider /> */}
                                 {parse(blogDetail?.content ?? "")}
                             </Col>
 

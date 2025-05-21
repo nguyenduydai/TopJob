@@ -43,7 +43,7 @@ const ClientCompanyDetailPage = (props: any) => {
     }, [id]);
 
     return (
-        <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
+        <div className={`${styles["container"]} ${styles["detail-job-section"]} ${styles["modal-infor-detail"]}`}>
             {isLoading ?
                 <Skeleton />
                 :
@@ -55,8 +55,8 @@ const ClientCompanyDetailPage = (props: any) => {
                                     {companyDetail.name}
                                 </div>
 
-                                <div className={styles["location"]}>
-                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{(companyDetail?.address)}
+                                <div className={styles["location"]} style={{ color: '#1677ff',fontSize:16 }}>
+                                    <EnvironmentOutlined style={{ color: '#1677ff',fontSize:16 }} />&nbsp;{(companyDetail?.address)}
                                 </div>
 
                                 <Divider />
@@ -71,8 +71,8 @@ const ClientCompanyDetailPage = (props: any) => {
                                             {parse(companyDetail?.description ?? "")}
                                         </div>
 
-                                        <div style={{ marginTop: 10 }}>
-                                            <a onClick={toggleExpand} style={{ color: '#58aaab', cursor: 'pointer' }}>
+                                        <div style={{ marginTop: 10,textAlign:'center' }}>
+                                            <a onClick={toggleExpand} style={{ color: '#1677ff', cursor: 'pointer',fontSize:16  }}>
                                                 {isExpanded ? "Thu gọn mô tả ▲" : "Xem thêm mô tả ▼"}
                                             </a>
                                         </div>

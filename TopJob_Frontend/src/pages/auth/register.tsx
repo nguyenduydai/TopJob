@@ -19,8 +19,11 @@ const RegisterPage = () => {
         let phone='';
         let roleId=+3;
         let gender=null;
+        let typeVip=null;
+        let businessLicense=null;
+        let active=true;
         setIsSubmit(true);
-        const res = await callRegister(name,phone, email, password,companyName, companyAddress,roleId, +age, gender, address);
+        const res = await callRegister(name,phone, email, password,companyName, companyAddress,roleId, +age, gender, address,typeVip,businessLicense,active);
         setIsSubmit(false);
         if (res?.data) {
             message.success('Đăng ký tài khoản thành công!');

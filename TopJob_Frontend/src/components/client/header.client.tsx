@@ -37,7 +37,7 @@ const Header = (props: any) => {
             icon: <HomeOutlined />,
         },
         {
-            label: <Link to={'/job'}>Việc Làm IT</Link>,
+            label: <Link to={'/job'}>Công Việc IT</Link>,
             key: '/job',
             icon:<FormOutlined />,
         },
@@ -52,7 +52,7 @@ const Header = (props: any) => {
             icon: <ReadOutlined />,
         },
         {
-            label: <Link to={'/recommend'}>Tìm việc làm phù hợp</Link>,
+            label: <Link to={'/recommend'}>Tìm công việc phù hợp</Link>,
             key: '/recommend',
             icon: <AuditOutlined />,
         }
@@ -121,8 +121,7 @@ const Header = (props: any) => {
                                         },
                                     }}
                                 >
-
-                                    <Menu
+                                    <Menu style={{width:800}}
                                         // onClick={onClick}
                                         selectedKeys={[current]}
                                         mode="horizontal"
@@ -132,7 +131,7 @@ const Header = (props: any) => {
                                 <div className={styles['extra']}>
                                     {isAuthenticated === false ?
                                         <div  className={styles['extra-login']}>
-                                            <Link className={styles['extra-login-hr']}  to={'/registerhr'}>Bạn là nhà tuyển dụng?</Link>
+                                            <Link className={styles['extra-login-hr']}  to={'/login?user=hr'}>Bạn là nhà tuyển dụng?</Link>
                                             <Link to={'/login?user=candidate'}>Đăng Nhập</Link>
                                         </div>
                                         :

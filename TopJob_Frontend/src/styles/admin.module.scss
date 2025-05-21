@@ -47,7 +47,7 @@
         .dashboard-header{
        
             display: flex;
-            justify-content:space-between;
+            justify-content:space-around;
             span{
                 text-align: center;
                 color: #1677ff;
@@ -73,4 +73,39 @@
         }
     }
    
+}
+.payment-modal{
+    .payment-content{
+        width: 350px;   
+        height: 160px;
+        background-color: #fbebd2;
+        border-radius: 10px;
+        p{
+            font-style: italic;
+            margin-left: 5px;
+        }
+        &:hover{
+            cursor: pointer;
+            background-color:#6faff4 ;
+        }
+        &.active {
+            background-color: #1677ff;
+            color: white;
+        }
+    }
+}
+.reportjob{
+    background-color: #1677ff;
+    padding: 10px 0;
+    text-align: center;
+    width: 30%;
+    border-radius: 20px;
+    color: aliceblue;
+    p{
+        text-align: center;
+    }
+    &:hover{
+        cursor: pointer;
+        background-color: #6faff4;
+    }
 }

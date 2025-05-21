@@ -44,7 +44,7 @@ const ClientRecommendPage = () => {
     return (
     <>
         {isAuthenticated ? 
-            <div ><div className={`${styles["container"]} ${styles["modal-infor"]}`} >
+            <div ><div className={`${styles["container"]} ${styles["modal-infor"]} `} >
                 <div style={{paddingTop:20}}></div>
                 {isModalPopconfirmOpen ?
                         <div className={`${styles["recommendation"]}`}  >

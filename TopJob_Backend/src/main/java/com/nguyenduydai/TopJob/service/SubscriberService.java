@@ -39,6 +39,7 @@ public class SubscriberService {
             List<Skill> ls = this.skillRepository.findByIdIn(p);
             r.setSkills(ls);
         }
+        this.sendSubscriberEmailJobs();
         return this.subscriberRepository.save(r);
     }
 
@@ -49,6 +50,7 @@ public class SubscriberService {
             subscriberInDb.setSkills(listSkill);
         }
         subscriberInDb.setEmail(subscriber.getEmail());
+        this.sendSubscriberEmailJobs();
         return this.subscriberRepository.save(subscriberInDb);
     }
 
@@ -83,6 +85,7 @@ public class SubscriberService {
     }
 
     public void sendSubscriberEmailJobs() {
+        System.out.println("sssssssssssssssssssssssssssss đã chạy vào hàm gửi email");
         List<Subscriber> listSubs = this.subscriberRepository.findAll();
         if (listSubs != null && listSubs.size() > 0) {
             for (Subscriber sub : listSubs) {

@@ -1,6 +1,6 @@
 import { Button, Divider, Form, Input, message, notification } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { callLogin } from 'config/api';
+import { callLogin, callLoginFacebook, callLoginFacebookCallBack } from 'config/api';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '@/redux/slice/accountSlide';
@@ -8,6 +8,7 @@ import styles from 'styles/auth.module.scss';
 import { useAppSelector } from '@/redux/hooks';
 import ahr from '../../assets/ahr.jpg';
 import auser from '../../assets/auser.png';
+import { BackwardOutlined, DoubleLeftOutlined, DoubleRightOutlined, FacebookOutlined, ForwardOutlined, GooglePlusOutlined, HighlightOutlined, MailOutlined ,} from '@ant-design/icons';
 const LoginPage = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
@@ -100,7 +101,12 @@ const LoginPage = () => {
         }
     };
 
-
+    const handleFacebookLogin =  () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/facebook";
+    };
+    const handleGoogleLogin = async () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    };
     return (
         <div className={styles["login-page"]} style={{backgroundColor:`${backgroundColor}`}}>
             <main className={styles.main}>
@@ -127,9 +133,9 @@ const LoginPage = () => {
                             />
                         </div>
                     </div>
-                    <section className={styles.wrapper}>
+                    <section className={styles.wrapper} style={{paddingTop:40,paddingBottom:50,backgroundColor:backgroundColor==='#fcf4e6'?'#beebf6': backgroundColor==='#beebf6'?'#fcf4e6':'#fff'}}>
                         <div className={styles.heading}>
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}> {name} </h2>
+                            <h2 className={`${styles.text} ${styles["text-large"]}`}> <span style={{fontSize:'1.5rem'}}><ForwardOutlined /></span> {name} <span style={{fontSize:'1.5rem'}}><BackwardOutlined /></span> </h2>
                             <Divider />
 
                         </div>
@@ -139,22 +145,26 @@ const LoginPage = () => {
                             onFinish={onFinish}
                             autoComplete="off"
                         >
-                            <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Email"
+                           <Form.Item
+                               labelCol={{ span: 5 }} // Chiều rộng của label
+                               wrapperCol={{ span: 17 }} // Chiều rộng của input
+                                label={<span className={`${styles["fixed-label"]}`}>Email <MailOutlined /></span>}
                                 name="username"
                                 rules={[{ required: true, message: 'Email không được để trống!' }]}
+                                colon={false}
                             >
                                 <Input placeholder='Nhập email tại đây ...' />
                             </Form.Item>
 
                             <Form.Item
-                                labelCol={{ span: 24 }} //whole column
-                                label="Mật khẩu"
+                                labelCol={{ span: 5}} // Chiều rộng của label
+                               wrapperCol={{ span: 17 }} // Chiều rộng của input
+                                label={<span>Mật khẩu <HighlightOutlined /></span>}
                                 name="password"
                                 rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                                colon={false}
                             >
-                                <Input.Password placeholder='Nhập mật khẩu tại đây ...'/>
+                                <Input.Password  placeholder='Nhập mật khẩu tại đây ...'/>
                             </Form.Item>
 
                             <Form.Item
@@ -162,8 +172,10 @@ const LoginPage = () => {
                             >
                                 <Button type="primary" htmlType="submit" loading={isSubmit}>
                                     Đăng nhập
-                                </Button>   
+                                </Button>  
+                               
                             </Form.Item>
+               
                             <Divider>Nếu như</Divider>  
                             {name==="Đăng Nhập Ứng viên"? 
                                 (<p className="text text-normal">Chưa có tài khoản ứng viên ?
@@ -176,17 +188,20 @@ const LoginPage = () => {
                                         <Link to='/registerhr' > Đăng Ký Ngay </Link>
                                     </span>
                                 </p>) }
-                            
-                           
-                          
-
+                        
                             <Divider/>
                         </Form>
+                        {
+                            name==='Đăng Nhập Ứng viên'&& 
+                            <div>
+                                <button className={styles["login-social"]}  onClick={()=>handleFacebookLogin()}><span><FacebookOutlined /> </span>Đăng nhập bằng Facebook </button> 
+                                <button className={styles["login-social2"]} onClick={()=>handleGoogleLogin()}><span><GooglePlusOutlined /></span> Đăng nhập bằng Google</button> 
+                            </div> 
+                        }
                     </section>
                 </div>
             </main>
         </div>
     )
 }
-
-export default LoginPage;
+export { LoginPage };

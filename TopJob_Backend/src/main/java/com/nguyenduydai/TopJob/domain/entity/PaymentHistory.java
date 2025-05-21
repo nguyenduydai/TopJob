@@ -2,8 +2,6 @@ package com.nguyenduydai.TopJob.domain.entity;
 
 import java.time.Instant;
 
-import com.nguyenduydai.TopJob.util.constant.VipEnum;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,8 +21,7 @@ public class PaymentHistory extends BaseEntity {
 
     private String status;
 
-    @Enumerated(EnumType.STRING)
-    private VipEnum typeVip;
+    private String typeVip;
 
     private Instant paymentAt;
 

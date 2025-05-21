@@ -40,7 +40,7 @@ const CompanyPage = () => {
     const user = useAppSelector(state => state.account.user);
     const [isAdminNotHr, setIsAdminNotHr] = useState<boolean>(true);
     ////////////////
-    
+      const [dataBusinessLicense, setDataBusinessLicense] = useState<ICompanyLogo[]>([]);
         const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
         const [dataLogo, setDataLogo] = useState<ICompanyLogo[]>([]);
         const [previewOpen, setPreviewOpen] = useState(false);
@@ -49,17 +49,11 @@ const CompanyPage = () => {
     
         const [value, setValue] = useState<string>("");
         const [form] = Form.useForm();
-            const submitCompany = async (valuesForm: ICompanyForm) => {
+        const submitCompany = async (valuesForm: ICompanyForm) => {
                 const { name, address,website } = valuesForm;
-        
-                if (dataLogo.length === 0) {
-                    message.error('Vui lòng upload ảnh Logo')
-                    return;
-                }
-        
                 if (dataInit?.id) {
                     //update
-                    const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name);
+                    const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name,dataBusinessLicense[0].name);
                     if (res.data) {
                         message.success("Cập nhật company thành công");
                         handleReset();
@@ -71,8 +65,16 @@ const CompanyPage = () => {
                         });
                     }
                 } else {
+                    if (dataLogo.length === 0) {
+                        message.error('Vui lòng upload ảnh Logo')
+                        return;
+                    }
+                    if (dataBusinessLicense.length === 0) {
+                        message.error('Vui lòng upload ảnh Logo')
+                        return;
+                    }
                     //create
-                    const res = await callCreateCompany(name, address,website, value, dataLogo[0].name);
+                    const res = await callCreateCompany(name, address,website, value, dataLogo[0].name,dataBusinessLicense[0].name);
                     if (res.data) {
                         message.success("Thêm mới company thành công");
                         handleReset();
@@ -88,7 +90,7 @@ const CompanyPage = () => {
         
             const handleReset = async () => {
                 form.resetFields();
-                setValue("");
+               // setValue("");
                 setDataInit(null);
             }
         
@@ -157,13 +159,32 @@ const CompanyPage = () => {
                     }
                 }
             };
-            
+          const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any) => {
+                const res = await callUploadSingleFile(file, "business");
+                if (res && res.data) {
+                    setDataBusinessLicense([{
+                        name: res.data.fileName,
+                        uid: uuidv4()
+                    }])
+                    if (onSuccess) onSuccess('ok')
+                } else {
+                    if (onError) {
+                        setDataBusinessLicense([])
+                        const error = new Error(res.message);
+                        onError({ event: error });
+                    }
+                }
+            };      
+        const handleRemoveFileBusinessLicense = (file: any) => {
+        setDataBusinessLicense([])
+    }
     useEffect(() => {
         const fetchCompanyUser = async (id: string | undefined) => {
             if(id){
                 setIsAdminNotHr(false)
                 const res = await callFetchCompanyById(id);
                 if (res && res.data) {
+                    console.log(res)
                     setDataInit(res.data);
 
                     form.setFieldsValue(res.data); // Cập nhật lại form!
@@ -176,9 +197,19 @@ const CompanyPage = () => {
                             }
                         ]);
                     }
+                    if (res.data.businessLicense) {
+                        setDataBusinessLicense([
+                            {
+                                uid: uuidv4(),
+                                name: res.data.businessLicense,
+                                url: `${import.meta.env.VITE_BACKEND_URL}/storage/business/${res.data.businessLicense}`,
+                            }
+                        ]);
+                    }
                     if (res.data && res.data?.description) {
                         setValue(res.data?.description);
                     }  
+                     console.log(dataBusinessLicense)
                 }else {
                     notification.error({
                     message: 'Có lỗi xảy ra',
@@ -442,8 +473,31 @@ const CompanyPage = () => {
                         placeholder="Nhập tên công ty"
                         />
                     </Col>
+
+                    <Col span={12}>
+                        <ProFormTextArea
+                        label="Địa chỉ công ty"
+                        name="address"
+                        rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
+                        placeholder="Nhập địa chỉ công ty"
+                        fieldProps={{
+                            autoSize: { minRows:2 }
+                        }}
+                        />
+                    </Col>
+                    <Col span={12}>
+                        <ProFormTextArea
+                        label="Website công ty"
+                        name="website"
+                        rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
+                        placeholder="Nhập website công ty"
+                        fieldProps={{
+                            autoSize: { minRows: 2 }
+                        }}
+                        />
+                    </Col>
             
-                    <Col span={8}>
+                    <Col span={12}>
                         <Form.Item
                         labelCol={{ span: 24 }}
                         label="Ảnh Logo"
@@ -471,18 +525,6 @@ const CompanyPage = () => {
                             onRemove={handleRemoveFile}
                             onPreview={handlePreview}
                             fileList={dataLogo}
-                            // defaultFileList={
-                            //     dataInit?.id
-                            //     ? [
-                            //         {
-                            //             uid: uuidv4(),
-                            //             name: dataInit?.logo ?? "",
-                            //             status: "done", 
-                            //             url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${dataInit?.logo}`
-                            //         }
-                            //         ]
-                            //     : []
-                            // }
                             >
                             <div>
                                 {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
@@ -492,29 +534,44 @@ const CompanyPage = () => {
                         </ConfigProvider>
                         </Form.Item>
                     </Col>
-            
-                    <Col span={8}>
-                        <ProFormTextArea
-                        label="Địa chỉ công ty"
-                        name="address"
-                        rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
-                        placeholder="Nhập địa chỉ công ty"
-                        fieldProps={{
-                            autoSize: { minRows: 4 }
-                        }}
-                        />
-                    </Col>
-                    <Col span={8}>
-                        <ProFormTextArea
-                        label="Website công ty"
-                        name="website"
-                        rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
-                        placeholder="Nhập website công ty"
-                        fieldProps={{
-                            autoSize: { minRows: 4 }
-                        }}
-                        />
-                    </Col>
+                    <Col span={12}>
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Ảnh giấy chứng nhận đăng ký doanh nghiệp"
+                                    name="businessLicense"
+                                    rules={[{
+                                        required: true,
+                                        message: 'Vui lòng không bỏ trống',
+                                        validator: () => {
+                                            if (dataLogo.length > 0) return Promise.resolve();
+                                            else return Promise.reject(false);
+                                        }
+                                    }]}
+                                >
+                                    <ConfigProvider locale={enUS}>
+                                        <Upload
+                                            name="businessLicense"
+                                            listType="picture-card"
+                                            className="avatar-uploader"
+                                            maxCount={1}    
+                                            multiple={false}
+                                            customRequest={handleUploadFileBusinessLicense}
+                                            beforeUpload={beforeUpload}
+                                            onChange={handleChange}
+                                            onRemove={(file) => handleRemoveFileBusinessLicense(file)}
+                                            onPreview={handlePreview}
+                                            fileList={dataBusinessLicense}
+                                        >
+                                            <div>
+                                                {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
+                                                <div style={{ marginTop: 8 }}>Upload</div>
+                                            </div>
+                                        </Upload>
+                                    </ConfigProvider>
+                                </Form.Item>
+
+                            </Col>
+                    
                     <ProCard
                         title="Miêu tả"
                         headStyle={{ color: "#d81921" }}

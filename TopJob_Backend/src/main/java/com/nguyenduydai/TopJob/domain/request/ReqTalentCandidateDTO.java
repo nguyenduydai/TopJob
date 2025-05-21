@@ -14,11 +14,25 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReqTalentCandidateDTO {
-    private String address;
     private List<Skill> skills;
+    private Double multiplierSkills;
+
+    private String address;
+    private Double multiplierAddress;
+
     private String education;
+    private Double multiplierEducation;
+
     private String age;
+    private Double multiplierAge;
+
     private String experience;
+    private Double multiplierExperience;
+
     private boolean activity;
+    private Double multiplierActivity;
+
+    private String gender;
+    private Double multiplierGender;
 
 }

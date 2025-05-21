@@ -49,7 +49,8 @@ const SurveyModal = (props: IProps) => {
     const temp = await callUserById(user.id);
     form.setFieldValue("educationRequirement",temp?.data?.education);
     let experience=temp?.data?.experience;
-    form.setFieldValue("experienceRequirement",experience?.replaceAll("YEAR","năm kinh nghiệm"));
+    experience==="0"?form.setFieldValue("experienceRequirement",""):
+    form.setFieldValue("experienceRequirement",experience?.replaceAll("YEARS","năm kinh nghiệm"));
     form.setFieldValue("ageRequirement",temp?.data?.age);
   }
   const handleFinish = async(values:any) => {              
@@ -72,6 +73,7 @@ const SurveyModal = (props: IProps) => {
     if(res&&+res.statusCode===200){
         message.success("Thực hiện khảo sát thành công");
         setReload(true);
+         setOpenModal(false);
     }else {
         notification.error({
             message: 'Có lỗi xảy ra',
@@ -184,7 +186,7 @@ const SurveyModal = (props: IProps) => {
               </Col>
               <Col span={12}>
                 <Form.Item label="Kinh nghiệm làm việc" name="experienceRequirement"> 
-                <InputNumber min={0} style={{ width: '100%' }} disabled={true}/>
+                <InputNumber  style={{ width: '100%' }} disabled={true}/>
                 </Form.Item>
               </Col>
               

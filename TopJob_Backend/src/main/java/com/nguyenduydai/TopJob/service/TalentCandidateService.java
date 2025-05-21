@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,16 @@ import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqTalentCandidateDTO;
 import com.nguyenduydai.TopJob.domain.request.ReqUserRequirementDTO;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
+import com.nguyenduydai.TopJob.domain.response.email.ResEmailResume;
+import com.nguyenduydai.TopJob.domain.response.email.ResEmailTalentCandidate;
 import com.nguyenduydai.TopJob.repository.JobRecommendationRepository;
 import com.nguyenduydai.TopJob.repository.JobRepository;
+import com.nguyenduydai.TopJob.repository.SkillRepository;
 import com.nguyenduydai.TopJob.repository.TalentCandidateRepository;
 import com.nguyenduydai.TopJob.repository.UserRepository;
 import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nguyenduydai.TopJob.util.constant.EducationLevel;
+import com.nguyenduydai.TopJob.util.constant.GenderEnum;
 import com.turkraft.springfilter.builder.FilterBuilder;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 
@@ -42,6 +47,8 @@ public class TalentCandidateService {
     private final SubscriberService subscriberService;
     private final ResumeService resumeService;
     private final TalentCandidateRepository talentCandidateRepository;
+    private final SkillRepository skillRepository;
+    private final EmailService emailService;
     @Autowired
     private FilterBuilder fb;
     @Autowired
@@ -49,12 +56,15 @@ public class TalentCandidateService {
 
     public TalentCandidateService(JobService jobService, UserService userService,
             SubscriberService subscriberService, ResumeService resumeService,
-            TalentCandidateRepository talentCandidateRepository) {
+            TalentCandidateRepository talentCandidateRepository,
+            SkillRepository skillRepository, EmailService emailService) {
         this.jobService = jobService;
         this.userService = userService;
         this.subscriberService = subscriberService;
         this.resumeService = resumeService;
         this.talentCandidateRepository = talentCandidateRepository;
+        this.skillRepository = skillRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -73,21 +83,24 @@ public class TalentCandidateService {
             if (sub != null) {
                 skillScore = calculateSkillMatchScore(job.getSkills(), sub.getSkills());
             }
-            double ageScore = calculateAgeMatchScore(Integer.parseInt(job.getAgeRequirement().substring(0, 2)),
+            double ageScore = calculateAgeMatchScore(Integer.parseInt(job.getAgeRequirement().substring(0,
+                    2)),
                     Integer.parseInt(job.getAgeRequirement().substring(3, 5)), user.getAge());
-            double educationScore = calculateEducationMatchScore(job.getEducationRequirement(), user.getEducation());
+            double educationScore = calculateEducationMatchScore(job.getEducationRequirement(),
+                    user.getEducation());
             double experienceScore = 0;
             if (user.getExperience() != null)
                 experienceScore = calculateExperienceMatchScore(
                         Integer.parseInt(job.getExperienceRequirement().charAt(0) + ""),
                         Integer.parseInt(job.getExperienceRequirement().charAt(2) + ""),
                         Integer.parseInt(user.getExperience().charAt(0) + ""));
-            double locationScore = calculateLocationMatchScore(job.getLocation(), user.getAddress());
+            double locationScore = calculateLocationMatchScore(job.getLocation(),
+                    user.getAddress());
             double activityScore = calculateRecentActivityScore(user);
 
-            double finalScore = 0.3 * skillScore + 0.2 * experienceScore + 0.15 + 0.15 * educationScore * ageScore
-                    + 0.1 * locationScore + 0.1 * activityScore;
-            if (finalScore > 0.5) {
+            double finalScore = 0.3 * skillScore + 0.2 * experienceScore + 0.15 * educationScore + 0.15 * locationScore
+                    + 0.1 * activityScore + 0.1 * ageScore;
+            if (finalScore > 0.6) {
                 TalentCandidate recommendation = new TalentCandidate();
                 recommendation.setUser(user);
                 recommendation.setJob(job);
@@ -103,7 +116,7 @@ public class TalentCandidateService {
         return checkHaveJobRecommendations;
     }
 
-    // @Transactional
+    @Transactional
     public boolean recommendCandidatesForCompany(ReqTalentCandidateDTO reqDTO) {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
@@ -133,15 +146,37 @@ public class TalentCandidateService {
             double locationScore = calculateLocationMatchScore(reqDTO.getAddress(), user.getAddress());
             double educationScore = calculateEducationMatchScore(reqDTO.getEducation(), user.getEducation());
             double activityScore = calculateRecentActivityScore(user);
+            double genderScore = calculateGenderMatchScore(reqDTO.getGender(), user.getGender());
             if (!reqDTO.isActivity())
                 activityScore = 0;
-            double finalScore = 0.3 * skillScore + 0.2 * experienceScore + 0.15 * educationScore + 0.15 * ageScore
-                    + 0.1 * locationScore + 0.1 * activityScore;
-            if (finalScore > 0.5) {
+            double finalScore = reqDTO.getMultiplierSkills() * skillScore
+                    + reqDTO.getMultiplierExperience() * experienceScore
+                    + reqDTO.getMultiplierEducation() * educationScore + reqDTO.getMultiplierAge() * ageScore
+                    + reqDTO.getMultiplierAddress() * locationScore + reqDTO.getMultiplierActivity() * activityScore
+                    + reqDTO.getMultiplierGender() * genderScore;
+            if (finalScore > 6) {
                 TalentCandidate recommendation = new TalentCandidate();
                 recommendation.setUser(user);
                 recommendation.setCompany(userHr.getCompany());
                 recommendation.setCompatibilityScore(finalScore);
+                recommendation.setAge(reqDTO.getAge());
+                recommendation.setMultiplierAge(reqDTO.getMultiplierAge());
+                recommendation.setActivity(reqDTO.isActivity());
+                recommendation.setMultiplierActivity(reqDTO.getMultiplierActivity());
+                recommendation.setAddress(reqDTO.getAddress());
+                recommendation.setMultiplierAddress(reqDTO.getMultiplierAddress());
+                recommendation.setEducation(reqDTO.getEducation());
+                recommendation.setMultiplierEducation(reqDTO.getMultiplierEducation());
+                recommendation.setExperience(reqDTO.getExperience());
+                recommendation.setMultiplierExperience(reqDTO.getMultiplierExperience());
+                recommendation.setGender(reqDTO.getGender());
+                recommendation.setMultiplierGender(reqDTO.getMultiplierGender());
+                if (reqDTO.getSkills() != null) {
+                    List<Long> p = reqDTO.getSkills().stream().map(x -> x.getId()).collect(Collectors.toList());
+                    List<Skill> ls = this.skillRepository.findByIdIn(p);
+                    recommendation.setSkills(ls);
+                }
+                recommendation.setMultiplierSkills(reqDTO.getMultiplierSkills());
                 recommendations.add(recommendation);
                 checkHaveJobRecommendations = true;
             }
@@ -194,18 +229,32 @@ public class TalentCandidateService {
         Integer userLevel = educationLevelMap.get(userEdu.toUpperCase());
         if (requiredLevel == null || userLevel == null)
             return 0.0;
-        return userLevel >= requiredLevel ? 1.0 : 0.0;
+        if (userLevel == requiredLevel)
+            return 1.0;
+        return userLevel > requiredLevel ? 0.5 : 0.0;
     }
 
     // Kinh nghiệm
     private double calculateExperienceMatchScore(int minExp, int maxExp, int userExp) {
-        return userExp >= minExp ? 1.0 : (double) userExp / ((minExp + maxExp) / 2);
+        if (userExp >= minExp && userExp <= maxExp) {
+            return 1.0;
+        } else if (userExp > maxExp)
+            return 0.5;
+        return 0;
     }
 
+    // Địa chỉ
     private double calculateLocationMatchScore(String jobLocation, String userLocation) {
         if (jobLocation == null || userLocation == null)
             return 0.0;
         return jobLocation.equalsIgnoreCase(userLocation) ? 1.0 : 0.0;
+    }
+
+    // Giới tính
+    private double calculateGenderMatchScore(String genderreq, GenderEnum genderUser) {
+        if (genderUser == null)
+            return 0.0;
+        return genderreq.equalsIgnoreCase(genderUser.toString()) ? 1.0 : 0.0;
     }
 
     // Mức độ hoạt động gần đây
@@ -303,5 +352,22 @@ public class TalentCandidateService {
     public boolean existsJob(long id) {
         Job job = this.jobService.fetchJobById(id);
         return this.talentCandidateRepository.existsByJob(job);
+    }
+
+    public void sendEmailForTalentCandidate(long id) {
+        String emailHr = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User hr = this.userService.handleGetUserByUsername(emailHr);
+        Optional<TalentCandidate> tcOptional = this.talentCandidateRepository.findById(id);
+        TalentCandidate tc = (tcOptional.isPresent()) ? tcOptional.get() : null;
+        String emailUser = tc.getUser().getEmail();
+        ResEmailTalentCandidate resEmail = new ResEmailTalentCandidate();
+        resEmail.setUserName(tc.getUser().getName());
+        resEmail.setCompanyName(tc.getCompany().getName());
+        resEmail.setHrName(hr.getName());
+        resEmail.setHrEmail(emailHr);
+        this.emailService.sendEmailTalentCandidateFromTemplateSync(emailUser,
+                "Thư mời ứng tuyển", "candidate_invite", resEmail);
     }
 }

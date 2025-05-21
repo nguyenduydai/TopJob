@@ -8,6 +8,10 @@ import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.CompanyService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -63,6 +67,13 @@ public class CompanyController {
     public ResponseEntity<ResultPaginationDTO> getAllCompany(@Filter Specification<Company> spec, Pageable pageable) {
 
         return ResponseEntity.ok(this.companyService.fetchAllCompany(spec, pageable));
+    }
+
+    @GetMapping("/companies/topcompaniesbyjobs")
+    public ResponseEntity<List<Map<String, Object>>> getTopCompaniesByJobs() {
+        // Lấy danh sách các công ty có nhiều tin tuyển dụng nhất
+        List<Map<String, Object>> topCompanies = companyService.getTopCompaniesByJobs();
+        return ResponseEntity.ok(topCompanies);
     }
 
 }

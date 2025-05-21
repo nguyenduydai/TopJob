@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog, IRecommendation, ITalentCandidate } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog, IRecommendation, ITalentCandidate, IPayment, IResPaymentDTO } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -8,11 +8,10 @@ Module Auth
 // export const callRegister = (name: string, email: string, password: string, age: number, gender: string, address: string) => {
 //     return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
 // }
-export const callRegister = (name: string,phone:string, email: string, password: string|undefined, companyName: string|null,companyAddress:string,roleId:number, age: number, gender: string|null, address: string) => {
+export const callRegister = (name: string,phone:string, email: string, password: string|undefined, companyName: string|null,companyAddress:string,roleId:number, age: number, gender: string|null, address: string,typeVip:string|null,businessLicense:string|null,active:boolean) => {
     //return axios.post<IBackendRes<string>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address })
-
     try {
-        const res = axios.post<IBackendRes<string>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address });
+        const res = axios.post<IBackendRes<string>>('/api/v1/auth/register', { name,phone, email, password, companyName, companyAddress, roleId,age,gender,address,typeVip,businessLicense });
         return res;
     } catch (error: any) {
         // Luôn trả về format tương tự res
@@ -61,12 +60,12 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
  * 
 Module Company
  */
-export const callCreateCompany = (name: string, address: string,website:string, description: string, logo: string) => {
-    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address,website, description, logo })
+export const callCreateCompany = (name: string, address: string,website:string, description: string, logo: string|null,businessLicense:string|null) => {
+    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address,website, description, logo,businessLicense })
 }
 
-export const callUpdateCompany = (id: string, name: string, address: string,website:string, description: string, logo: string) => {
-    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address,website, description, logo })
+export const callUpdateCompany = (id: string, name: string, address: string,website:string, description: string, logo: string|null,businessLicense:string|null) => {
+    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address,website, description, logo ,businessLicense})
 }
 
 export const callDeleteCompany = (id: string) => {
@@ -194,6 +193,9 @@ export const callFetchResumeById = (id: string) => {
 export const callFetchResumeByUser = () => {
     return axios.post<IBackendRes<IModelPaginate<IResume>>>(`/api/v1/resumes/by-user`);
 }
+export const callFetchResumeByJob = (query: string,id: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IResume>>>(`/api/v1/resumes/by-job/${id}?${query}`);
+}
 
 /**
  * 
@@ -276,12 +278,12 @@ export const callFetchSubscriberById = (id: string) => {
 Module Blogs
  */
 
-export const callCreateBlog =(title: string, likeCount: number, content: string, thumbnail: string)  => {
+export const callCreateBlog =(title: string, likeCount: number, content: string, thumbnail: string|null)  => {
     return axios.post<IBackendRes<IBlog>>('/api/v1/blogs',{ title, likeCount, content, thumbnail })
 }
 
 
-export const callUpdateBlog  = (id: string, title: string, likeCount: number, content: string, thumbnail: string)  => {
+export const callUpdateBlog  = (id: string, title: string, likeCount: number, content: string, thumbnail: string|null)  => {
     return axios.put<IBackendRes<IBlog>>(`/api/v1/blogs`, { id,title, likeCount, content, thumbnail })
 }
 export const callUpdateLikeBlog  = (id: string|undefined, likeCount: number)  => {
@@ -312,7 +314,9 @@ export const callsendEmailJob =()  => {
 export const callsendEmailResume =(id: string)  => {
     return axios.get<IBackendRes<IString>>(`/api/v1/email/resume/${id}`);
 }
-
+export const callSendEmailTalentCandidate=(id: string|number)  => {
+    return axios.get<IBackendRes<IString>>(`/api/v1/email/talent/${id}`);
+}
 /**
  * 
 Module Job Recommendation
@@ -335,9 +339,92 @@ export const callCreateTalentCandidateForJob =(id:string|null)  => {
 export const callFetchTalentCandidateForJob =(id:string|null,query: string)  => {
     return axios.get<IBackendRes<IModelPaginate<ITalentCandidate>>>(`/api/v1/talentcandidate/${id}?${query}`);
 }
-export const callCreateTalentCandidateForCompany =(address:string,skills:ISkill[], education: string, age: string,experience:string,activity:boolean)  => {
-    return axios.post<IBackendRes<IString>>('/api/v1/talentcandidate',{address,skills,education,experience,age,activity});
+
+interface IReqCandidate {
+    address:string;
+    skills:ISkill[];
+    education: string;
+    age: string;
+    experience:string;
+    activity:boolean;
+    gender:string;
+    multiplierSkills:number;
+    multiplierAddress:number;
+    multiplierEducation:number;
+    multiplierAge:number;
+    multiplierExperience:number;
+    multiplierActivity:number;
+multiplierGender:number;
+}
+export const callCreateTalentCandidateForCompany =(req : IReqCandidate)  => {
+    return axios.post<IBackendRes<IString>>('/api/v1/talentcandidate',{...req});
 }
 export const callFetchTalentCandidateForCompany =(query: string)  => {
     return axios.get<IBackendRes<IModelPaginate<ITalentCandidate>>>(`/api/v1/talentcandidate?${query}`);
 }
+/**
+ * 
+Module Payment
+ */
+export const callPayment =(query: string)  => {
+    return axios.get<IBackendRes<IPayment>>(`/api/v1/payment/create?${query}`);
+}
+
+export const callDeletePaymentHistory  = (id: string) => {
+    return axios.delete<IBackendRes<IString>>(`/api/v1/payment-history/${id}`);
+}
+
+export const callFetchAllPaymentHistory = (query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IResPaymentDTO>>>(`/api/v1/payment-history?${query}`);
+}
+
+export const callFetchPaymentHistoryById = (id: string) => {
+    return axios.get<IBackendRes<IResPaymentDTO>>(`/api/v1/payment-history/${id}`);
+}
+/**
+ * 
+Module login social 
+ */
+export interface IFacebookLoginResponse {
+    authorizationUrl: string;
+  }
+export const callLoginFacebook = () => {
+    return axios.get<IBackendRes<IFacebookLoginResponse>>('/api/v1/auth/login/facebook')
+}
+export const callLoginFacebookCallBack = (code:string) => {
+    return axios.get<IBackendRes<IAccount>>(`/api/v1/login/oauth2/facebook?code=${code}`)
+}
+
+/**
+ * 
+Module export file pdf 
+ */
+// export const callExportJobReport = () => {
+//     return axios.get<>('/api/v1/reports/jobs')
+// }
+interface IDataItemJob {
+    month: string;
+    applicationCount: number;
+}
+interface IDataItemJobResume {
+    withApplications: number;
+    withoutApplications: number;
+    total:number
+} 
+export const callFetchjobpermonth = () => {
+    return axios.get<IBackendRes<Array<IDataItemJob>>>('/api/v1/jobs/jobpermonth')
+}
+export const callFetchjobpermonthForHr = () => {
+    return axios.get<IBackendRes<Array<IDataItemJob>>>('/api/v1/jobs/jobpermonthforhr')
+}
+export const callFetchJobHaveResumeForHr = () => {
+    return axios.get<IBackendRes<IDataItemJobResume>>('/api/v1/jobs/jobhaveresumeforhr')
+}
+interface IDataItemCompany {
+    companyName: string;
+    jobCount: number;
+}
+export const callFetchTopCompanyByJob = () => {
+    return axios.get<IBackendRes<Array<IDataItemCompany>>>('/api/v1/companies/topcompaniesbyjobs')
+}
+

@@ -11,6 +11,10 @@ import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.service.JobService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -86,5 +90,24 @@ public class JobController {
             @Filter Specification<Job> spec, Pageable pageable) {
 
         return ResponseEntity.ok(this.jobService.fetchAllJobByCompany(id, spec, pageable));
+    }
+
+    @GetMapping("/jobs/jobpermonth")
+    public ResponseEntity<List<Map<String, Object>>> getJobApplicationsPerMonth() {
+        // Lấy số lượng đơn ứng tuyển theo từng tháng
+        List<Map<String, Object>> applicationsPerMonth = jobService.getJobPerMonth();
+        return ResponseEntity.ok(applicationsPerMonth);
+    }
+
+    @GetMapping("/jobs/jobpermonthforhr")
+    public ResponseEntity<List<Map<String, Object>>> getJobApplicationsPerMonthForHr() {
+        List<Map<String, Object>> applicationsPerMonth = jobService.getJobPerMonthForHr();
+        return ResponseEntity.ok(applicationsPerMonth);
+    }
+
+    @GetMapping("/jobs/jobhaveresumeforhr")
+    public ResponseEntity<Map<String, Object>> getJobHaveResumeForHr() {
+        Map<String, Object> applicationsPerMonth = jobService.getJobHaveResumeByCompany();
+        return ResponseEntity.ok(applicationsPerMonth);
     }
 }

@@ -107,4 +107,11 @@ public class ResumeController {
 
         return ResponseEntity.ok(this.resumeService.fetchResumeByUser(pageable));
     }
+
+    @GetMapping("/resumes/by-job/{id}")
+    @ApiMessage("fetch Resume by job")
+    public ResponseEntity<ResultPaginationDTO> getResumeById(@Filter Specification<Resume> spec, Pageable pageable,
+            @PathVariable("id") long id) {
+        return ResponseEntity.ok(this.resumeService.fetchResumeByJob(spec, pageable, id));
+    }
 }

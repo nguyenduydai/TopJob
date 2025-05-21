@@ -1,7 +1,7 @@
 import { callFetchJob ,callFetchJobByCompany} from '@/config/api';
-import { convertSlug, getLocationName } from '@/config/utils';
+import { convertSlug, getLevelName, getLocationName } from '@/config/utils';
 import { IJob } from '@/types/backend';
-import { EnvironmentOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { DollarOutlined, EnvironmentOutlined, HistoryOutlined, SlidersOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -29,7 +29,9 @@ const JobCard = (props: IProps) => {
     const [pageSize, setPageSize] = useState(8);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
+    //const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
+const [sortQuery, setSortQuery] = useState("sort=start,desc&sort=createdAt,desc");
+
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
@@ -106,7 +108,7 @@ const JobCard = (props: IProps) => {
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}> {companyId ?`Công ty hiện đang có ${total} công việc` :'Công Việc Mới Nhất'}</span>
+                                <h2 className={styles["title"]}> {companyId ?`Công ty hiện đang có ${total} công việc` :'Công Việc Mới Nhất'}</h2>
                                 {!showPagination &&
                                     <Link to="job" className={styles["getAll"]}>Xem tất cả</Link>
                                 }
@@ -128,9 +130,14 @@ const JobCard = (props: IProps) => {
                                             </div>
                                             <div className={styles["card-job-right"]}>
                                                 <div className={styles["job-title"]}>{item.name}</div>
-                                                <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item.location)}</div>
-                                                <div><ThunderboltOutlined style={{ color: 'orange' }} />&nbsp;{(item.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
-                                                <div className={styles["job-updatedAt"]}>{item.updatedAt ? dayjs(item.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
+                                                <div style={{display:'flex',justifyContent:'space-around',marginBottom:5,marginTop:3}}>
+                                                <div> <SlidersOutlined style={{ color:'purple'}} />&nbsp;{getLevelName(item.level)}</div>
+                                                    <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item.location)}</div>
+                                                    
+                                                    <div><DollarOutlined style={{ color: 'orange' }} />&nbsp;{(item.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
+                                                </div>
+                                                
+                                                <div className={styles["job-updatedAt"]}>  <HistoryOutlined style={{ color:'red'}}/> {item.createdAt ? dayjs(item.createdAt).locale('en').fromNow() : dayjs(item.updatedAt).locale('en').fromNow()}</div>
                                             </div>
                                         </div>
                                     </Card>

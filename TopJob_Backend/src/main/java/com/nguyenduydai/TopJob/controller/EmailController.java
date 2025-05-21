@@ -14,6 +14,7 @@ import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.service.EmailService;
 import com.nguyenduydai.TopJob.service.ResumeService;
 import com.nguyenduydai.TopJob.service.SubscriberService;
+import com.nguyenduydai.TopJob.service.TalentCandidateService;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 
 @Controller
@@ -22,12 +23,14 @@ public class EmailController {
     private final SubscriberService subscriberService;
     private final ResumeService resumeService;
     private final EmailService emailService;
+    private final TalentCandidateService talentCandidateService;
 
     public EmailController(SubscriberService subscriberService, EmailService emailService,
-            ResumeService resumeService) {
+            ResumeService resumeService, TalentCandidateService talentCandidateService) {
         this.resumeService = resumeService;
         this.subscriberService = subscriberService;
         this.emailService = emailService;
+        this.talentCandidateService = talentCandidateService;
     }
 
     @GetMapping("/email/job")
@@ -48,6 +51,16 @@ public class EmailController {
     public ResponseEntity<ResString> sendSimpleEmailResume(@PathVariable("id") long id) {
         this.resumeService.sendEmailStatusResume(id);
         ResString res = new ResString("send email status resume ok");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @GetMapping("/email/talent/{id}")
+    @ApiMessage("send simple email for talentCandidate")
+    @Transactional
+    public ResponseEntity<ResString> sendSimpleEmailTalentCandidate(@PathVariable("id") long id) {
+        System.out.println(id);
+        this.talentCandidateService.sendEmailForTalentCandidate(id);
+        ResString res = new ResString("send  email for talentCandidate");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

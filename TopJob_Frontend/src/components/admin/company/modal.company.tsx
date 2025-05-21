@@ -28,6 +28,7 @@ interface ICompanyForm {
 interface ICompanyLogo {
     name: string;
     uid: string;
+      url?: string;
 }
 
 const ModalCompany = (props: IProps) => {
@@ -45,25 +46,41 @@ const ModalCompany = (props: IProps) => {
     const [value, setValue] = useState<string>("");
     const [form] = Form.useForm();
 
+    const [dataBusinessLicense, setDataBusinessLicense] = useState<ICompanyLogo[]>([]);
     useEffect(() => {
         if (dataInit?.id && dataInit?.description) {
             setValue(dataInit.description);
         }
+        if (dataInit?.logo) {
+                        setDataLogo([
+                            {
+                                uid: uuidv4(),
+                                name: dataInit.logo,
+                                url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${dataInit.logo}`,
+                            }
+                        ]);
+                    }
+                    if (dataInit?.businessLicense) {
+                        setDataBusinessLicense([
+                            {
+                                uid: uuidv4(),
+                                name: dataInit.businessLicense,
+                                url: `${import.meta.env.VITE_BACKEND_URL}/storage/business/${dataInit.businessLicense}`,
+                            }
+                        ]);
+                    }
     }, [dataInit])
 
     const submitCompany = async (valuesForm: ICompanyForm) => {
         const { name, address,website } = valuesForm;
 
-        if (dataLogo.length === 0) {
-            message.error('Vui lòng upload ảnh Logo')
-            return;
-        }
+
 
         if (dataInit?.id) {
             //update
-            const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit.id, name, address,website, value, dataLogo[0].name,dataBusinessLicense[0].name);
             if (res.data) {
-                message.success("Cập nhật company thành công");
+                message.success("Cập nhật công ty thành công");
                 handleReset();
                 reloadTable();
             } else {
@@ -73,10 +90,18 @@ const ModalCompany = (props: IProps) => {
                 });
             }
         } else {
+            if (dataLogo.length === 0) {
+                message.error('Vui lòng upload ảnh Logo')
+                return;
+            }
+            if (dataBusinessLicense.length === 0) {
+                message.error('Vui lòng upload ảnh BusinessLicense')
+                return;
+            }
             //create
-            const res = await callCreateCompany(name, address,website, value, dataLogo[0].name);
+            const res = await callCreateCompany(name, address,website, value, dataLogo[0].name,dataBusinessLicense[0].name);
             if (res.data) {
-                message.success("Thêm mới company thành công");
+                message.success("Thêm mới công ty thành công");
                 handleReset();
                 reloadTable();
             } else {
@@ -103,7 +128,9 @@ const ModalCompany = (props: IProps) => {
     const handleRemoveFile = (file: any) => {
         setDataLogo([])
     }
-
+    const handleRemoveFileBusinessLicense = (file: any) => {
+        setDataBusinessLicense([])
+    }
     const handlePreview = async (file: any) => {
         if (!file.originFileObj) {
             setPreviewImage(file.url);
@@ -166,6 +193,22 @@ const ModalCompany = (props: IProps) => {
         }
     };
 
+    const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any) => {
+        const res = await callUploadSingleFile(file, "business");
+        if (res && res.data) {
+            setDataBusinessLicense([{
+                name: res.data.fileName,
+                uid: uuidv4()
+            }])
+            if (onSuccess) onSuccess('ok')
+        } else {
+            if (onError) {
+                setDataBusinessLicense([])
+                const error = new Error(res.message);
+                onError({ event: error });
+            }
+        }
+    };
 
     return (
         <>
@@ -210,7 +253,30 @@ const ModalCompany = (props: IProps) => {
                                     placeholder="Nhập tên công ty"
                                 />
                             </Col>
-                            <Col span={8}>
+
+                            <Col span={12}>
+                                <ProFormTextArea
+                                    label="Địa chỉ"
+                                    name="address"
+                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                    placeholder="Nhập địa chỉ công ty"
+                                    fieldProps={{
+                                        autoSize: { minRows: 4 }
+                                    }}
+                                />
+                            </Col>
+                            <Col span={12}>
+                                <ProFormTextArea
+                                    label="Website"
+                                    name="website"
+                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                    placeholder="Nhập website công ty"
+                                    fieldProps={{
+                                        autoSize: { minRows: 4 }
+                                    }}
+                                />
+                            </Col>
+                            <Col span={12}>
                                 <Form.Item
                                     labelCol={{ span: 24 }}
                                     label="Ảnh Logo"
@@ -236,17 +302,45 @@ const ModalCompany = (props: IProps) => {
                                             onChange={handleChange}
                                             onRemove={(file) => handleRemoveFile(file)}
                                             onPreview={handlePreview}
-                                            defaultFileList={
-                                                dataInit?.id ?
-                                                    [
-                                                        {
-                                                            uid: uuidv4(),
-                                                            name: dataInit?.logo ?? "",
-                                                            status: 'done',
-                                                            url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${dataInit?.logo}`,
-                                                        }
-                                                    ] : []
-                                            }
+                                             fileList={dataLogo}
+
+                                        >
+                                            <div>
+                                                {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
+                                                <div style={{ marginTop: 8 }}>Upload</div>
+                                            </div>
+                                        </Upload>
+                                    </ConfigProvider>
+                                </Form.Item>
+                            </Col>
+
+                            <Col span={12}>
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Ảnh giấy chứng nhận đăng ký doanh nghiệp"
+                                    name="businessLicense"
+                                    rules={[{
+                                        required: true,
+                                        message: 'Vui lòng không bỏ trống',
+                                        validator: () => {
+                                            if (dataLogo.length > 0) return Promise.resolve();
+                                            else return Promise.reject(false);
+                                        }
+                                    }]}
+                                >
+                                    <ConfigProvider locale={enUS}>
+                                        <Upload
+                                            name="businessLicense"
+                                            listType="picture-card"
+                                            className="avatar-uploader"
+                                            maxCount={1}
+                                            multiple={false}
+                                            customRequest={handleUploadFileBusinessLicense}
+                                            beforeUpload={beforeUpload}
+                                            onChange={handleChange}
+                                            onRemove={(file) => handleRemoveFileBusinessLicense(file)}
+                                            onPreview={handlePreview}
+                                             fileList={dataBusinessLicense}
 
                                         >
                                             <div>
@@ -258,30 +352,6 @@ const ModalCompany = (props: IProps) => {
                                 </Form.Item>
 
                             </Col>
-
-                            <Col span={8}>
-                                <ProFormTextArea
-                                    label="Địa chỉ"
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập địa chỉ công ty"
-                                    fieldProps={{
-                                        autoSize: { minRows: 4 }
-                                    }}
-                                />
-                            </Col>
-                            <Col span={8}>
-                                <ProFormTextArea
-                                    label="Website"
-                                    name="website"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập website công ty"
-                                    fieldProps={{
-                                        autoSize: { minRows: 4 }
-                                    }}
-                                />
-                            </Col>
-
                             <ProCard
                                 title="Miêu tả"
                                 // subTitle="mô tả công ty"

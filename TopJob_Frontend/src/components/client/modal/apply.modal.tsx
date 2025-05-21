@@ -46,9 +46,14 @@ const ApplyModal = (props: IProps) => {
             if (jobDetail) {
                 const res = await callCreateResume(urlCV, jobDetail?.id, user.email, user.id);
                 if (res.data) {
-                    message.success("Ứng tuyển thành công!");
+                    notification.success({
+                        message: 'Ứng tuyển thành công!',
+                        description: "Cảm ơn bạn đã ứng tuyển! Nhà tuyển dụng sẽ sớm phản hồi đơn của bạn qua email.",
+                        duration: 6,
+                    });
+                    //message.success("Ứng tuyển thành công!");
                     setIsModalOpen(false);
-                } else {
+                } else { 
                     notification.error({
                         message: 'Có lỗi xảy ra',
                         description: res.message

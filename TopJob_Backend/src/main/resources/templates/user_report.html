@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>BÁO CÁO THỐNG KÊ NGƯỜI DÙNG </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        img{
+            position: absolute;
+            top: 3;
+            left: 3;
+        }
+        .report-header {
+           
+            color: #007bff;
+            margin-bottom: 20px;
+            
+        }
+       
+        .report-header h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+        .report-header p {
+            font-size: 16px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: floralwhite;
+            margin-bottom: 20px;
+            font-size: 13px;
+            margin: 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+        th {
+            background-color: #c8c8c8;
+            color: #333;
+            font-size: 13px;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <img src="images/logo.png" alt="Logo website" style="max-width: 80px; height: auto;">
+        <h1>BÁO CÁO THỐNG KÊ NGƯỜI DÙNG</h1>
+        <p th:text="'Người tạo báo cáo: ' + ${creator}"></p>
+        <p th:text="'Ngày tạo báo cáo: ' + ${date}"></p>
+    </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th>Quyền hạn</th>
+                    <th>Ngày tạo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${user_report}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.address}"></td>
+                    <td th:text="${user.roleName}"></td>
+                    <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    
+    <div class="footer">
+        <p>Đây là báo cáo được tạo tự động.</p>
+    </div>
+</body>
+</html>

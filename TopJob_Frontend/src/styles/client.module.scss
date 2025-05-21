@@ -382,7 +382,7 @@
       }
     .content-in-video{
         z-index:2;
-        color: #a7a7a7;
+        color: #fff;
         .highlight {
             margin-left: 1100px;
             margin-top: 130px;
@@ -401,6 +401,7 @@
         }
 
         .slogan {   
+             color:#d1d1d1 ;
             width: 100%;
             overflow: hidden;
             white-space: nowrap;
@@ -455,16 +456,17 @@
         /* Nút cuộn trang */
     .scroll-to-top {
         position: fixed; 
-        bottom: 18px; 
-        right: 18px; 
-            width: 45px; 
-            height: 45px; 
-            background-color: #007BFF; 
+        bottom: 90px; 
+        right: 20px; 
+            width: 56px; 
+            height: 56px; 
+            background-color: rgb(11, 87, 208);
             color: white; 
             border: none; 
             border-radius: 50%;
             cursor: pointer; 
-            font-size: 24px; 
+            font-size: 25px; 
+            font-weight: bold;
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -473,7 +475,7 @@
         }
 
     .scroll-to-top:hover {
-            background-color: #0056b3; 
+            background-color: #1890ff; 
     }
     .chatbox {
         position: fixed; 
@@ -502,10 +504,11 @@
 .detail-job-section {   
     background-color:  #f2fdfd; 
     width: 100%;
-   
+    font-weight: 700;
+    color: #000;
     .header {
         margin: 20px 0;
-        color: #353535;
+        color: #000;
         font-size: 27px;
     }
 
@@ -539,7 +542,7 @@
 
     h2 {
         font-size: 23px;
-        color: #353535;
+        color: #000;
         font-weight: 400;
         margin: 25px 0 0;
     }
@@ -553,7 +556,7 @@
     }
 
     p {
-        color: #3a3a3a;
+       color: #000;
         font-size: 16px;
         line-height: 1.7em;
         width: 100%;
@@ -562,7 +565,7 @@
 
     .company {
         margin: 20px 0;
-        color: #353535;
+        color: #000;
         font-size: 27px;
         display: flex;
         flex-direction: column;
@@ -621,9 +624,18 @@
     }  
 }
 .modal-infor{
-    background-image: url("../assets/auser.png");
+     color: #d1d1d1;
+    background-image: url("../assets/anhnen8.jpg");
     background-size: cover; /* Đảm bảo ảnh bao phủ toàn bộ thẻ */
     background-position: center; /* Căn giữa ảnh */ 
     width: 100%;
     min-height: 750px;
-}   
+}  
+.modal-infor-detail{
+    background-image: url("../assets/anhnend17.png");
+    background-size: cover; /* Đảm bảo ảnh bao phủ toàn bộ thẻ */
+    background-position: center; /* Căn giữa ảnh */ 
+    width: 100%;
+    min-height: 750px;
+} 
+

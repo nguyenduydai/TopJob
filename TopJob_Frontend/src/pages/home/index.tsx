@@ -4,11 +4,24 @@ import SearchClient from '@/components/client/search.client';
 import JobCard from '@/components/client/card/job.card';
 import CompanyCard from '@/components/client/card/company.card';
 import videoHomepage from '../../assets/laiThuyen3.mp4'
-import { MessageOutlined } from '@ant-design/icons';
+import { MessageOutlined, UpCircleOutlined, UpSquareOutlined } from '@ant-design/icons';
 import { message,notification } from 'antd';
 import BlogCard from '@/components/client/card/blog.card';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+    useEffect(() => {
+        const existingScript = document.querySelector(
+          'script[src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"]'
+        );
+    
+        if (!existingScript) {
+          const script = document.createElement('script');
+          script.src = 'https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1';
+          script.async = true;
+          document.body.appendChild(script);
+        }
+    }, []);
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -52,11 +65,17 @@ const HomePage = () => {
                 <BlogCard/>
                 
             </div>
-            <button className={`${styles["chatbox"]} `}  onClick={() => handleChatBox()}><MessageOutlined /></button>
-            <button className={`${styles["scroll-to-top"]} `}  onClick={() => scrollToTop()} >↑</button>
-
+            <button className={`${styles["scroll-to-top"]} `}  onClick={() => scrollToTop()} ><UpSquareOutlined style={{color:'#ef6c00'}}/></button>
+            
+            <df-messenger
+            intent="WELCOME"
+            chat-title="ChatboxTopJob"
+            agent-id="6e1f1452-3771-4ddb-9481-35a9abf02c76"
+            language-code="vi"
+            ></df-messenger>
         </div>
     )
 }
+
 
 export default HomePage;

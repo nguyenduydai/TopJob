@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thư mời ứng tuyển</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            color: #333;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            color: #0a66c2;
+        }
+
+        .content {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .status {
+            font-weight: bold;
+            color: #0a66c2;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <table style="max-width: 80rem;  padding:1.5rem 2rem; margin: 0 auto; background-color: #f5f5f5;">
+            <table style="background-color: white; border-radius: 5px; padding: 20px;">
+                <div class="header">
+                    <div style="text-align: left; font-size: 20px; font-weight: 800;color: blue;">TOP JOB</div>
+                     <h1 style="text-align: center;">Thư mời ứng tuyển</h1>
+                     <h2>Xin chào <span class="status" th:text="${talent.userName}"></span> ,</h2>
+                </div>
+                <div class="content">
+                    <p>Chúng tôi hy vọng bạn đang có một ngày tốt đẹp!</p>
+                    <p>
+                        Tôi là  <strong  th:text="${talent.hrName}"></strong> , đại diện bộ phận Nhân sự của công ty 
+                         <strong  th:text="${talent.companyName}"></strong>.
+                        Chúng tôi rất vui mừng thông báo rằng CV của bạn đã được xem xét và chúng tôi rất ấn tượng với những kỹ năng và kinh nghiệm mà bạn đã trình bày.
+                    </p>
+
+                    <p>
+                        Chúng tôi tin rằng bạn có tiềm năng phù hợp với tiêu chí công ty chúng tôi đang tuyển dụng.
+                        Chúng tôi muốn mời bạn tham gia một buổi phỏng vấn để thảo luận thêm về cơ hội hợp tác.
+                    </p>
+
+                    <p>Chúng tôi rất mong nhận được phản hồi từ bạn và hy vọng sẽ được gặp bạn trong buổi phỏng vấn sắp tới.</p>
+    
+                    <p>Trân trọng,<br /> 
+                    From Hr:
+                    <span th:text="${talent.hrName}"></span><br/>
+                    <span th:text="${talent.hrEmail}"></span><br/>
+                    <strong  th:text="${talent.companyName}"></strong><br/>
+                    </p>
+                </div>
+    
+                <div class="footer">
+                    Email này được gửi từ hệ thống TopJob - vui lòng không trả lời lại email này.
+                </div>
+            </table>
+            
+        </table>
+    </div>
+</body>
+</html>

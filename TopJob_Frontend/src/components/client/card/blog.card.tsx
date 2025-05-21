@@ -85,18 +85,18 @@ const BlogCard = (props: IProps) => {
                                     <Card 
                                         className={styles["card-job-card"]}
                                         onClick={() => handleViewDetailBlog(item)}
-                                        style={{ height: 150 }}
+                                        style={{ height: 132 }}
                                         hoverable
                                         cover={
                                             <div className={styles["card-customize"]} style={{ display:"flex" }}>
                                                 <img
-                                                    style={{ maxWidth:150,maxHeight:150, borderRadius: 12} }
+                                                    style={{ maxWidth:165,maxHeight:165, borderRadius: 12,marginTop:8,marginLeft:8} }
                                                     alt="example"
                                                     src={`${import.meta.env.VITE_BACKEND_URL}/storage/blog/${item?.thumbnail}`}
                                                 />
                                                 <div>   
                                                     <h3 style={{ textAlign: "center" }}>{item.title}</h3>
-                                                    <div style={{ marginLeft:10}}>{parse(item.content?.substring(0,250)?? "")}</div>
+                                                    <div style={{ marginLeft:10}}>{parse(item.content?.substring(0,500).concat("...")?? "")}</div>
                                                     <div style={{ textAlign: "center", marginTop:10}}>Lượt thích : {item.likeCount} <HeartOutlined/></div>
                                                 </div>
                                             </div>

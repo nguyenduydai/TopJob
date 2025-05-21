@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import NotFound from 'components/share/not.found';
 import Loading from 'components/share/loading';
-import LoginPage from 'pages/auth/login';
+import {  LoginPage } from 'pages/auth/login';
 import RegisterPage from 'pages/auth/register';
 import LayoutAdmin from 'components/admin/layout.admin';
 import ProtectedRoute from 'components/share/protected-route.ts';
@@ -41,6 +41,8 @@ import ClientBlogDetailPage from './pages/blog/detail';
 import RegisterHrPage from './pages/auth/register.hr';
 import TalentCandidateForJob from './components/admin/talentcandidate/talentCandidateForJob';
 import AccountupgradePage from './pages/admin/accountupgrade';
+import OAuth2RedirectHandler from './pages/auth/logincallback';
+import HistoryPayment from './pages/admin/historyPayment';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,13 +137,18 @@ export default function App() {
             }
           ]
         },
-
         {
           path: "resume",
-          element:
-            <ProtectedRoute>
-              <ResumePage />
-            </ProtectedRoute>
+          children: [
+            {
+              index: true,
+              element: <ProtectedRoute> <ResumePage /></ProtectedRoute>
+            },
+            {
+              path: "by-job",
+              element:<ProtectedRoute><ResumePage /></ProtectedRoute>
+            }
+          ]
         },
         {
           path: "permission",
@@ -186,12 +193,20 @@ export default function App() {
          
         },
         {
+          path: "historypayment",
+          element:
+            <ProtectedRoute>
+              <HistoryPayment />
+            </ProtectedRoute>
+        },
+        {
           path: "accountupgrade",
           element:
             <ProtectedRoute>
               <AccountupgradePage />
             </ProtectedRoute>
         },
+        
       ],
     },
 
@@ -200,7 +215,14 @@ export default function App() {
       path: "/login",
       element: <LoginPage />,
     },
-
+    // {
+    //   path: "/login/oauth2/facebook",
+    //   element: <FacebookCallbackRoute />,
+    // },
+    {
+      path: "/oauth2/redirect",
+      element:<OAuth2RedirectHandler />,
+    },
     {
       path: "/register",
       element: <RegisterPage />,

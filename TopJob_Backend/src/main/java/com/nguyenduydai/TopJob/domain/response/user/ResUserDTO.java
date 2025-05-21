@@ -28,6 +28,9 @@ public class ResUserDTO {
     private String education;
     private String experience;
     private String cv;
+    private String typeVip;
+    private Instant vipExpiry;
+    private boolean active;
 
     @Getter
     @Setter
@@ -46,4 +49,6 @@ public class ResUserDTO {
         private long id;
         private String name;
     }
+
+    private String roleName;
 }

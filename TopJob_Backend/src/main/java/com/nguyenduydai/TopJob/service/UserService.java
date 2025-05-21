@@ -1,5 +1,8 @@
 package com.nguyenduydai.TopJob.service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
+import com.nguyenduydai.TopJob.domain.entity.Resume;
 import com.nguyenduydai.TopJob.domain.entity.Role;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
@@ -59,15 +63,22 @@ public class UserService {
         if (postuser.getCompanyName() != null) {
             if (this.companyService.existsByName(postuser.getCompanyName())) {
                 Company c = this.companyService.fetchCompanyByName(postuser.getCompanyName());
+                c.setBusinessLicense(postuser.getBusinessLicense());
+                this.companyService.handleUpdateCompany(c);
                 user.setCompany(c);
             } else {
                 Company c = this.companyService.handleCreateCompanyUserResgister(postuser.getCompanyName(),
-                        postuser.getAddress());
+                        postuser.getAddress(), postuser.getBusinessLicense());
                 user.setCompany(c);
             }
         } else {
             user.setCompany(null);
         }
+        if (postuser.getTypeVip() != null) {
+            user.setTypeVip(postuser.getTypeVip());
+        }
+
+        user.setActive(postuser.isActive());
         Role r = this.roleService.fetchRoleById(postuser.getRoleId());
         user.setRole(r != null ? r : null);
         return this.userRepository.save(user);
@@ -97,6 +108,7 @@ public class UserService {
             }
             if (user.getCv() != null || user.getCv().equals(""))
                 u.setCv(user.getCv());
+            u.setActive(user.isActive());
             u = this.userRepository.save(u);
         }
         return u;
@@ -173,6 +185,7 @@ public class UserService {
             r.setId(user.getRole().getId());
             r.setName(user.getRole().getName());
             res.setRole(r);
+            res.setRoleName(user.getRole().getName());
         }
         res.setId(user.getId());
         res.setEmail(user.getEmail());
@@ -187,6 +200,9 @@ public class UserService {
         res.setEducation(user.getEducation());
         res.setPhone(user.getPhone());
         res.setCv(user.getCv());
+        res.setTypeVip(user.getTypeVip());
+        res.setVipExpiry(user.getVipExpiry());
+        res.setActive(user.isActive());
         return res;
     }
 
@@ -230,4 +246,33 @@ public class UserService {
         } else
             return false;
     }
+
+    public User handleUpdateUserByVip(User user, String vip) {
+        User u = this.fetchUserById(user.getId());
+        if (u != null) {
+            if (vip.equals("vip1")) {
+                Instant currentInstant = Instant.now();
+                ZonedDateTime zonedDateTime = currentInstant.atZone(ZoneId.systemDefault());
+                ZonedDateTime futureDateTime = zonedDateTime.plusMonths(12);
+                Instant futureInstant = futureDateTime.toInstant();
+                u.setTypeVip("VIP 1");
+                u.setVipExpiry(futureInstant);
+            }
+            if (vip.equals("vip2")) {
+                Instant currentInstant = Instant.now();
+                ZonedDateTime zonedDateTime = currentInstant.atZone(ZoneId.systemDefault());
+                ZonedDateTime futureDateTime = zonedDateTime.plusMonths(24);
+                Instant futureInstant = futureDateTime.toInstant();
+                u.setTypeVip("VIP 2");
+                u.setVipExpiry(futureInstant);
+            }
+            u = this.userRepository.save(u);
+        }
+        return u;
+    }
+
+    public List<User> fetchAllUsers() {
+        return this.userRepository.findAll(); // Lấy tất cả công ty
+    }
+
 }

@@ -5,8 +5,8 @@ import { callFetchJobById } from "@/config/api";
 import styles from 'styles/client.module.scss';
 import parse from 'html-react-parser';
 import { Col, Divider, Row, Skeleton, Tag } from "antd";
-import { DollarOutlined, EnvironmentOutlined, HistoryOutlined } from "@ant-design/icons";
-import { getLocationName } from "@/config/utils";
+import { AimOutlined, DollarOutlined, EnvironmentOutlined, HistoryOutlined, LaptopOutlined, ScheduleOutlined, SlidersOutlined } from "@ant-design/icons";
+import { getEnvironmentName, getLevelName, getLocationName } from "@/config/utils";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ApplyModal from "@/components/client/modal/apply.modal";
@@ -38,7 +38,7 @@ const ClientJobDetailPage = (props: any) => {
     }, [id]);
 
     return (
-        <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
+        <div className={`${styles["container"]} ${styles["detail-job-section"]} ${styles["modal-infor-detail"]}`}>
             {isLoading ?
                 <Skeleton />
                 :
@@ -56,7 +56,7 @@ const ClientJobDetailPage = (props: any) => {
                                     >Ứng tuyển ngay</button>
                                 </div>
                                 <Divider />
-                                <div className={styles["skills"]}>
+                                <div className={styles["skills"]} style={{textAlign:'center',fontSize:16}}><AimOutlined  style={{ color:'blue' }} /> &nbsp;&nbsp;
                                     {jobDetail?.skills?.map((item, index) => {
                                         return (
                                             <Tag key={`${index}-key`} color="gold" >
@@ -65,15 +65,32 @@ const ClientJobDetailPage = (props: any) => {
                                         )
                                     })}
                                 </div>
-                                <div className={styles["salary"]}>
-                                    <DollarOutlined />
-                                    <span>&nbsp;{(jobDetail.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</span>
+                                <div style={{display:'flex', justifyContent:'space-around',fontSize:16}}>
+                                    <div className={styles["salary"]}>
+                                        <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(jobDetail.location)}
+                                    </div>
+                                    <div className={styles["salary"]}>
+                                        <SlidersOutlined style={{ color:'purple'}} />&nbsp;{getLevelName(jobDetail.level)}
+                                    </div>
                                 </div>
-                                <div className={styles["location"]}>
-                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(jobDetail.location)}
+                                <div style={{display:'flex', justifyContent:'space-around',fontSize:16}}>
+                                    <div className={styles["salary"]}>
+            
+                                        <ScheduleOutlined style={{ color:'palevioletred'}} />&nbsp;{jobDetail.experienceRequirement?.replaceAll('YEARS','năm kinh nghiệm')}
+                                    </div>
+                                    <div className={styles["salary"]}>
+                                        <LaptopOutlined style={{ color:'navy'}} />&nbsp;{getEnvironmentName(jobDetail.jobEnvironment)}
+                                    </div>
                                 </div>
-                                <div>
-                                    <HistoryOutlined /> {jobDetail.updatedAt ? dayjs(jobDetail.updatedAt).locale("en").fromNow() : dayjs(jobDetail.createdAt).locale("en").fromNow()}
+
+                                <div style={{display:'flex', justifyContent:'space-around',fontSize:16}}>
+                                    <div className={styles["salary"]}>
+                                        <DollarOutlined style={{ color: 'orange' }}/>
+                                        <span>&nbsp;{(jobDetail.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</span>
+                                    </div>
+                                    <div className={styles["salary"]}>
+                                        <HistoryOutlined style={{ color:'red'}}/> {jobDetail.updatedAt ? dayjs(jobDetail.updatedAt).locale("en").fromNow() : dayjs(jobDetail.createdAt).locale("en").fromNow()}
+                                    </div>
                                 </div>
                                 <Divider />
                                 {parse(jobDetail.description)}

@@ -68,9 +68,9 @@ public class Job extends BaseEntity {
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     @JsonIgnore
     List<TalentCandidate> talentCandidate;
-
+    private int start;
     // chưa dùng đến :)))
-    private int viewCount;
+
     private String jobType;
     private String jobRequirement;
     private String position;

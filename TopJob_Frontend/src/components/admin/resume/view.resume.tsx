@@ -37,11 +37,12 @@ const ViewDetailResume = (props: IProps) => {
         setIsSubmit(false);
     }
     const handleSendEmail = async () => {
-        handleChangeStatus();
+        await handleChangeStatus();
         const res = await callsendEmailResume(dataInit.id);
         console.log(dataInit.id);
         if (+res.statusCode===200) {
             message.success("Gửi email thông báo thành công!");
+            reloadTable();
         } else {
             notification.error({
                 message: 'Có lỗi xảy ra',

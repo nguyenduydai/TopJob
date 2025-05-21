@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.nguyenduydai.TopJob.util.OAuth2LoginSuccessHandler;
 import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
@@ -37,12 +38,12 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh",
-                "/api/v1/auth/register", "/api/v1/auth/logout", "/api/v1/auth/account",
-                "/api/v1/jobrecommendation",
-                "/api/v1/email/**", "/storage/**",
-                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+            OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) throws Exception {
+        String[] whiteList = { "/", "/api/v1/auth/**", "/api/v1/email/**", "/storage/**", "/api/v1/reports/**",
+                "/api/v1/jobrecommendation", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html", "/api/v1/payment/**", "/api/v1/files/**"
+        };
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
@@ -59,7 +60,8 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth) -> oauth.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
-
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2LoginSuccessHandler))
                 .formLogin(f -> f.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

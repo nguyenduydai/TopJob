@@ -1,76 +1,164 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <title>TopJob</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+            background-color: #f9fafb; /* Light background */
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            max-width: 80rem;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f3e3e3;
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+            border: 20px solid #80ace5;
+        }
+        .email-content {
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #007bff; /* Blue color for brand */
+        }
+        .title {
+            font-size: 1.75rem;
+            color: #4a5568;
+            text-align: center;
+        }
+        .divider {
+            margin: 1.5rem 0;
+            border-top: 2px solid #e2e8f0; /* Lighter divider */
+        }
+        .greeting {
+            font-size: 1rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+        .body-text {
+            font-size: 1rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+        .job-list {
+            margin-bottom: 1.5rem;
+        }
+        .job-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .job-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #bc3cd2;
+            text-decoration: none;
+        }
+        .job-title:hover {
+            text-decoration: underline;
+        }
+        .company-name {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        .salary {
+            font-size: 0.9rem;
+            color: #1a202c;
+        }
+        .skills {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .skill-tag {
+            font-size: 0.8rem;
+            background-color: #edf2f7; /* Light background for tags */
+            color: #4a5568;
+            padding: 0.3rem 0.5rem;
+            margin-right: 0.5rem;
+            border-radius: 0.375rem; /* Rounded corners for tags */
+            border: 1px solid #e2e8f0;
+        }
+        .closing {
+            padding-top: 1.5rem;
+            font-size: 1rem;
+            color: #1a202c;
+        }
+        .sender-name{
+            font-size: 1rem;
+            color: #1a202c;
+        }
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            .email-content {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-
-
-<body
-    style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
-    <table style="max-width: 80rem; min-height: 100vh; padding: 2rem; margin: 0 auto; background-color: #f5f5f5;">
+<body>
+    <table class="main-container">
         <tr>
             <td align="center">
-                <table style="background-color: white; border-radius: 5px; padding: 20px;">
+                <table class="email-content">
                     <tr>
-                        <td colspan="2">
-                            <div style="text-align: left; font-size: 20px; font-weight: 800;color: blue;">TOP JOB</div>
-                            <div style="text-align: left; font-size: 20px;">Thông báo công việc mới theo kỹ năng bạn đã đăng ký </div>
+                        <td colspan="2" class="header">
+                            <div class="logo">TOP JOB</div>
+                            <div class="title">Thông báo công việc mới theo kỹ năng bạn đã đăng ký</div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin: 15px 0; border-top: 2px solid rgba(5, 5, 5, 0.06);"></td>
+                        <td colspan="2" class="divider"></td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <div style="text-align: left;">
-                                <div style="font-size: 16px;">Xin chào <span th:text="${name}"></span></div>
-                                <div style="font-size: 16px;">Một trong những công việc này có thể là công việc tiếp theo của bạn. Hãy tìm hiểu ngay hôm nay!</div>
+                            <div class="greeting">
+                                Xin chào <span th:text="${name}"></span>
+                            </div>
+                            <div class="body-text">
+                                Chúng tôi xin gửi đến bạn những công việc yêu cầu các kỹ năng mà bạn đã đăng ký.<br/>
+                                Một trong những công việc này có thể là công việc tiếp theo của bạn. Hãy tìm hiểu ngay hôm nay!
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin: 15px 0; border-top: 2px dashed rgba(5, 5, 5, 0.06);"></td>
+                        <td colspan="2" class="divider"></td>
                     </tr>
                     <tr>
-                        <td colspan="2">
-                            <table>
-                                <tr th:each="job : ${jobs}">
-                                    <td>
-                                        <div style="font-size: 16px;font-weight: 500;">
-                                            <a href="" target="_blank"
-                                                style="text-decoration: none;" th:text="${job.name}"></a>
-                                        </div>
-                                        <div style="font-size: 14px;" th:text="${job.company}"></div>
-                                        <div style="font-size: 14px;">
-                                            <span th:text="${job.salary}"> vnđ</span>
-                                        </div>
-                                        <!-- <div style="font-size: 14px;">
-                                            <span th:if="${job.salary != null}" 
-                                                th:text="${#number.formatDecimal(job.salary, 0, 'COMMA', 0, 'POINT')}">
-                                            </span>
-                                            <span th:if="${job.salary == null}">
-                                                Salary not available
-                                            </span>
-                                        </div> -->
-                                        <div style="margin-top: 5px;">
-                                            <span
-                                                style="font-size: 14px; background: #e8e8e8; padding: 3px; margin-right: 5px;  border-radius: 3px;"
-                                                th:each="skill : ${job.skills}" th:text="${skill.name}">
-                                            </span>
-                                        </div>
-                                        <div style="margin: 15px 0; border-top: 1px dashed rgba(5, 5, 5, 0.06);"></div>
-                                    </td>
-                                </tr>
-                               
-                            </table>
+                        <td colspan="2" class="job-list">
+                            <tr th:each="job : ${jobs}">
+                                <td class="job-item">
+                                    <a href="" target="_blank" class="job-title" th:text="${job.name}"></a>
+                                    <div class="company-name" th:text="${job.company}"></div>
+                                    <div class="salary">
+                                         <span th:text="${job.salary}"> vnđ</span>
+                                    </div>
+                                    <div class="skills">
+                                        <span class="skill-tag" th:each="skill : ${job.skills}" th:text="${skill.name}"></span>
+                                    </div>
+                                </td>
+                            </tr>
                         </td>
                     </tr>
-                    <tr>
+                     <tr>
                         <td colspan="2">
-                            <div style="padding-top: 20px; text-align: left; font-size: 16px;">Kính gửi,</div>
-                            <div style="text-align: left; font-size: 16px;"><span th:text="${name}"></span></div>
+                            <div class="closing">Kính gửi,</div>
+                            <div class="sender-name"><span th:text="${name}"></span></div>
                         </td>
                     </tr>
                 </table>
@@ -78,5 +166,4 @@
         </tr>
     </table>
 </body>
-
 </html>

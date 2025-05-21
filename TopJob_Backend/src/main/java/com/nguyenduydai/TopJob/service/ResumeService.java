@@ -1,5 +1,7 @@
 package com.nguyenduydai.TopJob.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +93,8 @@ public class ResumeService {
     }
 
     public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
-        List<Long> arrJobIds = null;
+
+        List<Long> arrJobIds = new ArrayList<>();
         Specification<Resume> finalSpec = null;
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
@@ -104,13 +107,14 @@ public class ResumeService {
                 if (userCompany != null) {
                     List<Job> companyJobs = userCompany.getJobs();
                     if (companyJobs != null && companyJobs.size() > 0) {
-                        arrJobIds = companyJobs.stream().map(i -> i.getId()).collect(Collectors.toList());
+                        arrJobIds.addAll(companyJobs.stream().map(i -> i.getId()).collect(Collectors.toList()));
                     }
                 }
             }
-            Specification<Resume> jobInSpec = filterSpecificationConverter.convert(fb.field("job")
-                    .in(fb.input(arrJobIds)).get());
+            Specification<Resume> jobInSpec = (root, query, cb) -> root.get("job").get("id").in(arrJobIds);
             finalSpec = jobInSpec.and(spec);
+            System.out.println(finalSpec.toString());
+            System.out.println(spec.toString());
         }
         Page<Resume> page = this.resumeRepository.findAll(finalSpec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -142,7 +146,24 @@ public class ResumeService {
         rs.setMeta(mt);
         rs.setResult(
                 page.getContent().stream().map(item -> convertToResFetchResumeDTO(item)).collect(Collectors.toList()));
+        return rs;
+    }
 
+    public ResultPaginationDTO fetchResumeByJob(Specification<Resume> spec, Pageable pageable, long jobId) {
+        Specification<Resume> finalSpec = null;
+        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(fb.field("job")
+                .in(fb.input(jobId)).get());
+        finalSpec = jobInSpec.and(spec);
+        Page<Resume> page = this.resumeRepository.findAll(finalSpec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+        mt.setPage(page.getNumber() + 1);
+        mt.setPageSize(page.getSize());
+        mt.setPages(page.getTotalPages());
+        mt.setTotal(page.getTotalElements());
+        rs.setMeta(mt);
+        rs.setResult(
+                page.getContent().stream().map(item -> convertToResFetchResumeDTO(item)).collect(Collectors.toList()));
         return rs;
     }
 
@@ -163,11 +184,13 @@ public class ResumeService {
             jr.setName(resume.getJob().getName());
             res.setJob(jr);
             res.setCompanyName(resume.getJob().getCompany().getName());
+            res.setJobName(resume.getJob().getName());
         }
         if (resume.getUser() != null) {
             ur.setId(resume.getUser().getId());
             ur.setName(resume.getUser().getName());
             res.setUser(ur);
+
         }
         return res;
     }
@@ -217,5 +240,9 @@ public class ResumeService {
                     ". Sau khi xem xét kỹ lưỡng, chúng tôi rất tiếc phải thông báo rằng bạn không được chọn cho vị trí này.");
         this.emailService.sendEmailResumeFromTemplateSync(emailUser,
                 "Thông báo về trạng thái đơn ứng tuyển", "resume", res);
+    }
+
+    public List<Resume> fetchAllResumes() {
+        return this.resumeRepository.findAll(); // Lấy tất cả công ty
     }
 }

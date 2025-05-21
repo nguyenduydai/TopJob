@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { callChangePasswordUser, callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callUploadSingleFile } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { MonitorOutlined,CheckSquareOutlined, UploadOutlined } from "@ant-design/icons";
+import { MonitorOutlined,CheckSquareOutlined, UploadOutlined, RightCircleOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { getEducationnName, getExperienceName, SKILLS_LIST } from "@/config/utils";
 import { useAppSelector } from "@/redux/hooks";
 import { IUser } from "@/types/backend";
@@ -161,6 +161,8 @@ useEffect(() => {
                 education: getEducationnName(res.data?.education?res.data?.education:"") ,
                 experience: getExperienceName(res.data?.experience?res.data?.experience:"") ,
                 phone: res.data?.phone,
+                typeVip:res.data?.typeVip,
+                vipExpiry: dayjs(res.data?.vipExpiry, "YYYY-MM-DD hh:mm:ss"), 
             role: res.data?.role ? {
                 label: res.data.role.name,
                 value: res.data.role.id
@@ -181,7 +183,7 @@ useEffect(() => {
     };
 
         const submitUser = async (valuesForm: any) => {
-            const { name, email, password,  age, gender,address,education,experience,phone, role, company } = valuesForm;
+            const { name, email, password,  age, gender,address,education,experience,phone, role, company,typeVip,vipExpiry } = valuesForm;
             if (dataInit?.id) {
                 const user = {
                     id: dataInit.id,
@@ -194,6 +196,8 @@ useEffect(() => {
                     education,
                     experience,
                     phone,
+                    typeVip,
+                    vipExpiry,
                     role: role? { 
                         id: role.value,
                         name: role.label 
@@ -203,11 +207,12 @@ useEffect(() => {
                         name: company.label
                     }:undefined,
                     cv:urlCV,
+                    active:dataInit.active
                 }
                 console.log(user);
                 const res = await callUpdateUser(user);
                 if (res.data) {
-                    message.success("Cập nhật user thành công");
+                    message.success("Cập nhật thông tin người dùng thành công");
                 } else {
                     notification.error({
                         message: 'Có lỗi xảy ra',
@@ -332,7 +337,7 @@ useEffect(() => {
                             label="Password"
                             name="password"
                             rules={[{ required: dataInit?.id ? false : true, message: 'Vui lòng không bỏ trống' }]}
-                            placeholder="Nhập password"
+                            placeholder="password"
                         />
                     </Col>
                     <Col lg={8} md={8} sm={24} xs={24}>
@@ -382,45 +387,11 @@ useEffect(() => {
                             placeholder="Nhập địa chỉ"
                         />
                     </Col>
-                    <Col lg={12} md={12} sm={24} xs={24}>
-                        <ProFormSelect
-                            name="education"
-                            label="Trình độ giáo dục"
-                            valueEnum={{
-                                HIGH_SCHOOL: "Trung học phổ thông",      // Trung học phổ thông
-                                BACHELOR : "Cử nhân",    // Cử nhân
-                                MASTER : "Thạc sĩ",        // Thạc sĩ
-                                OTHER:"Khác"
-                            }}
-                            placeholder="Chọn trình độ giáo dục"
-                            rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
-                        />
-                    </Col>
-                    <Col lg={12} md={12} sm={24} xs={24}>
-                        <ProFormSelect
-                           label="Kinh nghiệm"
-                            name="experience"
-                            valueEnum={{
-                                '0 YEARS': "dưới 1 năm kinh nghiệm",     
-                                '1 YEARS': "1 năm kinh nghiệm",
-                                '2 YEARS': "2 năm kinh nghiệm",
-                                '3 YEARS': "3 năm kinh nghiệm",
-                                '4 YEARS': "4 năm kinh nghiệm",
-                                '5 YEARS': "5 năm kinh nghiệm",
-                                '6 YEARS': "6 năm kinh nghiệm",
-                                '7 YEARS': "7 năm kinh nghiệm",
-                                '8 YEARS': "8 năm kinh nghiệm",
-                                '9 YEARS': "9 năm kinh nghiệm",
-                                '10 YEARS': "10 năm kinh nghiệm",       
-                            }}
-                            placeholder="Nhập kinh nghiệm"
-                            rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
-                        />
-                    </Col>
+                    
                    
                     {(!candidate) && (
                         <>
-                        <Col lg={8} md={8} sm={24} xs={24}>
+                        <Col lg={12} md={12} sm={24} xs={24}>
                             <ProForm.Item
                                 name="role"
                                 label="Vai trò"
@@ -440,7 +411,7 @@ useEffect(() => {
                                 />  
                             </ProForm.Item>
                         </Col>
-                        <Col lg={8} md={8} sm={24} xs={24} >
+                        <Col lg={12} md={12} sm={24} xs={24} >
                             <ProForm.Item
                                 name="company"
                                 label="Thuộc Công Ty"
@@ -460,9 +431,61 @@ useEffect(() => {
                                 />
                             </ProForm.Item>
                         </Col>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <ProFormText
+                                disabled={true}
+                                label="Loại tài khoản"
+                                name="typeVip"
+                                placeholder="VIP 0"
+                            />
+                        </Col>
+                        <Col lg={12} md={12} sm={24} xs={24} >
+                            <ProFormText
+                                disabled={true}
+                                label="Ngày hết hạn vip"
+                                name="vipExpiry"
+                                placeholder=""
+                            />
+                        </Col>
                         </>
                     )}
                     {(candidate) && (
+                        <>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <ProFormSelect
+                                name="education"
+                                label="Trình độ giáo dục"
+                                valueEnum={{
+                                    HIGH_SCHOOL: "Trung học phổ thông",      // Trung học phổ thông
+                                    BACHELOR : "Cử nhân",    // Cử nhân
+                                    MASTER : "Thạc sĩ",        // Thạc sĩ
+                                    OTHER:"Khác"
+                                }}
+                                placeholder="Chọn trình độ giáo dục"
+                                rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
+                            />
+                        </Col>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <ProFormSelect
+                            label="Kinh nghiệm"
+                                name="experience"
+                                valueEnum={{
+                                    '0 YEARS': "0 năm kinh nghiệm",     
+                                    '1 YEARS': "1 năm kinh nghiệm",
+                                    '2 YEARS': "2 năm kinh nghiệm",
+                                    '3 YEARS': "3 năm kinh nghiệm",
+                                    '4 YEARS': "4 năm kinh nghiệm",
+                                    '5 YEARS': "5 năm kinh nghiệm",
+                                    '6 YEARS': "6 năm kinh nghiệm",
+                                    '7 YEARS': "7 năm kinh nghiệm",
+                                    '8 YEARS': "8 năm kinh nghiệm",
+                                    '9 YEARS': "9 năm kinh nghiệm",
+                                    '10 YEARS': "10 năm kinh nghiệm",       
+                                }}
+                                placeholder="Nhập kinh nghiệm"
+                                rules={[{ required: false, message: 'Vui lòng trình độ giáo dục' }]}
+                            />
+                        </Col>
                         <Col span={24}>
                         <ProForm.Item   
                             label={"Upload file CV"}
@@ -483,6 +506,7 @@ useEffect(() => {
                             </Upload>
                         </ProForm.Item>
                     </Col>
+                    </>
                     )}
                     
                 </Row>
@@ -695,8 +719,9 @@ const JobByEmail = (props: any) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    <Col span={24} style={{display:'flex',justifyContent:'space-between'}}>
                         <Button onClick={() => form.submit()}>Cập nhật</Button>
+                        <a href="https://mail.google.com/mail/#inbox" target="_blank">Kiểm tra hòm thư của bạn <ArrowRightOutlined /></a>
                     </Col>
                 </Row>
             </Form>
@@ -722,7 +747,7 @@ const ManageAccount = (props: IProps) => {
         },
         {
             key: 'email-by-skills',
-            label: `Nhận Jobs qua Email`,
+            label: `Nhận công việc theo kỹ năng qua Email`,
             children: <JobByEmail />,
         },
 

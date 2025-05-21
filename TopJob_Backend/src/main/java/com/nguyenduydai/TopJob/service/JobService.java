@@ -1,10 +1,14 @@
 package com.nguyenduydai.TopJob.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,9 @@ import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
 import com.turkraft.springfilter.parser.node.FilterNode;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +44,8 @@ public class JobService {
     private FilterParser filterParser;
     @Autowired
     private FilterSpecificationConverter filterSpecificationConverter;
+    @Autowired
+    private EntityManager entityManager;
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
     private final CompanyRepository companyRepository;
@@ -66,6 +75,15 @@ public class JobService {
             if (cOptional.isPresent())
                 j.setCompany(cOptional.get());
         }
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User currUser = this.userService.handleGetUserByUsername(email);
+        if (currUser.getTypeVip() == "VIP 1")
+            j.setStart(1);
+        else if (currUser.getTypeVip() == "VIP 2")
+            j.setStart(2);
+        else
+            j.setStart(0);
         return this.convertToResCreateJobDTO(this.jobRepository.save(j));
     }
 
@@ -91,7 +109,8 @@ public class JobService {
         jobInDb.setActive(j.isActive());
         jobInDb.setStartDate(j.getStartDate());
         jobInDb.setEndDate(j.getEndDate());
-
+        jobInDb.setDescription(j.getDescription());
+        jobInDb.setExperienceRequirement(j.getExperienceRequirement());
         jobInDb = this.jobRepository.save(jobInDb);
         return convertToResUpdateJobDTO(jobInDb);
     }
@@ -105,6 +124,11 @@ public class JobService {
         if (job.isPresent())
             return job.get();
         return null;
+    }
+
+    public List<Job> fetchAllJorForReport() {
+        List<Job> job = this.jobRepository.findAll();
+        return job;
     }
 
     public ResultPaginationDTO fetchAllJob(Specification<Job> spec, Pageable pageable) {
@@ -148,6 +172,7 @@ public class JobService {
 
     public ResultPaginationDTO fetchAllJobByCompany(long id, Specification<Job> spec, Pageable pageable) {
         // query builder
+
         Company cOptional = this.companyService.fetchCompanyById(id);
         Specification<Job> finalSpec = null;
         if (cOptional == null) {
@@ -211,5 +236,80 @@ public class JobService {
                     .map(x -> x.getName()).collect(Collectors.toList()));
         }
         return res;
+    }
+
+    // Lấy số lượng đơn ứng tuyển theo từng tháng
+    public List<Map<String, Object>> getJobPerMonth() {
+        String sql = "SELECT " +
+                "DATE_FORMAT(ja.created_at, '%Y-%m') as month, " +
+                "COUNT(ja.id) as applicationCount " +
+                "FROM jobs ja " +
+                "GROUP BY month " +
+                "ORDER BY month";
+
+        Query query = entityManager.createNativeQuery(sql);
+        List<Object[]> results = query.getResultList();
+
+        List<Map<String, Object>> jobPerMonth = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("month", result[0]);
+            data.put("applicationCount", result[1]);
+            jobPerMonth.add(data);
+        }
+        return jobPerMonth;
+    }
+
+    // Lấy số lượng đơn ứng tuyển theo từng tháng
+    public List<Map<String, Object>> getJobPerMonthForHr() {
+        String emailHr = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User u = this.userService.handleGetUserByUsername(emailHr);
+        long companyId = u.getCompany().getId();
+        String sql = "SELECT " +
+                "DATE_FORMAT(j.created_at, '%Y-%m') AS month, COUNT(j.id) AS jobCount " +
+                "FROM jobs j " +
+                "WHERE j.company_id = :companyId " +
+                "GROUP BY month " +
+                "ORDER BY month";
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("companyId", companyId);
+        List<Object[]> results = query.getResultList();
+        List<Map<String, Object>> jobPerMonth = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("month", result[0]);
+            data.put("applicationCount", result[1]);
+            jobPerMonth.add(data);
+        }
+        return jobPerMonth;
+    }
+
+    public Map<String, Object> getJobHaveResumeByCompany() {
+        String emailHr = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User u = this.userService.handleGetUserByUsername(emailHr);
+        long companyId = u.getCompany().getId();
+        String sql = "SELECT " +
+                "(SELECT COUNT(*) FROM jobs j WHERE j.company_id = :companyId) AS totalJobs, " +
+                "(SELECT COUNT(DISTINCT j.id) " +
+                " FROM jobs j JOIN resumes r ON j.id = r.job_id " +
+                " WHERE j.company_id = :companyId) AS jobsWithApplications";
+
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("companyId", companyId);
+        Object[] result = (Object[]) query.getSingleResult();
+
+        Long totalJobs = ((Number) result[0]).longValue();
+        Long jobsWithApplications = ((Number) result[1]).longValue();
+        Long jobsWithoutApplications = totalJobs - jobsWithApplications;
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("withApplications", jobsWithApplications);
+        stats.put("withoutApplications", jobsWithoutApplications);
+        stats.put("total", totalJobs);
+        return stats;
     }
 }

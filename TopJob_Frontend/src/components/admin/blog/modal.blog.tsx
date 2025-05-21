@@ -48,15 +48,16 @@ const ModalBlog = (props: IProps) => {
         if (dataInit?.id && dataInit?.content) {
             setValue(dataInit.content);
         }
+        setDataThumbnail([{
+                name: dataInit?.thumbnail ?? "",
+                uid: uuidv4()
+        }])
     }, [dataInit])
 
     const submitBlog = async (valuesForm: IBlogForm) => {
         const { title, likeCount } = valuesForm;
 
-        if (dataThumbnail.length === 0) {
-            message.error('Vui lòng upload ảnh Thumbnail')
-            return;
-        }
+  
 
         if (dataInit?.id) {
             //update
@@ -72,6 +73,10 @@ const ModalBlog = (props: IProps) => {
                 });
             }
         } else {
+            if (dataThumbnail.length === 0) {
+                message.error('Vui lòng upload ảnh Thumbnail')
+                return;
+            }
             //create
             const res = await callCreateBlog( title, +likeCount, value, dataThumbnail[0].name);
             if (res.data) {

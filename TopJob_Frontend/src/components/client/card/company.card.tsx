@@ -72,7 +72,7 @@ const CompanyCard = (props: IProps) => {
                     <Row gutter={[20, 20]}>
                         <Col span={24}>
                             <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}>Nhà Tuyển Dụng Nổi Bật</span>
+                                <h2 className={styles["title"]}>Nhà Tuyển Dụng Nổi Bật</h2>
                                 {!showPagination &&
                                     <Link to="company"  className={styles["getAll"]}>Xem tất cả</Link>
                                 }

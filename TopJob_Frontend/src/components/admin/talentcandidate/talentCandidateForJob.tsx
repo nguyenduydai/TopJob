@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from 'react';
 import { IJob, ITalentCandidate } from "@/types/backend";
-import { callCreateTalentCandidateForJob, callFetchJobById, callFetchTalentCandidateForJob } from "@/config/api";
+import { callCreateTalentCandidateForJob, callFetchJobById, callFetchTalentCandidateForJob, callSendEmailTalentCandidate } from "@/config/api";
 import styles from 'styles/client.module.scss';
 import parse from 'html-react-parser';
 import { Button, Card, Col, Divider, Empty, message, notification, Pagination, Row, Skeleton, Spin, Tag } from "antd";
@@ -94,6 +94,7 @@ const TalentCandidateForJob = (props: any) => {
         init();
     }, [id]);
     const handleCreateCandidateForJob=async()=>{
+        setIsLoading(true);
         const res=await callCreateTalentCandidateForJob(id);
         if(res&&+res.statusCode===200){
             message.success("Thực hiện khảo sát thành công");
@@ -104,7 +105,24 @@ const TalentCandidateForJob = (props: any) => {
                 description: res.message
             });
         }
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
     }
+        const handleSendEmail=async(id:string|number) =>{
+            console.log(id);
+            console.log(typeof(id));
+            const res= await callSendEmailTalentCandidate(id);
+              
+             if (+res.statusCode===200) {
+                message.success("Gửi email thông báo thành công!");
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: res.message
+                });
+            }
+        }
     return (
         <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
             {isLoading ?
@@ -202,7 +220,7 @@ const TalentCandidateForJob = (props: any) => {
                                     <Card 
                                         className={styles["card-job-card"]}
                                         
-                                        style={{ height: 123 }}
+                                        style={{ height: 156 }}
                                         hoverable
                                         cover={
                                             <div className={styles["card-customize"]} style={{ display:"flex" }}>
@@ -229,6 +247,7 @@ const TalentCandidateForJob = (props: any) => {
                                                         target="_blank"
                                                         >Xem CV</a>&nbsp; &lt;&lt;&lt;
                                                     </div>
+                                                     <Button style={{marginLeft:30,marginTop:5}} type='primary' onClick={()=>handleSendEmail(item.id?item.id:'')}>Gửi thư mời</Button>
                                                 </div>
                                             </div>
                                         }

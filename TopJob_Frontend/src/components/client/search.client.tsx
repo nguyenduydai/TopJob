@@ -1,6 +1,6 @@
 import { Button, Col, Form, Row, Select, notification } from 'antd';
-import { EnvironmentOutlined, MonitorOutlined } from '@ant-design/icons';
-import { LOCATION_LIST } from '@/config/utils';
+import { EnvironmentOutlined, MonitorOutlined, SlidersOutlined } from '@ant-design/icons';
+import { LEVEL_LIST, LOCATION_LIST } from '@/config/utils';
 import { ProForm } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 import { callFetchAllSkill } from '@/config/api';
@@ -11,6 +11,7 @@ const SearchClient = () => {
     const location = useLocation();
 
     const optionsLocations = LOCATION_LIST;
+    const optionsLevels = LEVEL_LIST;
     const [form] = Form.useForm();
     const [optionsSkills, setOptionsSkills] = useState<{
         label: string;
@@ -22,9 +23,13 @@ const SearchClient = () => {
     useEffect(() => {
         if (location.search) {
             const queryLocation = searchParams.get("location");
-            const querySkills = searchParams.get("skills")
+            const queryLevel = searchParams.get("level");
+            const querySkills = searchParams.get("skills");
             if (queryLocation) {
                 form.setFieldValue("location", queryLocation.split(","))
+            }
+            if (queryLevel) {
+                form.setFieldValue("level", queryLevel.split(","))
             }
             if (querySkills) {
                 form.setFieldValue("skills", querySkills.split(","))
@@ -56,16 +61,19 @@ const SearchClient = () => {
         if (values?.location?.length) {
             query = `location=${values?.location?.join(",")}`;
         }
+        if (values?.level?.length) {
+            query = values.location?.length ? query + `&level=${values?.level?.join(",")}`
+                :`level=${values?.level?.join(",")}`;
+        }
         if (values?.skills?.length) {
-            query = values.location?.length ? query + `&skills=${values?.skills?.join(",")}`
-                :
-                `skills=${values?.skills?.join(",")}`;
+            query = values.location?.length||values.level?.length ? query + `&skills=${values?.skills?.join(",")}`
+                :`skills=${values?.skills?.join(",")}`;
         }
 
         if (!query) {
             notification.error({
                 message: 'Có lỗi xảy ra',
-                description: "Vui lòng chọn tiêu chí để search"
+                description: "Vui lòng chọn tiêu chí để tìm kiếm..."
             });
             return;
         }
@@ -83,8 +91,8 @@ const SearchClient = () => {
             }
         >
             <Row gutter={[20, 20]}>
-                <Col span={24}><h2 >Việc Làm IT Cho Developer</h2></Col>
-                <Col span={24} md={16}>
+                <Col span={24}><h2 style={{color:'#d1d1d1'}}>Công Việc IT Cho Bạn</h2></Col>
+                <Col span={24} md={12}>
                     <ProForm.Item
                         name="skills"
                     >
@@ -100,6 +108,25 @@ const SearchClient = () => {
                             }
                             optionLabelProp="label"
                             options={optionsSkills}
+                        />
+                    </ProForm.Item>
+                </Col>
+                <Col span={12} md={4}>
+                    <ProForm.Item
+                        name="level"
+                    >
+                        <Select
+                            mode="multiple"
+                            allowClear
+                            suffixIcon={null}
+                            style={{ width: '100%' }}
+                            placeholder={
+                                <>
+                                    <SlidersOutlined /> Trình độ...
+                                </>
+                            }
+                            optionLabelProp="label"
+                            options={optionsLevels}
                         />
                     </ProForm.Item>
                 </Col>
@@ -122,6 +149,7 @@ const SearchClient = () => {
                         />
                     </ProForm.Item>
                 </Col>
+                
                 <Col span={12} md={4}>
                     <Button type='primary' onClick={() => form.submit()}>Tìm kiếm</Button>
                 </Col>

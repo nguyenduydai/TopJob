@@ -1,7 +1,7 @@
 import { callFetchJob ,callFetchJobByCompany, callFetchJobRecommendation} from '@/config/api';
-import { convertSlug, getLocationName } from '@/config/utils';
+import { convertSlug, getLevelName, getLocationName } from '@/config/utils';
 import { IJob, IRecommendation } from '@/types/backend';
-import { CalculatorOutlined, EnvironmentOutlined, StarOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { CalculatorOutlined, DollarOutlined, EnvironmentOutlined, SlidersOutlined, StarOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -119,8 +119,12 @@ const JobReccommendationCard = (props: IProps) => {
                                             </div>
                                             <div className={styles["card-job-right"]}>
                                                 <div className={styles["job-title"]}>{item?.job?.name}</div>
-                                                <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item?.job?.location)}</div>
-                                                <div><ThunderboltOutlined style={{ color: 'orange' }} />&nbsp;{(item?.job?.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
+                                                <div style={{display:'flex',justifyContent:'space-around',marginBottom:5,marginTop:3}}>
+                                                    <div> <SlidersOutlined style={{ color:'purple'}} />&nbsp;{getLevelName(item?.job?.level)}</div>
+                                                    <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item?.job?.location)}</div>
+                                                    
+                                                    <div><DollarOutlined style={{ color: 'orange' }} />&nbsp;{(item?.job?.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
+                                                </div>
                                                 <div className={styles["job-updatedAt"]}>{item?.job?.updatedAt ? dayjs(item?.job?.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
                                             </div>
                                             
