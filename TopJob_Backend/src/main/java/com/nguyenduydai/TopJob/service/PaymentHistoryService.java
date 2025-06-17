@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.PaymentHistory;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
@@ -19,10 +21,13 @@ import com.nguyenduydai.TopJob.util.SecurityUtil;
 public class PaymentHistoryService {
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final UserService userService;
+    private final CompanyService companyService;
 
-    public PaymentHistoryService(PaymentHistoryRepository paymentHistoryRepository, UserService userService) {
+    public PaymentHistoryService(PaymentHistoryRepository paymentHistoryRepository, UserService userService,
+            CompanyService companyService) {
         this.paymentHistoryRepository = paymentHistoryRepository;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     public PaymentHistory handleCreatePaymentHistory(PaymentHistory c) {
@@ -95,6 +100,7 @@ public class PaymentHistoryService {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
         User currUser = this.userService.handleGetUserByUsername(email);
+        Company c = currUser.getCompany();
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setUser(currUser);
         paymentHistory.setStatus("payment success");
@@ -102,12 +108,15 @@ public class PaymentHistoryService {
         if (vip.equals("vip1")) {
             paymentHistory.setPrice((double) 2999000);
             paymentHistory.setTypeVip("VIP 1");
+            c.setStart(1);
         }
         if (vip.toString().equals("vip2")) {
             paymentHistory.setPrice((double) 8999000);
             paymentHistory.setTypeVip("VIP 2");
+            c.setStart(2);
         }
         this.userService.handleUpdateUserByVip(currUser, vip);
+        this.companyService.handleUpdateCompanyByVip(c);
         return this.paymentHistoryRepository.save(paymentHistory);
     }
 

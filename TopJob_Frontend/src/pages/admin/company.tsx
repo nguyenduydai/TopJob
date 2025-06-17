@@ -132,7 +132,7 @@ const CompanyPage = () => {
         
             const handleChange = (info: any) => {
                 if (info.file.status === 'uploading') {
-                    setLoadingUpload(true);
+                    setLoadingUpload(false);
                 }
                 if (info.file.status === 'done') {
                     setLoadingUpload(false);
@@ -148,7 +148,9 @@ const CompanyPage = () => {
                 if (res && res.data) {
                     setDataLogo([{
                         name: res.data.fileName,
-                        uid: uuidv4()
+                        uid: uuidv4(),
+                        url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${res.data.fileName}`,
+
                     }])
                     if (onSuccess) onSuccess('ok')
                 } else {
@@ -164,7 +166,9 @@ const CompanyPage = () => {
                 if (res && res.data) {
                     setDataBusinessLicense([{
                         name: res.data.fileName,
-                        uid: uuidv4()
+                        uid: uuidv4(),
+                        url: `${import.meta.env.VITE_BACKEND_URL}/storage/business/${res.data.fileName}`,
+
                     }])
                     if (onSuccess) onSuccess('ok')
                 } else {
@@ -176,8 +180,8 @@ const CompanyPage = () => {
                 }
             };      
         const handleRemoveFileBusinessLicense = (file: any) => {
-        setDataBusinessLicense([])
-    }
+            setDataBusinessLicense([])
+        }
     useEffect(() => {
         const fetchCompanyUser = async (id: string | undefined) => {
             if(id){
@@ -384,7 +388,7 @@ const CompanyPage = () => {
 
         return temp;
     }
-
+    console.log(dataBusinessLicense);
     return (
         <>
             {isAdminNotHr === true ? 
@@ -558,7 +562,7 @@ const CompanyPage = () => {
                                             customRequest={handleUploadFileBusinessLicense}
                                             beforeUpload={beforeUpload}
                                             onChange={handleChange}
-                                            onRemove={(file) => handleRemoveFileBusinessLicense(file)}
+                                            onRemove={ handleRemoveFileBusinessLicense}
                                             onPreview={handlePreview}
                                             fileList={dataBusinessLicense}
                                         >

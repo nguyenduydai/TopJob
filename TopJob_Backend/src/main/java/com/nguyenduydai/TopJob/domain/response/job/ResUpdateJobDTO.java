@@ -17,7 +17,7 @@ public class ResUpdateJobDTO {
 
     private String description;
 
-    private LevelEnum level;
+    private String level;
 
     private String location;
 

@@ -35,6 +35,7 @@ const JobPage = () => {
             const res = await callFetchJobAdmin(query);
             if (res && res.data) {
                 setJobs(res.data.result);
+                console.log(meta);
             }else {
                 notification.error({
                     message: 'Có lỗi xảy ra',

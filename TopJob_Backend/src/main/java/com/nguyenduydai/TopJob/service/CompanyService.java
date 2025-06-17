@@ -62,6 +62,15 @@ public class CompanyService {
         return c;
     }
 
+    public Company handleUpdateCompanyByVip(Company company) {
+        Company c = this.fetchCompanyById(company.getId());
+        if (c != null) {
+            c.setStart(company.getStart());
+            c = this.companyRepository.save(c);
+        }
+        return c;
+    }
+
     public void handleDeleteCompany(long id) {
         Optional<Company> c = this.companyRepository.findById(id);
         if (c.isPresent()) {

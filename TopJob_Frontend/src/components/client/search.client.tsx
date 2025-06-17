@@ -69,7 +69,7 @@ const SearchClient = () => {
             query = values.location?.length||values.level?.length ? query + `&skills=${values?.skills?.join(",")}`
                 :`skills=${values?.skills?.join(",")}`;
         }
-
+        console.log(query);
         if (!query) {
             notification.error({
                 message: 'Có lỗi xảy ra',

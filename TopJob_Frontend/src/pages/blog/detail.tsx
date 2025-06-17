@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 import { Col, Divider, message, notification, Row, Skeleton } from "antd";
 import { EnvironmentOutlined, HeartOutlined } from "@ant-design/icons";
 import { set } from "lodash";
+import CommentSection from "@/components/client/comment.client";
 
 
 const ClientBlogDetailPage = (props: any) => {
@@ -53,7 +54,7 @@ const ClientBlogDetailPage = (props: any) => {
             {isLoading ?
                 <Skeleton />
                 :
-                <Row gutter={[20, 20]}>
+                <Row gutter={[10, 10]}>
                     {blogDetail && blogDetail.id &&
                         <>
                             <Col span={24} md={24}>
@@ -68,7 +69,7 @@ const ClientBlogDetailPage = (props: any) => {
                                     </div>
                                 </div>
                             </Col>
-                            <Col span={24} md={21} style={{marginLeft:100,marginRight:100,marginBottom:30}}>
+                            <Col span={24} md={21} style={{marginLeft:100,marginRight:100}}>
                                 <h1 className={styles["header"]}>
                                     {blogDetail.title}
                                 </h1>
@@ -77,11 +78,13 @@ const ClientBlogDetailPage = (props: any) => {
                                    Lượt thích :&nbsp; {likeCount} &nbsp; <HeartOutlined style={{ fontSize:20, fontWeight:900,color: like ? "#ff0000" : "#000000" }} />
                                 </span>
 
-                                {/* <Divider /> */}
                                 {parse(blogDetail?.content ?? "")}
                             </Col>
+                                <Divider />
 
-
+                            <Col span={21} md={21} style={{marginLeft:100,marginBottom:50}}>
+                                <CommentSection blogId={id}/>
+                            </Col>
                         </>
                     }
                 </Row>

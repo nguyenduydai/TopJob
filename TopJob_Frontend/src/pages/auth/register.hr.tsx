@@ -12,6 +12,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 interface IBusinessLicense {
     name: string;
     uid: string;
+    url?: string;
 }
 const RegisterHrPage = () => {
     const navigate = useNavigate();
@@ -26,10 +27,10 @@ const RegisterHrPage = () => {
     const [form] = Form.useForm();
     const onFinish = async (values: IUserRegister) => {
         if(checked) {
-             if (dataBusinessLicense.length === 0) {
-                        message.error('Vui lòng upload ảnh giấy chứng nhận đăng ký doanh nghiệp');
+             if (dataBusinessLicense.length === 0) {    
 
-            return;
+                        message.error('Vui lòng upload ảnh giấy chứng nhận đăng ký doanh nghiệp');
+                    return;
              }
             const { name,phone, email, password, companyName,companyAddress } = values;
             let roleId=+2;
@@ -105,7 +106,7 @@ const RegisterHrPage = () => {
     
     const handleChange = (info: any) => {
         if (info.file.status === 'uploading') {
-            setLoadingUpload(true);
+            setLoadingUpload(false);
         }
         if (info.file.status === 'done') {
             setLoadingUpload(false);
@@ -122,8 +123,11 @@ const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any
         if (res && res.data) {
             setDataBusinessLicense([{
                 name: res.data.fileName,
-                uid: uuidv4()
+                uid: uuidv4(),
+                url: `${import.meta.env.VITE_BACKEND_URL}/storage/business/${res.data.fileName}`,
+
             }]);
+             console.log(dataBusinessLicense);
             if (onSuccess) onSuccess('ok');
         } else {
             throw new Error(res.message);
@@ -258,7 +262,14 @@ const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any
                                         labelCol={{ span: 24 }}
                                         label="Ảnh giấy chứng nhận đăng ký doanh nghiệp"
                                         name="businessLicense"
-                                        rules={[{ required: true, message: 'Ảnh giấy chứng nhận đăng ký doanh nghiệp không dược để trống ' }]}
+                                        rules={[{
+                                        required: true,
+                                        message: 'Vui lòng không bỏ trống',
+                                        validator: () => {
+                                            if (dataBusinessLicense.length > 0) return Promise.resolve();
+                                            else return Promise.reject(false);
+                                        }
+                                    }]}
                                     >
                                         <ConfigProvider locale={enUS}>
                                             <Upload
@@ -272,7 +283,7 @@ const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any
                                                 onChange={handleChange}
                                                 onRemove={(file) => handleRemoveFile(file)}
                                                 onPreview={handlePreview}
-                                                defaultFileList={[]}
+                                                fileList={dataBusinessLicense}
                                             >
                                                 <div>
                                                     {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}

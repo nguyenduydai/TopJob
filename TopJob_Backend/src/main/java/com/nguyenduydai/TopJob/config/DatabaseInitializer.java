@@ -54,8 +54,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                                         "JOBS"));
                         arr.add(new Permission("Get job with pagination", "/api/v1/jobs", "GET",
                                         "JOBS"));
-                        arr.add(new Permission("Get job with pagination admin", "/api/v1/jobsadmin",
-                                        "GET", "JOBS"));
 
                         arr.add(new Permission("Create a permission", "/api/v1/permissions", "POST", "PERMISSIONS"));
                         arr.add(new Permission("Update a permission", "/api/v1/permissions", "PUT", "PERMISSIONS"));

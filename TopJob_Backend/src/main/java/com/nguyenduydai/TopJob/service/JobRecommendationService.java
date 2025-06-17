@@ -58,7 +58,7 @@ public class JobRecommendationService {
 
         for (Job job : jobs) {
             double score = calculateTotalScore(job, survey);
-            if (score > 0.5) {
+            if (score > 0.6) {
                 JobRecommendation recommendation = new JobRecommendation();
                 recommendation.setUser(user);
                 recommendation.setJob(job);
@@ -82,14 +82,26 @@ public class JobRecommendationService {
         double environmentScore = calculateEnvironmentMatchScore(job.getJobEnvironment(), survey.getJobEnvironment());
         double quantityScore = calculateQuantityMatchScore(job.getQuantity(), survey.isQuality());
 
-        double educationScore = calculateEducationMatchScore(job.getEducationRequirement(),
-                survey.getEducationRequirement());
-        double experienceScore = calculateExperienceMatchScore(
-                Integer.parseInt(job.getExperienceRequirement().charAt(0) + ""),
-                Integer.parseInt(job.getExperienceRequirement().charAt(2) + ""),
-                Integer.parseInt(survey.getExperienceRequirement().charAt(0) + ""));
-        double ageScore = calculateAgeMatchScore(Integer.parseInt(job.getAgeRequirement().substring(0, 2)),
-                Integer.parseInt(job.getAgeRequirement().substring(3, 5)), survey.getAgeRequirement());
+        double educationScore = 0;
+        double experienceScore = 0;
+        double ageScore = 0;
+        if (survey.getEducationRequirement() == null || survey.getEducationRequirement() == "")
+            experienceScore = 0;
+        else {
+            educationScore = calculateEducationMatchScore(job.getEducationRequirement(),
+                    survey.getEducationRequirement());
+        }
+        if (survey.getExperienceRequirement() == null || survey.getExperienceRequirement() == "")
+            experienceScore = 0;
+        else {
+            experienceScore = calculateExperienceMatchScore(
+                    Integer.parseInt(job.getExperienceRequirement().charAt(0) + ""),
+                    Integer.parseInt(job.getExperienceRequirement().charAt(2) + ""),
+                    Integer.parseInt(survey.getExperienceRequirement().charAt(0) + ""));
+        }
+        if (survey.getAgeRequirement() != 0)
+            ageScore = calculateAgeMatchScore(Integer.parseInt(job.getAgeRequirement().substring(0, 2)),
+                    Integer.parseInt(job.getAgeRequirement().substring(3, 5)), survey.getAgeRequirement());
         // Trọng số tùy chỉnh
         return 0.25 * skillScore +
                 0.15 * salaryScore +

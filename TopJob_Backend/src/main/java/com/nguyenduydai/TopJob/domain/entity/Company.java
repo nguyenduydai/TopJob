@@ -29,13 +29,13 @@ public class Company extends BaseEntity {
 
     private String logo;
     private String website;
+    private int start;
 
     private String businessLicense;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     List<User> users;
-
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Job> jobs;

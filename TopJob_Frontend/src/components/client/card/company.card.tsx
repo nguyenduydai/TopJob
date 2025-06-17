@@ -22,7 +22,7 @@ const CompanyCard = (props: IProps) => {
     const [pageSize, setPageSize] = useState(8);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sortQuery, setSortQuery] = useState("sort=createdAt,asc");
+    const [sortQuery, setSortQuery] = useState("sort=start,desc&sort=createdAt,asc");
     const navigate = useNavigate();
 
     useEffect(() => {

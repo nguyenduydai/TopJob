@@ -34,8 +34,8 @@ public class Job extends BaseEntity {
     private String name;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
-    @Enumerated(EnumType.STRING)
-    private LevelEnum level;
+    // @Enumerated(EnumType.STRING)
+    private String level;
     private String location;
     private double salary;
     private int quantity;
@@ -70,7 +70,7 @@ public class Job extends BaseEntity {
     List<TalentCandidate> talentCandidate;
     private int start;
     // chưa dùng đến :)))
-
+    private int viewCount;
     private String jobType;
     private String jobRequirement;
     private String position;

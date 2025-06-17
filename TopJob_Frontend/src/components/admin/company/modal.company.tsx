@@ -164,8 +164,9 @@ const ModalCompany = (props: IProps) => {
     };
 
     const handleChange = (info: any) => {
+        console.log(info.file.status)
         if (info.file.status === 'uploading') {
-            setLoadingUpload(true);
+            setLoadingUpload(false);
         }
         if (info.file.status === 'done') {
             setLoadingUpload(false);
@@ -181,7 +182,9 @@ const ModalCompany = (props: IProps) => {
         if (res && res.data) {
             setDataLogo([{
                 name: res.data.fileName,
-                uid: uuidv4()
+                uid: uuidv4(),
+                url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${res.data.fileName}`,
+
             }])
             if (onSuccess) onSuccess('ok')
         } else {
@@ -195,10 +198,12 @@ const ModalCompany = (props: IProps) => {
 
     const handleUploadFileBusinessLicense = async ({ file, onSuccess, onError }: any) => {
         const res = await callUploadSingleFile(file, "business");
+        console.log(res)
         if (res && res.data) {
             setDataBusinessLicense([{
                 name: res.data.fileName,
-                uid: uuidv4()
+                uid: uuidv4(),
+                url: `${import.meta.env.VITE_BACKEND_URL}/storage/business/${res.data.fileName}`,
             }])
             if (onSuccess) onSuccess('ok')
         } else {
@@ -341,7 +346,6 @@ const ModalCompany = (props: IProps) => {
                                             onRemove={(file) => handleRemoveFileBusinessLicense(file)}
                                             onPreview={handlePreview}
                                              fileList={dataBusinessLicense}
-
                                         >
                                             <div>
                                                 {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}

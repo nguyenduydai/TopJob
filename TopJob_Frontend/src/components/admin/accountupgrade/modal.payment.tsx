@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import enUS from 'antd/lib/locale/en_US';
 import { AndroidOutlined, CrownOutlined, DiffOutlined, DollarOutlined, FieldTimeOutlined, FileSearchOutlined, FireOutlined, FundProjectionScreenOutlined, FundViewOutlined, LoadingOutlined, MoneyCollectOutlined, PoundCircleOutlined, QqOutlined, QrcodeOutlined, RocketOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { callCreateResume, callPayment, callUploadSingleFile, callUserById } from "@/config/api";
+import { callCreateResume, callPaymentCreate, callUploadSingleFile, callUserById } from "@/config/api";
 import { useEffect, useState } from 'react';
 import styles from 'styles/admin.module.scss';
 
@@ -44,7 +44,7 @@ const PaymentModal = (props: IProps) => {
                         }
                 } 
     const handleOkButton = async () => {
-         if(vip==="VIP 2"){
+        if(vip==="VIP 2"){
             notification.error({
                 message: 'Tài khoản hiện tại của bạn là VIP 2',
                 description: 'Tài khoản của bạn chưa hết hạn vip, bạn không cần nâng cấp thêm'
@@ -55,7 +55,7 @@ const PaymentModal = (props: IProps) => {
                 description: 'Tài khoản của bạn chưa hết hạn vip, bạn không cần nâng cấp thêm'
             });
         }else{
-            const res = await callPayment(query);
+            const res = await callPaymentCreate(query);
             if(res.data?.code=="ok"){
                 message.success("Chuyển trang thanh toán thành công");
                 window.location.href=res.data.paymentUrl;
@@ -106,7 +106,7 @@ const PaymentModal = (props: IProps) => {
                                    <p>Đăng trải nghiệm 1 công việc đầu tiên</p> 
                                 </div>: vip==="VIP 1"? 
                                 <div ><QrcodeOutlined /> Quyền lợi:
-                                    <p>- 10 tin tuyển dụng mới mỗi năm</p>
+                                    <p>- 8 tin tuyển dụng mới mỗi năm</p>
                                     <p>- Đề xuất công việc ở danh sách việc làm cho ứng viên</p>
                                     <p>- Đề xuất công ty ở "Công ty tuyển dụng hàng đầu"</p>     
                                     <p>- Thời hạn : 1 năm</p>
@@ -127,7 +127,7 @@ const PaymentModal = (props: IProps) => {
                                     <Col span={24} md={12}> 
                                         <div onClick={()=>handleClickVip1()}  className={`${styles["payment-content"]}  ${styles[`${click1 ? 'active' : ''}`]}`}>
                                             <h3 style={{textAlign:'center'}}>VIP 1 <CrownOutlined /></h3>
-                                            <p><DiffOutlined /> 10 tin tuyển dụng mới mỗi năm</p>
+                                            <p><DiffOutlined /> 8 tin tuyển dụng mới mỗi năm</p>
                                             <p><FundViewOutlined /> Đề xuất công việc ở danh sách việc làm cho ứng viên</p>
                                             <p><FundProjectionScreenOutlined /> Đề xuất công ty ở "Công ty tuyển dụng hàng đầu"</p>
                                             <p><FieldTimeOutlined /> Thời hạn : 1 năm</p>
@@ -140,7 +140,7 @@ const PaymentModal = (props: IProps) => {
                                             <h3 style={{textAlign:'center'}}>VIP 2 <CrownOutlined /></h3>
                                             <p><DiffOutlined /> Không giới hạn tin tuyển dụng mới mỗi năm</p>
                                             <p><FundViewOutlined /> Đề xuất công việc ở danh sách việc làm cho ứng viên</p>
-                                            <p><FundProjectionScreenOutlined />Đề xuất công ty ở "Công ty tuyển dụng hàng đầu"</p>
+                                            <p><FundProjectionScreenOutlined /> Đề xuất công ty ở "Công ty tuyển dụng hàng đầu"</p>
                                             <p><FileSearchOutlined /> Mở khóa chức năng tìm kiếm ứng viên tiềm năng</p>
                                             <p><FieldTimeOutlined /> Thời hạn : 2 năm</p>
                                             <p style={{textAlign:'center'}}><DollarOutlined /> 8.999.000 VNĐ</p>

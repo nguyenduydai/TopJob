@@ -38,6 +38,7 @@ const RolePage = () => {
     useEffect(() => {
         const init = async () => {
             const res = await callFetchPermission(`page=1&size=100`);
+            console.log(res);
             if (res.data?.result) {
                 setListPermissions(groupByPermission(res.data?.result))
             }
@@ -67,7 +68,7 @@ const RolePage = () => {
 
     const columns: ProColumns<IRole>[] = [
         {
-            title: 'Id',
+            title: 'STT',
             dataIndex: 'id',
             width: 250,
             render: (text, record, index, action) => {
@@ -198,7 +199,7 @@ const RolePage = () => {
 
         //mặc định sort theo updatedAt
         if (Object.keys(sortBy).length === 0) {
-            temp = `${temp}&sort=updatedAt,desc`;
+            temp = `${temp}&sort=id,asc`;
         } else {
             temp = `${temp}&${sortBy}`;
         }

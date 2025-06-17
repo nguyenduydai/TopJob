@@ -1,26 +1,21 @@
 package com.nguyenduydai.TopJob.service;
 
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.nguyenduydai.TopJob.domain.entity.Resume;
-import com.nguyenduydai.TopJob.domain.entity.User;
-import com.nguyenduydai.TopJob.domain.response.email.ResEmailResume;
-import com.nguyenduydai.TopJob.util.SecurityUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.nguyenduydai.TopJob.domain.entity.User;
+import com.nguyenduydai.TopJob.util.SecurityUtil;
 
 @Service
 public class ReportService {

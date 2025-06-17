@@ -209,7 +209,7 @@ const ViewUpsertJob = (props: any) => {
                 });
             }
         } else {
-            if(  (totalJob>=1&&vip==="VIP 0") || (totalJob>=5&&vip==="VIP 1") ){
+            if(  (totalJob>=1&&vip==="VIP 0") || (totalJob>=8&&vip==="VIP 1") ){
                 notification.error({
                     message: 'Tài khoản bạn đã đăng số tin tuyển dụng tối đa',
                     description: "Hãy nâng cấp tài khoản để có thể đăng thêm tin tuyển dụng"
@@ -268,7 +268,7 @@ const ViewUpsertJob = (props: any) => {
                         }
                     ]}
                 />
-                <div style={{textAlign:'center',color:'#1677ff'}}>Bạn đã đăng {totalJob} tin tuyển dụng trong năm nay</div>
+                {user?.role?.id && user?.role?.id=='2' && <div style={{textAlign:'center',color:'#1677ff'}}>Bạn đã đăng {totalJob} tin tuyển dụng trong năm nay</div>}
             </div>
             <div >
 

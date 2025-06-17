@@ -54,6 +54,7 @@ export interface ICompany {
     updatedAt?: string;
     website?:string;
     businessLicense:string;
+    start:number
 }
 
 export interface ISkill {
@@ -279,4 +280,13 @@ export interface IResPaymentDTO {
     status:string;
     companyName:string;
     price: number;
+}
+export interface CommentItem {
+  id: string;
+  content: string;
+  createdAt: string;
+  user: { id: string; name: string };
+  blog: { id:string; title:string};
+  likeCount: number;
+  replies: CommentItem[]; // Danh sách phản hồi
 }

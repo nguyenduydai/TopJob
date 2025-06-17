@@ -3,7 +3,7 @@ package com.nguyenduydai.TopJob.util;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import com.nguyenduydai.TopJob.domain.response.ResLoginDTO;
+import com.nguyenduydai.TopJob.domain.response.auth.ResLoginDTO;
 import com.nimbusds.jose.util.Base64;
 import java.util.Optional;
 import java.util.List;

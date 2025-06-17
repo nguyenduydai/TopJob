@@ -5,9 +5,7 @@ import Loading from "../loading";
 
 const RoleBaseRoute = (props: any) => {
     const user = useAppSelector(state => state.account.user);
-    const userRole = user.role.name;
-
-    if (userRole !== 'NORMAL_USER') {
+    if (user.role.id != '3' ) {
         return (<>{props.children}</>)
     } else {
         return (<NotPermitted />)

@@ -1,9 +1,5 @@
 package com.nguyenduydai.TopJob.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,38 +10,25 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest.Builder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqLoginDTO;
 import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
-import com.nguyenduydai.TopJob.domain.response.ResLoginDTO;
+import com.nguyenduydai.TopJob.domain.response.auth.ResLoginDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResCreateUserDTO;
 import com.nguyenduydai.TopJob.service.UserService;
 import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController

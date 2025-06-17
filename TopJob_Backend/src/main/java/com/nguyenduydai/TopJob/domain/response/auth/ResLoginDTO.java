@@ -1,4 +1,4 @@
-package com.nguyenduydai.TopJob.domain.response;
+package com.nguyenduydai.TopJob.domain.response.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nguyenduydai.TopJob.domain.entity.Company;

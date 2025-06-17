@@ -30,7 +30,7 @@ const JobCard = (props: IProps) => {
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     //const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
-const [sortQuery, setSortQuery] = useState("sort=start,desc&sort=createdAt,desc");
+    const [sortQuery, setSortQuery] = useState("sort=createdAt,desc&sort=start,desc");
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,26 +49,32 @@ const [sortQuery, setSortQuery] = useState("sort=start,desc&sort=createdAt,desc"
         if (sortQuery) {
             query += `&${sortQuery}`;
         }
-
         //check query string
         const queryLocation = searchParams.get("location");
+        const queryLevel=searchParams.get("level")?.toUpperCase();;
         const querySkills = searchParams.get("skills")
         if (queryLocation || querySkills) {
             let q = "";
             if (queryLocation) {
                 q = sfIn("location", queryLocation.split(",")).toString();
             }
-
-            if (querySkills) {
+            if (queryLevel) {
                 q = queryLocation ?
+                    q + " and " +  `${sfIn("level", queryLevel.split(","))}`
+                    :  `${sfIn("level", queryLevel.split(","))}`;
+            }
+            if (querySkills) {
+                q = queryLocation || queryLevel ?
                     q + " and " + `${sfIn("skills", querySkills.split(","))}`
                     : `${sfIn("skills", querySkills.split(","))}`;
             }
-
+            console.log(q);
             query += `&filter=${encodeURIComponent(q)}`;
+            console.log(query);
         }
         if(companyId===null){
             const res = await callFetchJob(query);
+            console.log(res);
             if (res && res.data) {
                 setDisplayJob(res.data.result);
                 setTotal(res.data.meta.total)

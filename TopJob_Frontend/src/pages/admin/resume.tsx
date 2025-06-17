@@ -128,7 +128,7 @@ const ResumePage = () => {
 
     const columns: ProColumns<IResume>[] = [
         {
-            title: 'Id',
+            title: 'STT',
             dataIndex: 'id',
             width: 50,
             render: (text, record, index, action) => {

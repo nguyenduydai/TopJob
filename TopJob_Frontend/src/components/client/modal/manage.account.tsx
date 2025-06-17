@@ -721,7 +721,7 @@ const JobByEmail = (props: any) => {
                     </Col>
                     <Col span={24} style={{display:'flex',justifyContent:'space-between'}}>
                         <Button onClick={() => form.submit()}>Cập nhật</Button>
-                        <a href="https://mail.google.com/mail/#inbox" target="_blank">Kiểm tra hòm thư của bạn <ArrowRightOutlined /></a>
+                        <a href="https://mail.google.com/mail/#inbox" target="_blank">Kiểm tra hòm thư gmail của bạn <ArrowRightOutlined /></a>
                     </Col>
                 </Row>
             </Form>

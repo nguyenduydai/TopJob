@@ -37,7 +37,7 @@ export const LOCATION_LIST =
         { label: "Hà Nội", value: "HANOI" },
         { label: "Hồ Chí Minh", value: "HOCHIMINH" },
         { label: "Đà Nẵng", value: "DANANG" },
-        { label: "Others", value: "OTHER" }
+        { label: "Khác", value: "OTHER" }
     ];
     export const LEVEL_LIST =
     [

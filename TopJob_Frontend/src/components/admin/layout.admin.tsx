@@ -26,6 +26,7 @@ import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
 import styles from '../../styles/admin.module.scss'
 import ManageAccount from '../client/modal/manage.account'
+import NotPermitted from '../share/protected-route.ts/not-permitted';
 const { Content, Sider } = Layout;
 
 const LayoutAdmin = () => {
@@ -213,6 +214,8 @@ const LayoutAdmin = () => {
    
 
     return (
+        user.role.id=='3' ? <NotPermitted /> 
+        :
         <>
             <Layout
                 style={{ minHeight: '100vh'}}

@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
 
-import com.nguyenduydai.TopJob.domain.entity.Blog;
-import com.nguyenduydai.TopJob.domain.entity.Skill;
 import com.nguyenduydai.TopJob.domain.entity.Subscriber;
 import com.nguyenduydai.TopJob.domain.response.ResString;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
@@ -25,6 +22,8 @@ import com.nguyenduydai.TopJob.util.SecurityUtil;
 import com.nguyenduydai.TopJob.util.annotation.ApiMessage;
 import com.nguyenduydai.TopJob.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -58,8 +57,8 @@ public class SubscriberController {
                 .body(this.subscriberService.handleUpdateSubscriber(currSubscriber, postSubscriber));
     }
 
-    @PostMapping("/subscribers/skills")
-    @ApiMessage("get Subscriber skill")
+    @GetMapping("/subscribers/by-user")
+    @ApiMessage("get Subscriber by user")
     public ResponseEntity<Subscriber> getSubscriberSkill()
             throws IdInvalidException {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()

@@ -6,8 +6,8 @@ const NotPermitted = () => {
     return (
         <Result
             status="403"
-            title="403"
-            subTitle="Sorry, you are not authorized to access this page."
+            title="Truy cập bị từ chối"
+            subTitle="Xin lỗi, bạn không có quyền hạn (permission) truy cập thông tin này"
             extra={<Button type="primary"
                 onClick={() => navigate('/')}
             >Back Home</Button>}

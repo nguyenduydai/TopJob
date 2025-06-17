@@ -40,9 +40,38 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
             OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) throws Exception {
-        String[] whiteList = { "/", "/api/v1/auth/**", "/api/v1/email/**", "/storage/**", "/api/v1/reports/**",
-                "/api/v1/jobrecommendation", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html", "/api/v1/payment/**", "/api/v1/files/**"
+        // String[] whiteList = { "/", "/api/v1/auth/**", "/api/v1/email/**",
+        // "/storage/**", "/api/v1/reports/**",
+        // "/api/v1/jobrecommendation", "/v3/api-docs/**", "/swagger-ui/**",
+        // "/swagger-ui.html",
+        // "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html", "/api/v1/payment/**",
+        // "/api/v1/files/**",
+        // };
+        // http
+        // .csrf(c -> c.disable())
+        // .cors(Customizer.withDefaults())
+        // .authorizeHttpRequests(
+        // authz -> authz.requestMatchers(whiteList).permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/jobsbycompany/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
+        // .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").permitAll()
+        // .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
+        // .anyRequest().authenticated())
+        // .oauth2ResourceServer((oauth) -> oauth.jwt(Customizer.withDefaults())
+        // .authenticationEntryPoint(customAuthenticationEntryPoint))
+        // .oauth2Login(oauth2 -> oauth2
+        // .successHandler(oAuth2LoginSuccessHandler))
+        // .formLogin(f -> f.disable())
+        // .sessionManagement(session ->
+        // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        String[] whiteList = { "/", "/api/v1/auth/**", "/storage/**", "/api/v1/files/**", "/api/v1/email/**",
+                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/payments/**",
+                "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
         };
         http
                 .csrf(c -> c.disable())
@@ -51,10 +80,10 @@ public class SecurityConfiguration {
                         authz -> authz.requestMatchers(whiteList).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/jobsbycompany/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/blogs/**").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/blogs/**").permitAll()// like
+                                .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").permitAll()
                                 .anyRequest().authenticated())

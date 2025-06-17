@@ -34,24 +34,11 @@ public class BlogController {
     @PostMapping("/blogs")
     @ApiMessage("create a blog")
     public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog) throws IdInvalidException {
-        // if (blog.getName() != null && this.blogService.isNameExist(blog.getName())) {
-        // throw new IdInvalidException("blog name = " + blog.getName() + "da ton tai");
-        // }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.blogService.handleCreateBlog(blog));
     }
 
     @PutMapping("/blogs")
     public ResponseEntity<Blog> updateBlog(@Valid @RequestBody Blog postBlog) throws IdInvalidException {
-        // Blog currBlog = this.blogService.fetchBlogById(postBlog.getId());
-        // if (currBlog == null)
-        // throw new IdInvalidException("blog id = " + postBlog.getId() + "khong ton
-        // tai");
-        // if (postBlog.getName() != null &&
-        // this.blogService.isNameExist(postBlog.getName())) {
-        // throw new IdInvalidException("blog name = " + postBlog.getName() + "da ton
-        // tai");
-        // }
-        // currBlog.setName(postBlog.getName());
         return ResponseEntity.status(HttpStatus.OK).body(this.blogService.handleUpdateBlog(postBlog));
     }
 

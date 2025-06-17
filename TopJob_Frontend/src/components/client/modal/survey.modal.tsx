@@ -150,7 +150,7 @@ const SurveyModal = (props: IProps) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Mức lương kỳ vọng" name="salary">
+            <Form.Item label="Mức lương kỳ vọng" name="salary" rules={[{ required: true ,message: 'Vui lòng chọn mức lương kỳ vọng!'}]}>
               <Slider min={0} max={50} step={1} tooltip={{ formatter: value => `${value} triệu` }} />
             </Form.Item>
           </Col>

@@ -1,15 +1,20 @@
 package com.nguyenduydai.TopJob.controller;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenduydai.TopJob.domain.entity.Company;
@@ -19,21 +24,11 @@ import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.response.ResultPaginationDTO;
 import com.nguyenduydai.TopJob.domain.response.resume.ResFetchResumeDTO;
 import com.nguyenduydai.TopJob.domain.response.user.ResUserDTO;
-import com.nguyenduydai.TopJob.repository.CompanyRepository;
 import com.nguyenduydai.TopJob.service.CompanyService;
 import com.nguyenduydai.TopJob.service.JobService;
 import com.nguyenduydai.TopJob.service.ReportService;
 import com.nguyenduydai.TopJob.service.ResumeService;
 import com.nguyenduydai.TopJob.service.UserService;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/v1")

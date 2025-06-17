@@ -48,7 +48,7 @@ const PermissionPage = () => {
 
     const columns: ProColumns<IPermission>[] = [
         {
-            title: 'Id',
+            title: 'STT',
             dataIndex: 'id',
             width: 50,
             render: (text, record, index, action) => {
@@ -205,7 +205,6 @@ const PermissionPage = () => {
         } else {
             temp = `${temp}&${sortBy}`;
         }
-
         return temp;
     }
 

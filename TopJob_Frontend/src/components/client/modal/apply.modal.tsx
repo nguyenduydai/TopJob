@@ -20,15 +20,19 @@ const ApplyModal = (props: IProps) => {
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
     const user = useAppSelector(state => state.account.user);
     const [urlCV, setUrlCV] = useState<string>("");
-    useEffect(()=>{
-        const fetchData = async () => {
-        const res = await callUserById(user.id);
-            if(res.data?.cv){
-                setUrlCV(res?.data?.cv);
-            }
-        }
-        fetchData();
-    },[]);
+    // useEffect(()=>{
+    //     const fetchData = async () => {
+    //         const res = await callUserById(user.id);
+    //         console.log(res)
+    //             if(res.data?.cv){
+    //                 setUrlCV(res?.data?.cv);
+    //                 const r = await callUploadSingleFile(res.data?.cv, "resume"); 
+    //                 console.log(r)
+    //             }
+    //     }
+
+    //     fetchData();
+    // },[]);
     const navigate = useNavigate();
 
     const handleOkButton = async () => {
@@ -42,7 +46,7 @@ const ApplyModal = (props: IProps) => {
             navigate(`/login?user=candidate&callback=${window.location.href}`)
         }
         else {
-            //todo
+           
             if (jobDetail) {
                 const res = await callCreateResume(urlCV, jobDetail?.id, user.email, user.id);
                 if (res.data) {
@@ -138,7 +142,7 @@ const ApplyModal = (props: IProps) => {
                                             label={"Upload file CV :"}
                                             rules={[{ required: true, message: 'Vui lòng upload file!' }]}
                                         >
-                                            {urlCV &&
+                                            {/* {urlCV &&
                                                 <div style={{color:'#a7a7a7',marginBottom:8,textAlign:'center'}}>
                                                     <span>{urlCV}</span><br/> &gt;&gt;&gt; &nbsp;
                                                     <a
@@ -147,7 +151,7 @@ const ApplyModal = (props: IProps) => {
                                                     >Xem chi tiết</a>&nbsp; &lt;&lt;&lt;
                                                 </div>
 
-                                            }
+                                            } */}
                                             <Upload {...propsUpload}>
                                                 <Button icon={<UploadOutlined />} style={{marginLeft:20}}>Tải lên CV của bạn ( Hỗ trợ *.doc, *.docx, *.pdf, and &lt; 5MB )</Button>
                                             </Upload>

@@ -1,4 +1,4 @@
-package com.nguyenduydai.TopJob.domain.response;
+package com.nguyenduydai.TopJob.domain.response.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog, IRecommendation, ITalentCandidate, IPayment, IResPaymentDTO } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IChangePassword, IString, IBlog, IRecommendation, ITalentCandidate, IPayment, IResPaymentDTO, CommentItem } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -151,10 +151,10 @@ export const callFetchJobById = (id: string) => {
     return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
 }
 export const callFetchJobAdmin = (query: string) => {
-    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobsadmin?${query}`);
+    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobs/jobsadmin?${query}`);
 }
 export const callFetchJobByCompany = (companyId:string,query: string) => {
-    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobsbycompany/${companyId}?${query}`);
+    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobs/jobsbycompany/${companyId}?${query}`);
 }
 
 /**
@@ -254,7 +254,7 @@ export const callCreateSubscriber = (subs: ISubscribers) => {
 }
 
 export const callGetSubscriberSkills = () => {
-    return axios.post<IBackendRes<ISubscribers>>('/api/v1/subscribers/skills')
+    return axios.get<IBackendRes<ISubscribers>>('/api/v1/subscribers/by-user')
 }
 
 export const callUpdateSubscriber = (subs: ISubscribers) => {
@@ -366,10 +366,16 @@ export const callFetchTalentCandidateForCompany =(query: string)  => {
  * 
 Module Payment
  */
-export const callPayment =(query: string)  => {
-    return axios.get<IBackendRes<IPayment>>(`/api/v1/payment/create?${query}`);
+export const callPaymentCreate =(query: string)  => {
+    return axios.get<IBackendRes<IPayment>>(`/api/v1/payments/create?${query}`);
 }
-
+export const callPaymentReturn =(query: string)  => {
+    return axios.get<IBackendRes<IPayment>>(`/api/v1/payments/return?${query}`);
+}
+/**
+ * 
+Module Payment History
+ */
 export const callDeletePaymentHistory  = (id: string) => {
     return axios.delete<IBackendRes<IString>>(`/api/v1/payment-history/${id}`);
 }
@@ -424,7 +430,21 @@ interface IDataItemCompany {
     companyName: string;
     jobCount: number;
 }
+
 export const callFetchTopCompanyByJob = () => {
     return axios.get<IBackendRes<Array<IDataItemCompany>>>('/api/v1/companies/topcompaniesbyjobs')
 }
 
+/**
+ * 
+Module comment
+ */
+export const callCreateComment = (blogId:string|null,userId:string|null,content:string,parentId:string|null) => {
+    return axios.post<IBackendRes<CommentItem>>('/api/v1/comments',{blogId,userId,content,parentId});
+}
+export const callFetchCommentsByBlog = (blogId:string|null) => {
+    return axios.get<IBackendRes<CommentItem[]>>(`/api/v1/comments/blog/${blogId}`);
+}
+export const callUpdateLikeComment = (commentId:string|null) => {
+    return axios.put<IBackendRes<CommentItem>>(`/api/v1/comments/like/${commentId}`);
+}

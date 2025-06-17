@@ -1,6 +1,7 @@
 package com.nguyenduydai.TopJob.util;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -15,7 +16,7 @@ import org.springframework.http.ResponseCookie;
 
 import com.nguyenduydai.TopJob.domain.entity.User;
 import com.nguyenduydai.TopJob.domain.request.ReqRegisterUserDTO;
-import com.nguyenduydai.TopJob.domain.response.ResLoginDTO;
+import com.nguyenduydai.TopJob.domain.response.auth.ResLoginDTO;
 import com.nguyenduydai.TopJob.service.UserService;
 
 import jakarta.servlet.ServletException;
@@ -31,6 +32,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private SecurityUtil securityUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -40,12 +43,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = authToken.getPrincipal();
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String hashPassword = this.passwordEncoder.encode("123456");
+
         User user = new User();
         boolean emailExist = this.userService.isEmailExist(email);
         if (!emailExist) {
             ReqRegisterUserDTO req = new ReqRegisterUserDTO();
             req.setEmail(email);
             req.setName(name);
+            req.setPassword(hashPassword);
             user = this.userService.handleCreateRegisterUser(req);
         } else {
             user = this.userService.handleGetUserByUsername(email);
