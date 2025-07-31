@@ -14,17 +14,14 @@ interface IProps {
 
 const BlogCard = (props: IProps) => {
     const { showPagination = false } = props;
-
     const [displayBlog, setDisplayBlog] = useState<IBlog[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(4);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     const [sortQuery, setSortQuery] = useState("sort=likeCount,desc");
     const navigate = useNavigate();
-
     useEffect(() => {
         fetchBlog();
     }, [current, pageSize, filter, sortQuery]);
