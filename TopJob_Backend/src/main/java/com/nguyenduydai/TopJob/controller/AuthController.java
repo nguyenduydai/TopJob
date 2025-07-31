@@ -154,20 +154,6 @@ public class AuthController {
                 deleteCookie.toString()).body(null);
     }
 
-    // @PostMapping("/auth/register")
-    // @ApiMessage("register user")
-    // public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User
-    // user) throws IdInvalidException {
-    // boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
-    // if (isEmailExist) {
-    // throw new IdInvalidException("email + " + user.getEmail() + " da ton tai");
-    // }
-    // String hashPassword = this.passwordEncoder.encode(user.getPassword());
-    // user.setPassword(hashPassword);
-    // User u = this.userService.handleCreateUser(user);
-    // return
-    // ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(u));
-    // }
     @PostMapping("/auth/register")
     @ApiMessage("create a register user")
     public ResponseEntity<ResCreateUserDTO> register(@RequestBody ReqRegisterUserDTO postManUser)
